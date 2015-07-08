@@ -1,4 +1,4 @@
-console.log("in waypointsInput.js");
+
 
 var originForExport = "";
 var waypointsArray = [];
@@ -21,7 +21,6 @@ var OriginPoint = Backbone.Model.extend({
 //create backbone View for Origin model
 var OriginPointView = Backbone.View.extend({
 	render : function () {
-		console.log("in render of originPointView");
 		var originName = this.model.get("originName");
 		var originNameInput = '<input id=originNameInput type="text" value="Enter Origin Here..." />';
 		this.$el.html("<div>" + originNameInput + "</div>");
@@ -187,8 +186,3 @@ $(document).ready( function () {
 });
 
 
-//export origin location and array of waypoints for use in app.js
-module.exports = {
-	originLocation      : originForExport,
-	waypointsArray      : waypointsArray
-};

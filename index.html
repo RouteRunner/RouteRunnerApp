@@ -11,7 +11,8 @@
     <script type="text/javascript" src="js/underscore.js"></script>
     <script type="text/javascript" src="js/backbone.js"></script>
     <script type="text/javascript" src="home.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js"></script>
+<!--     // <script src="https://maps.googleapis.com/maps/api/js"></script> -->
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
     <script type='text/javascript' src='app.js'></script>
     <script type='text/javascript' src='./js/waypointsInput.js'></script>
 
@@ -47,9 +48,9 @@
     <div class="row">
       <div class="bot-buffer form-group col-md-4">
         <label for="usr">Add Destination</label>
-        <input type="text" class="form-control" placeholder="Add Destination..." id="usr">
         <div id="origindiv"></div>
         <div id="listdiv"></div>
+        <input type="text" class="form-control" placeholder="Add Destination..." id="destination">
       </div>
       <div class="col-md-6 col-md-offset-2">
         <div id="map-canvas"></div>
@@ -61,7 +62,7 @@
 
 
     <div class="row top-buffer vertical-center-row text-center col-md-4 col-md-offset-4">
-      <button type="button" class="btn btn-primary btn-large btn-block">Route It</button>
+      <button type="button" id="routeIt" class="btn btn-primary btn-large btn-block">Route It</button>
     </div>
    </div>
 

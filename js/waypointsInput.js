@@ -1,41 +1,43 @@
-var originLocation = "";
+console.log("in waypointsInput.js");
+
+var originForExport = "";
 var waypoints = [];
 
 //create backbone model to store origin location
 var OriginPoint = Backbone.Model.extend({
 	defaults : {
-		locationName : ""
+		originName : ""
 	},
-	initialize : function () {
-		this.fetch();
-	},
-	replaceName : function (str) {
-		this.set("locationName", str); 
+	setName : function (str) {
+		console.log("in setName, input str is:");
+		console.log(str);
+		this.set("originName", str); 
+		originForExport = str;
+		console.log('setting originForExport to:');
+		console.log(originForExport);
 	},
 });
 
 //create backbone View for Origin model
-//create backbone View for Waypoint model
 var OriginPointView = Backbone.View.extend({
 	render : function () {
-		var locationName = this.model.get("locationName");
-		this.$el.html("<div>" + locationName + "</div>");
-	},
-	initialize : function () {
-		this.model.on("change", this.render, this);
+		console.log("in render of originPointView");
+		var originName = this.model.get("originName");
+		var originNameInput = '<input id=originNameInput type="text" value="Enter Origin Here..." />';
+		this.$el.html("<div>" + originNameInput + "</div>");
 	},
 	events : {
-		"keypress #locationNameInput"  : "updateOnEnter",
+		"keypress #originNameInput"  : "updateOnEnter",
 		// add other events for view
 	},
     updateOnEnter : function (e) {
 		if(e.keyCode == 13) {
-			this.replaceName();
+			this.setName();
 		}
 	},
-	replaceName : function () {
-		var str = this.$el.find("#nameInput").val();
-		this.model.replaceName(str);
+	setName : function () {
+		var str = this.$el.find("#originNameInput").val();
+		this.model.setName(str);
 	},
 
     //add other methods
@@ -60,6 +62,7 @@ var Waypoint = Backbone.Model.extend({
 	},
 	replaceName : function (str) {
 		this.set("locationName" , str);
+
 		this.save();
 	},
 	//add other methods
@@ -109,10 +112,9 @@ var WaypointCollection = Backbone.Collection.extend({
 var WaypointCollectionView = Backbone.View.extend({
 	render : function () {
 		var locationNameInput = '<input id=locationNameInput type="text" value="Enter New Waypoint Here..." />';
-		var addBtn = "<button id='addBtn'>Add Waypoint</button>";
-		var goBtn = "<button id='goBtn'>Find Best Route!</button>"; 
+		var addBtn = "<button id='addBtn'>Add Waypoint</button>"; 
 		var div = '<div id="waypoint-list"></div>';
-        this.$el.html(div + locationNameInput + goBtn);
+        this.$el.html(div + locationNameInput);
 	},
 	initialize : function () {
 		this.listenTo(this.collection, 'add', this.addOne)
@@ -145,6 +147,7 @@ var WaypointCollectionView = Backbone.View.extend({
 
 		//push location onto waypoints array for exporting
 		waypoints.push(str);
+		console.log(waypoints);
 	},
 	addOne : function (model) {
 		// create view for new model
@@ -162,7 +165,10 @@ var WaypointCollectionView = Backbone.View.extend({
 
 
 
-var waypointCollection, waypointCollectionView;
+var waypointCollection, 
+	waypointCollectionView, 
+	originPointModel, 
+	originPointView;
 
 $(document).ready( function () {
 
@@ -171,17 +177,17 @@ $(document).ready( function () {
 	waypointCollectionView.render();
 
 /*!!!!!!!!!!!!!!!!!!!! MAKE SURE #listdiv MATCHES IN HTML !!!!!!!!!!!!!!!!*/
-	var originPoint = new OriginPoint();
-	console.log("creating origin point model")
-	var originPointView = new OriginPointView();
-	$("#listdiv").append(originPointView.$el);
+	originPointModel = new OriginPoint();
+	var originPointView = new OriginPointView({model : originPointModel});
+	originPointView.render();
+	$("#origindiv").append(originPointView.$el);
 	$("#listdiv").append(waypointCollectionView.$el);
 
 });
 
 
-// //export origin location and array of waypoints for use in app.js
-// module.exports = {
-// 	originLocation : originLocation,
-// 	waypoints      : waypoints
-// };
+//export origin location and array of waypoints for use in app.js
+module.exports = {
+	originLocation : originForExport,
+	waypoints      : waypoints
+};

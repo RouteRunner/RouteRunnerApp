@@ -172,6 +172,7 @@ $(document).ready( function () {
 
 /*!!!!!!!!!!!!!!!!!!!! MAKE SURE #listdiv MATCHES IN HTML !!!!!!!!!!!!!!!!*/
 	var originPoint = new OriginPoint();
+	console.log("creating origin point model")
 	var originPointView = new OriginPointView();
 	$("#listdiv").append(originPointView.$el);
 	$("#listdiv").append(waypointCollectionView.$el);
@@ -179,8 +180,8 @@ $(document).ready( function () {
 });
 
 
-//export origin location and array of waypoints for use in app.js
-module.exports =  {
-	originLocation : originLocation,
-	waypoints      : waypoints
-}
+// //export origin location and array of waypoints for use in app.js
+// module.exports = {
+// 	originLocation : originLocation,
+// 	waypoints      : waypoints
+// };

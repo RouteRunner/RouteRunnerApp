@@ -1,7 +1,7 @@
 console.log("in waypointsInput.js");
 
 var originForExport = "";
-var waypoints = [];
+var waypointsArray = [];
 
 //create backbone model to store origin location
 var OriginPoint = Backbone.Model.extend({
@@ -146,8 +146,9 @@ var WaypointCollectionView = Backbone.View.extend({
 		});
 
 		//push location onto waypoints array for exporting
-		waypoints.push(str);
-		console.log(waypoints);
+		var waypointObject = {location : str};
+		waypointsArray.push(waypointObject);
+		console.log(waypointsArray);
 	},
 	addOne : function (model) {
 		// create view for new model
@@ -188,6 +189,6 @@ $(document).ready( function () {
 
 //export origin location and array of waypoints for use in app.js
 module.exports = {
-	originLocation : originForExport,
-	waypoints      : waypoints
+	originLocation      : originForExport,
+	waypointsArray      : waypointsArray
 };

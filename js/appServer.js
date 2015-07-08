@@ -15,13 +15,8 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname));
 
 app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname + '/calendar.html'));
+    res.sendFile(path.join(__dirname + '/index.html'));
 });
-
-// app.get('/api', function(req, res) {
-//     knex('months').select();
-//     res.send(JSON.stringify({event : days_id}));
-// });
 
 app.post('/', function(req, res) {
   console.log(req.body);

@@ -1,27 +1,95 @@
-var geocoder;
-var map;
+
+var waypoints = [];
+
+var rendererOptions = {
+  draggable: true
+};
+var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);;
+var directionsService = new google.maps.DirectionsService();
+
 function initialize() {
-  geocoder = new google.maps.Geocoder();
-  var latlng = new google.maps.LatLng(45.5200, -122.6819);
   var mapOptions = {
-   zoom: 8,
-   center: latlng
-  }
-  map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
+    center: {lat: 45.5200, lng: -122.6819},
+    zoom: 10
+  };
+  var map = new google.maps.Map(document.getElementById('map-canvas'),
+    mapOptions);
+
+  var input = /** @type {HTMLInputElement} */(
+      document.getElementById('destination'));
+
+  var autocomplete = new google.maps.places.Autocomplete(input);
+  autocomplete.bindTo('bounds', map);
+
+  // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+  var infowindow = new google.maps.InfoWindow();
+  var marker = new google.maps.Marker({
+    map: map
+  });
+  google.maps.event.addListener(marker, 'click', function() {
+    infowindow.open(map, marker);
+  });
+
+  google.maps.event.addListener(autocomplete, 'place_changed', function() {
+    infowindow.close();
+    var place = autocomplete.getPlace();
+    if (!place.geometry) {
+      return;
+    }
+
+    if (place.geometry.viewport) {
+      map.fitBounds(place.geometry.viewport);
+    } else {
+      map.setCenter(place.geometry.location);
+      map.setZoom(8);
+    }
+
+    // Set the position of the marker using the place ID and location
+    marker.setPlace(/** @type {!google.maps.Place} */ ({
+      placeId: place.place_id,
+      location: place.geometry.location
+    }));
+    marker.setVisible(true);
+    waypoints.push({location:place.geometry.location});
+    console.log(waypoints);
+
+    infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
+        place.formatted_address);
+    infowindow.open(map, marker);
+  });
 }
 
-function codeAddress() {
- var address = document.getElementById('address').value;
- geocoder.geocode( { 'address': address}, function(results, status) {
-   if (status == google.maps.GeocoderStatus.OK) {
-     map.setCenter(results[0].geometry.location);
-     var marker = new google.maps.Marker({
-         map: map,
-         position: results[0].geometry.location
-     });
-   } else {
-     alert('Geocode was not successful for the following reason: ' + status);
-   }
- });
+$(function(){
+  $('#routeIt').on('click', function (e) {
+    alert("button be working!");
+    calcRoute();
+  });
+});
+
+function calcRoute() {
+
+  var request = {
+    origin: 'Bend, OR',
+    destination: 'Bend,OR',
+    waypoints: waypoints,
+    travelMode: google.maps.TravelMode.DRIVING
+  };
+  directionsService.route(request, function(response, status) {
+    if (status == google.maps.DirectionsStatus.OK) {
+      directionsDisplay.setDirections(response);
+    }
+  });
 }
+
+function computeTotalDistance(result) {
+  var total = 0;
+  var myroute = result.routes[0];
+  for (var i = 0; i < myroute.legs.length; i++) {
+    total += myroute.legs[i].distance.value;
+  }
+  total = total / 1000.0;
+  document.getElementById('total').innerHTML = total + ' km';
+}
+
 google.maps.event.addDomListener(window, 'load', initialize);

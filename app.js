@@ -17,10 +17,18 @@ function initialize() {
   directionsDisplay.setMap(map);
   directionsDisplay.setPanel(document.getElementById('directionsPanel'));
 
-  var input = /** @type {HTMLInputElement} */(
-      document.getElementById('destination'));
+  var input = (document.getElementById('destination'));
+  var george = (document.getElementById('originNameInput'));
+  var tim = (document.getElementById('locationNameInput'));
+  
 
   var autocomplete = new google.maps.places.Autocomplete(input);
+  autocomplete.bindTo('bounds', map);
+
+  var autocomplete = new google.maps.places.Autocomplete(george);
+  autocomplete.bindTo('bounds', map);
+
+  var autocomplete = new google.maps.places.Autocomplete(tim);
   autocomplete.bindTo('bounds', map);
 
   var infowindow = new google.maps.InfoWindow();

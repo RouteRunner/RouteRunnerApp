@@ -17,14 +17,9 @@ function initialize() {
   directionsDisplay.setMap(map);
   directionsDisplay.setPanel(document.getElementById('directionsPanel'));
 
-  var input = (document.getElementById('destination'));
   var george = (document.getElementById('originNameInput'));
   var tim = (document.getElementById('locationNameInput'));
   
-
-  var autocomplete = new google.maps.places.Autocomplete(input);
-  autocomplete.bindTo('bounds', map);
-
   var autocomplete = new google.maps.places.Autocomplete(george);
   autocomplete.bindTo('bounds', map);
 
@@ -59,8 +54,6 @@ function initialize() {
       location: place.geometry.location
     }));
     marker.setVisible(true);
-    waypoints.push({location:place.geometry.location});
-    console.log(waypoints);
 
     infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
         place.formatted_address);
@@ -76,11 +69,11 @@ $(function(){
 });
 
 function calcRoute() {
-  console.log('hi');
   var request = {
     origin: originForExport,
     destination: originForExport,
     waypoints: waypointsArray,
+    optimizeWaypoints: true,
     travelMode: google.maps.TravelMode.DRIVING
   };
 

@@ -68,6 +68,22 @@ var WaypointView = Backbone.View.extend({
 		"click #delBtn"        : "delete" 
 	},
 	delete : function () {
+		//remove waypoint from waypointsArray
+		var locationNameToRemove = this.model.get("locationName");
+
+		//iterate over array and find index of matching location
+		for(var i = 0; i < waypointsArray.length; i++) {
+			if(waypointsArray[i].location === locationNameToRemove){
+				indexOfObjectToRemove = i;
+				console.log("indexOfObjectToRemove");
+				console.log(indexOfObjectToRemove);
+			}
+		}
+
+		//remove 1 item from array at index found for location
+		waypointsArray.splice(indexOfObjectToRemove, 1);
+
+		//delete model and remove view
     	this.model.del();
     	this.remove();
     },

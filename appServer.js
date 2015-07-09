@@ -17,20 +17,20 @@ app.use(express.static(__dirname));
 app.get('/', function (req, res) {
     var trimmedPath = __dirname.substring(0, __dirname.length - 2);
     res.sendFile(path.join(trimmedPath + '/index.html'));
-    //res.render(trimmedPath + '/index.html');
 });
 
 app.post('/', function(req, res) {
   console.log("req.body");
   console.log(req.body);
-  // var evt = req.body.input;
-  // var day = req.body.select;
-  // console.log(evt);
-  // console.log(day);
-  // knex('months').returning('days_id').insert({event: evt, dayName: ''}).then(function(result) {
-  //   res.send(JSON.stringify({id:result[0]}));
-  // });
-  res.send("got Post Request on '/'");
+//   var evt = req.body.input;
+//   var day = req.body.select;
+//   console.log(evt);
+//   console.log(day);
+//   knex('months').returning('days_id').insert({event: evt, dayName: ''}).then(function(result) {
+//     res.send(JSON.stringify({id:result[0]}));
+//   });
+
+  res.send("got POST request on '/'");
 });
 
 app.listen(3000, function () {

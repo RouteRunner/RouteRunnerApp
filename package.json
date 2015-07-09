@@ -1,0 +1,21 @@
+{
+  "name": "RouteRunnerApp",
+  "version": "0.0.0",
+  "description": "7/10",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/RouteRunner/RouteRunnerApp.git"
+  },
+  "author": "",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/RouteRunner/RouteRunnerApp/issues"
+  },
+  "dependencies": {
+    "express": "~4.13.1"
+  }
+}

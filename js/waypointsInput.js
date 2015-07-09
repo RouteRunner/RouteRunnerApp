@@ -123,7 +123,7 @@ var WaypointCollectionView = Backbone.View.extend({
         view.render();
 
         //append new view to list of waypoints (colleciton view's div)
-        this.$("#waypoint-list").append(view.$el);
+        this.$el.append(view.$el);
 	},
 });
 

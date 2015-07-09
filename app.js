@@ -15,6 +15,7 @@ function initialize() {
     mapOptions);
 
   directionsDisplay.setMap(map);
+  directionsDisplay.setPanel(document.getElementById('directionsPanel'));
 
   var input = /** @type {HTMLInputElement} */(
       document.getElementById('destination'));
@@ -67,7 +68,7 @@ $(function(){
 });
 
 function calcRoute() {
-
+  console.log('hi');
   var request = {
     origin: originForExport,
     destination: originForExport,

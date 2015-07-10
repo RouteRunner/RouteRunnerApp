@@ -16,6 +16,8 @@
     "url": "https://github.com/RouteRunner/RouteRunnerApp/issues"
   },
   "dependencies": {
-    "express": "~4.13.1"
+    "express": "~4.13.1",
+    "nodemailer": "~1.4.0",
+    "morgan": "~1.6.1"
   }
 }

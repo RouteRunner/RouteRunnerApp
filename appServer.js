@@ -22,13 +22,6 @@ app.get('/', function (req, res) {
 app.post('/', function(req, res) {
   console.log("req.body");
   console.log(req.body);
-//   var evt = req.body.input;
-//   var day = req.body.select;
-//   console.log(evt);
-//   console.log(day);
-//   knex('months').returning('days_id').insert({event: evt, dayName: ''}).then(function(result) {
-//     res.send(JSON.stringify({id:result[0]}));
-//   });
 
   res.send("got POST request on '/'");
 });

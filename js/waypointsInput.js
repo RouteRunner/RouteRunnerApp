@@ -18,16 +18,12 @@ var OriginPoint = Backbone.Model.extend({
 var OriginPointView = Backbone.View.extend({
 	render : function () {
 		var originName = this.model.get("originName");
-		var originNameInput = '<input class="form-control" id=originNameInput type="text" value="Enter Origin Here..." />';
-		this.$el.html("<div>" + originNameInput + "</div>");
+		var originNameInput = '<input class="form-control" id=originNameInput type="text" placeholder="Enter Origin Here..." />';
+		var submitBtn = '<div class="modal-footer"><button class="btn btn-default" data-dismiss="modal" id="originSubmit">Submit</button></div>';
+		this.$el.html(originNameInput + submitBtn);
 	},
 	events : {
-		"keypress #originNameInput"  : "updateOnEnter",
-	},
-    updateOnEnter : function (e) {
-		if(e.keyCode == 13) {
-			this.setName();
-		}
+		"click #originSubmit"  : "setName"
 	},
 	setName : function () {
 		var str = this.$el.find("#originNameInput").val();
@@ -58,14 +54,14 @@ var Waypoint = Backbone.Model.extend({
 var WaypointView = Backbone.View.extend({
 	render : function () {
 		var locationName = this.model.get("locationName");
-		var delBtn = "<button id=delBtn>Delete</button>";
-		this.$el.html("<div>" + locationName + delBtn + "</div>");
+		var delBtn = '<button class="close" id="delBtn"> x</button>';
+		this.$el.html("<div class=top-buffer>" + locationName + delBtn + "</div>");
 	},
 	initialize : function () {
 		this.model.on("change", this.render, this);
 	},
 	events : {
-		"click #delBtn"        : "delete"
+		"click #delBtn" : "delete"
 	},
 	delete : function () {
 		//remove waypoint from waypointsArray
@@ -101,7 +97,7 @@ var WaypointCollection = Backbone.Collection.extend({
 //create backbone view to display collection of waypoints/stops
 var WaypointCollectionView = Backbone.View.extend({
 	render : function () {
-		var locationNameInput = '<input class="form-control" id=locationNameInput type="text" value="Enter New Waypoint Here..." />';
+		var locationNameInput = '<input class="form-control" id=locationNameInput type="text" placeholder="Enter New Waypoint Here..." />';
 		var div = '<div id="waypoint-list"></div>';
         this.$el.html(div + locationNameInput);
 	},

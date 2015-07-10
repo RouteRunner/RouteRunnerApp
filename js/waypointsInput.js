@@ -9,7 +9,7 @@ var OriginPoint = Backbone.Model.extend({
 		originName : ""
 	},
 	setName : function (str) {
-		this.set("originName", str); 
+		this.set("originName", str);
 		originForExport = str;
 	},
 });
@@ -18,7 +18,7 @@ var OriginPoint = Backbone.Model.extend({
 var OriginPointView = Backbone.View.extend({
 	render : function () {
 		var originName = this.model.get("originName");
-		var originNameInput = '<input id=originNameInput type="text" value="Enter Origin Here..." />';
+		var originNameInput = '<input class="form-control" id=originNameInput type="text" value="Enter Origin Here..." />';
 		this.$el.html("<div>" + originNameInput + "</div>");
 	},
 	events : {
@@ -65,7 +65,7 @@ var WaypointView = Backbone.View.extend({
 		this.model.on("change", this.render, this);
 	},
 	events : {
-		"click #delBtn"        : "delete" 
+		"click #delBtn"        : "delete"
 	},
 	delete : function () {
 		//remove waypoint from waypointsArray
@@ -89,7 +89,7 @@ var WaypointView = Backbone.View.extend({
     },
 });
 
-//create backbone collection for Waypoints 
+//create backbone collection for Waypoints
 var WaypointCollection = Backbone.Collection.extend({
 	model      : Waypoint,
 	url        : "/", // <------------------------------------------------CHECK
@@ -101,7 +101,7 @@ var WaypointCollection = Backbone.Collection.extend({
 //create backbone view to display collection of waypoints/stops
 var WaypointCollectionView = Backbone.View.extend({
 	render : function () {
-		var locationNameInput = '<input id=locationNameInput type="text" value="Enter New Waypoint Here..." />';
+		var locationNameInput = '<input class="form-control" id=locationNameInput type="text" value="Enter New Waypoint Here..." />';
 		var div = '<div id="waypoint-list"></div>';
         this.$el.html(div + locationNameInput);
 	},
@@ -121,7 +121,7 @@ var WaypointCollectionView = Backbone.View.extend({
 		}
 	},
 	addToCollection : function (str) {
-		// create new model, save to server and add to colleciton, triggers 'add' event in collection 
+		// create new model, save to server and add to colleciton, triggers 'add' event in collection
 		this.collection.create({
 			locationName : str
 			//view created/appended in 'addOne' method, called in 'add' event listener
@@ -134,7 +134,7 @@ var WaypointCollectionView = Backbone.View.extend({
 	addOne : function (model) {
 		// create view for new model
         var view = new WaypointView({model : model});
-        
+
         //render new view
         view.render();
 
@@ -145,9 +145,9 @@ var WaypointCollectionView = Backbone.View.extend({
 
 
 //create variables for collection, collection view, origin point and origin point view
-var waypointCollection, 
-	waypointCollectionView, 
-	originPointModel, 
+var waypointCollection,
+	waypointCollectionView,
+	originPointModel,
 	originPointView;
 
 $(document).ready( function () {
@@ -156,7 +156,7 @@ $(document).ready( function () {
 	waypointCollectionView = new WaypointCollectionView({collection : waypointCollection});
 	waypointCollectionView.render();
 
-	//assign origin point and origin point view to new backbone objects 
+	//assign origin point and origin point view to new backbone objects
 	originPointModel = new OriginPoint();
 	var originPointView = new OriginPointView({model : originPointModel});
 	originPointView.render();
@@ -166,5 +166,3 @@ $(document).ready( function () {
 	$("#listdiv").append(waypointCollectionView.$el);
 
 });
-
-

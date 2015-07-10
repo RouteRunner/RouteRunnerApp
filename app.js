@@ -19,7 +19,7 @@ function initialize() {
 
   var george = (document.getElementById('originNameInput'));
   var tim = (document.getElementById('locationNameInput'));
-  
+
   var autocomplete = new google.maps.places.Autocomplete(george);
   autocomplete.bindTo('bounds', map);
 
@@ -27,14 +27,16 @@ function initialize() {
   autocomplete.bindTo('bounds', map);
 
   var infowindow = new google.maps.InfoWindow();
-  var marker = new google.maps.Marker({
-    map: map
-  });
-  google.maps.event.addListener(marker, 'click', function() {
-    infowindow.open(map, marker);
-  });
 
   google.maps.event.addListener(autocomplete, 'place_changed', function() {
+    var marker = new google.maps.Marker({
+      map: map
+    });
+
+    google.maps.event.addListener(marker, 'click', function() {
+      infowindow.open(map, marker);
+    });
+
     infowindow.close();
     var place = autocomplete.getPlace();
     if (!place.geometry) {

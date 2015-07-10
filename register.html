@@ -10,10 +10,10 @@
     <script type="text/javascript" src="js/jquery-2.1.4.js"></script>
     <script type="text/javascript" src="js/underscore.js"></script>
     <script type="text/javascript" src="js/backbone.js"></script>
-    <script type="text/javascript" src="home.js"></script>
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
+<!--<script type="text/javascript" src="home.js"></script>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places"></script> 
     <script type='text/javascript' src='app.js'></script>
-    <script type='text/javascript' src='./js/waypointsInput.js'></script>
+    <script type='text/javascript' src='./js/waypointsInput.js'></script>-->
 
     <link href='http://fonts.googleapis.com/css?family=Montserrat|PT+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="css/style.css">
@@ -41,30 +41,42 @@
      </div>
    </div>
 
-  <input class="form-control" id=locationNameInput type="text" value="Enter email address" />'
-  <input class="form-control" id=locationNameInput type="text" value="Create a User Name" />'
-  <input class="form-control" id=locationNameInput type="text" value="Create a Password" />'
-<!--    <div class="container">
-    <div class="row">
-      <div class="bot-buffer form-group col-md-4">
-        <label for="usr">Add Destination</label>
-        <div id="origindiv"></div>
-        <div id="listdiv"></div>
-        <input type="text" class="form-control" placeholder="Add Destination..." id="destination">
+  <div>
+    <form method= "post" action="/register">
+      <div>
+        <label>
+          Username: 
+          <input type="text" name= "username" placeholder="Enter a User Name">
+        </label>
       </div>
-      <div class="col-md-6 col-md-offset-2">
-        <div id="map-canvas"></div>
+      <div>
+        <label>
+          email: 
+          <input type="text" name= "email" placeholder="Enter an Email Address">
+        </label>
       </div>
-    </div>
-<div id="directionsPanel" style="float:right;width:30%;height 100%">
-    <p>Total Distance: <span id="total"></span></p>
-  </div> -->
-
+       <div>
+        <label>
+          Password: 
+          <input type="password" name= "password">
+        </label>
+      </div>
+       <div>
+        <label>
+          Confirm Password: 
+          <input type="password" name= "password_confirm">
+        </label>
+      </div>
+      <div>
+        <input type= "submit" value= "register">
+      </div>
+    </form>
+  </div>
 
     <div class="row top-buffer vertical-center-row text-center col-md-4 col-md-offset-4">
       <button type="button" id="registerGo" class="btn btn-primary btn-large btn-block">Register</button>
     </div>
-   </div>
+  </div>
 
 <div class='navbar navbar-default navbar-fixed-bottom'>
   <div class='container'>

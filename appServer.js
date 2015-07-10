@@ -1,5 +1,5 @@
-// var knexConfig = require('./js/knexfile');
-// var knex = require('knex')(knexConfig);
+var knexConfig = require('./js/knexfile');
+var knex = require('knex')(knexConfig);
 var express = require('express');
 var bodyParser = require('body-parser');
 var path = require('path');
@@ -41,7 +41,12 @@ app.post('/', function(req, res) {
 
 
 //POST handler for registering new user
-router.post('/register', function(request, response) {
+app.post('/register', function(request, response) {
+  console.log("in POST handler for '/register'");
+
+  console.log("request.body");
+  console.log(request.body);
+
   //get inputs from request
   var username = request.body.username,
       password = request.body.password,
@@ -61,11 +66,17 @@ router.post('/register', function(request, response) {
     		email : email, 
     		salt : salt
   		})
+  		console.log("usersToAdd:");
 	 	console.log(usersToAdd);
 	})
 
 	//send verification email
-	// create reusable transporter object using SMTP transport 
+	
+	console.log("configs.emailUser");
+	console.log(configs.emailUser);
+	console.log("configs.emailPassword");
+	console.log(configs.emailPassword);
+
 	var transporter = nodemailer.createTransport({
 		service: 'Gmail',
 		auth: {
@@ -95,24 +106,28 @@ router.post('/register', function(request, response) {
 	});
 
 	//redirect to login page with error for verifying email
-	response.render('login', {
-      title: 'Authorize Me!',
-      user: null,
-      error: "Please click the link in your email"
-    });
+	console.log('redirecting to home page')
+	response.redirect("/");
+	// response.render('login', {
+ //      title: 'Authorize Me!',
+ //      user: null,
+ //      error: "Please click the link in your email"
+ //    });
 
   } else {
-    response.render('login', {
-      title: 'Authorize Me!',
-      user: null,
-      error: "Password didn't match confirmation"
-    });
+  	console.log('passwords do not match')
+  	response.redirect("/");
+    // response.render('login', {
+    //   title: 'Authorize Me!',
+    //   user: null,
+    //   error: "Password didn't match confirmation"
+    // });
   }
 });
 
 
 //GET handler for email verification
-router.get('/verify_email/:nonce', function(request, response) {
+app.get('/verify_email/:nonce', function(request, response) {
 	//database = app.get('database');
 	var returnedNonce = request.params.nonce;
 	console.log("returnedNonce:");
@@ -121,11 +136,11 @@ router.get('/verify_email/:nonce', function(request, response) {
 	// iterate through usersToAdd array and add user to db if nonce match is found
 	usersToAdd.forEach(function (user) {
 		if(user.nonce === returnedNonce) {
-			database('users').insert({
+			knex('users').insert({
 				username     : user.username,
 				passwordhash : user.passwordhash,
-        email        : user.email,
-        salt         : user.salt
+       			email        : user.email,
+        		salt         : user.salt
 			}).then(function () {
 				response.cookie('username', user.username)
 				response.redirect('/');

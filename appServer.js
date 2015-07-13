@@ -42,11 +42,6 @@ app.post('/', function(req, res) {
 
 //POST handler for registering new user
 app.post('/register', function(request, response) {
-  console.log("in POST handler for '/register'");
-
-  console.log("request.body");
-  console.log(request.body);
-
   //get inputs from request
   var username = request.body.username,
       password = request.body.password,
@@ -66,17 +61,9 @@ app.post('/register', function(request, response) {
     		email : email, 
     		salt : salt
   		})
-  		console.log("usersToAdd:");
-	 	console.log(usersToAdd);
 	})
 
 	//send verification email
-	
-	console.log("configs.emailUser");
-	console.log(configs.emailUser);
-	console.log("configs.emailPassword");
-	console.log(configs.emailPassword);
-
 	var transporter = nodemailer.createTransport({
 		service: 'Gmail',
 		auth: {
@@ -92,8 +79,7 @@ app.post('/register', function(request, response) {
 	    from: 'Route Runner ✔ <routerunner@gmail.com>', // sender address 
 	    to: email,  // list of receivers 
 	    subject: 'Route Runner Registration Verification ✔', // Subject line 
-	    text: "Thank you for registering with Route Runner! Please click the link below to verify your email address.", // plaintext body 
-	    html: '<a href=' + verificationUrl +'>Click here to verify.</a>' // html body 
+	    html: '<p>Thank you for registering with Route Runner! Please click the link below to verify your email address.</p><a href=' + verificationUrl +'>Click here to verify.</a>' // html body 
 	};
 	 
 	// send mail with defined transport object 
@@ -105,23 +91,12 @@ app.post('/register', function(request, response) {
 	    }
 	});
 
-	//redirect to login page with error for verifying email
+	//redirect to home page
 	console.log('redirecting to home page')
 	response.redirect("/");
-	// response.render('login', {
- //      title: 'Authorize Me!',
- //      user: null,
- //      error: "Please click the link in your email"
- //    });
-
-  } else {
+  } else { //password and password verify did not match
   	console.log('passwords do not match')
   	response.redirect("/");
-    // response.render('login', {
-    //   title: 'Authorize Me!',
-    //   user: null,
-    //   error: "Password didn't match confirmation"
-    // });
   }
 });
 

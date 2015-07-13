@@ -6,7 +6,7 @@ var waypointsArray = [];
 //create backbone model to store origin location
 var OriginPoint = Backbone.Model.extend({
 	defaults : {
-		originName : " "
+		originName : ""
 	},
 	setName : function (str) {
 		this.set("originName", str);
@@ -34,7 +34,7 @@ var OriginPointView = Backbone.View.extend({
 	setName : function () {
 		var str = this.$el.find("#originNameInput").val();
 		this.model.setName(str);
-		$("#originNameInput").val(" ");
+		$("#originNameInput").val("");
 		this.render();
 	},
 });
@@ -42,7 +42,7 @@ var OriginPointView = Backbone.View.extend({
 //create backbone model to store data about each waypoint/stop in route
 var Waypoint = Backbone.Model.extend({
 	defaults : {
-		locationName :  " ",
+		locationName :  "",
 	},
 	initialize : function () {
 		this.fetch();
@@ -92,7 +92,7 @@ var WaypointView = Backbone.View.extend({
 		// markerArray[indexOfObjectToRemove].visible = false;
 		markerArray[indexOfObjectToRemove].setMap(null);
 		markerArray.splice(indexOfObjectToRemove,1);
-	
+
 		//delete model and remove view
     	this.model.del();
     	this.remove();
@@ -129,7 +129,7 @@ var WaypointCollectionView = Backbone.View.extend({
 			var str = this.$el.find("#locationNameInput").val();
 			//add a new item to collection, pass in inputted string
 			this.addToCollection(str);
-			$("#locationNameInput").val(" ");
+			$("#locationNameInput").val("");
 	},
 	addToCollection : function (str) {
 		// create new model, save to server and add to colleciton, triggers 'add' event in collection

@@ -21,7 +21,6 @@ function initialize() {
   var input = (document.getElementById('locationNameInput'));
 
   var autocomplete = new google.maps.places.Autocomplete(origin);
-  console.log(autocomplete);
   autocomplete.bindTo('bounds', map);
 
   var autocomplete = new google.maps.places.Autocomplete(input);

@@ -42,14 +42,17 @@
      </div>
 
       <div class="container">
-         <div class="row bot-buffer top-buffer col-md-2 pull-right">
-           <a href="#origin" data-toggle="modal"><button type="button" id="setOrigin" class="btn btn-warning btn-large btn-block">Set Origin</button></a>
+        <div class="row bot-buffer top-buffer" id="originLocale">
+           <div class="col-md-2 pull-right">
+             <a href="#origin" data-toggle="modal"><button type="button" id="setOrigin" class="btn btn-warning btn-large btn-block">Set Origin</button></a>
+          </div>
         </div>
       </div>
       <div class="container">
-        <div class="row bot-buffer form-group col-md-4">
-          <label for="usr">Add Destination</label>
-          <div id="listdiv"></div>
+        <div id="destinations" class="row bot-buffer form-group col-md-4">
+          <label for="usr"><h4>Destinations</h4></label>
+          <div class="input-group" id="inputdiv"></div>
+          <ol id="waypoint-list"></ol>
         </div>
         <div class="col-md-7 col-md-offset-1">
           <div id="map-canvas"></div>
@@ -73,13 +76,9 @@
       <div class="modal fade" id="origin" role="dialog">
         <div class="modal-dialog">
           <div class="modal-content">
-            <!-- <div class="modal-header">
-            </div> -->
             <div class="modal-body" id="origindiv">
               <h4>Set Origin</h4>
             </div>
-            <!-- <div class="modal-footer" id="submitBtn">
-            </div> -->
           </div>
         </div>
       </div>

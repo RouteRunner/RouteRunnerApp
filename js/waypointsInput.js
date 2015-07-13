@@ -87,10 +87,19 @@ var WaypointView = Backbone.View.extend({
 		//remove 1 item from array at index found for location
 		waypointsArray.splice(indexOfObjectToRemove, 1);
 
+		//removing flags
+		// markerArray[indexOfObjectToRemove].visible = false;
+		markerArray[indexOfObjectToRemove].setMap(null);
+		markerArray.splice(indexOfObjectToRemove,1);
+	
 		//delete model and remove view
     	this.model.del();
     	this.remove();
+
+
+
     },
+
 });
 
 //create backbone collection for Waypoints

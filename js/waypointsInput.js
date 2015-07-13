@@ -21,10 +21,10 @@ var OriginPointView = Backbone.View.extend({
 	},
 	initialize : function() {
 		this.listenTo(this.model, 'change', this.render());
-		var originName = '<div class="col-md-10 pull-right">' + '<h4>Origin: </h4><span id="inputOrigin"></span>' + '</div>';
+		var originName = '<div class="col-md-4 pull-right">' + '<h4>Origin: </h4><span id="inputOrigin"></span>' + '</div>';
 		var originNameInput = '<input class="form-control" id=originNameInput type="search" placeholder="Enter Origin Here..." />';
 		var submitBtn = '<div class="modal-footer"><button class="btn btn-default" data-dismiss="modal" id="originSubmit">Submit</button></div>';
-		$("#originLocale").append(originName);
+		$("#originRow").append(originName);
 		this.$el.html(originNameInput + submitBtn);
 		this.render();
 	},
@@ -34,6 +34,7 @@ var OriginPointView = Backbone.View.extend({
 	setName : function () {
 		var str = this.$el.find("#originNameInput").val();
 		this.model.setName(str);
+		$("#originNameInput").val(" ");
 		this.render();
 	},
 });
@@ -41,7 +42,7 @@ var OriginPointView = Backbone.View.extend({
 //create backbone model to store data about each waypoint/stop in route
 var Waypoint = Backbone.Model.extend({
 	defaults : {
-		locationName :  "",
+		locationName :  " ",
 	},
 	initialize : function () {
 		this.fetch();
@@ -119,7 +120,7 @@ var WaypointCollectionView = Backbone.View.extend({
 			var str = this.$el.find("#locationNameInput").val();
 			//add a new item to collection, pass in inputted string
 			this.addToCollection(str);
-			$("#locationNameInput").val("");
+			$("#locationNameInput").val(" ");
 	},
 	addToCollection : function (str) {
 		// create new model, save to server and add to colleciton, triggers 'add' event in collection

@@ -63,7 +63,7 @@ function initialize() {
     marker.setVisible(true);
     // marker.setVisible(false);
 
-    infowindow.setContent('<div><b>' + place.name + '</b></div>' + '<br>' + place.formatted_address + '<br>' + '<button id=clearMarkers>' + 'Remove' + '</button>');//where to add other things to info window
+    infowindow.setContent('<div><b>' + place.name + '</b></div>' + '<br>' + place.formatted_address + '<br>');//where to add other things to info window
     infowindow.open(map, marker);
     
     // google.map.event.
@@ -71,11 +71,7 @@ function initialize() {
 
     markerArray.push(marker);
 
-    //===marker toggle=======
-    google.maps.event.addListener(marker, 'click', function(){
-      console.log("remove workein");
-    });
-    //===marker off======^^^^
+
   });
   
 

@@ -1,5 +1,7 @@
 var map;
 
+var markerArray = [];
+
 var rendererOptions = {
   draggable: true
 };
@@ -26,16 +28,19 @@ function initialize() {
   var autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo('bounds', map);
 
-  var infowindow = new google.maps.InfoWindow();
+  
 
   google.maps.event.addListener(autocomplete, 'place_changed', function() {
     var marker = new google.maps.Marker({
       map: map
     });
 
+    var infowindow = new google.maps.InfoWindow();
+
     google.maps.event.addListener(marker, 'click', function() {
       infowindow.open(map, marker);
     });
+
 
     infowindow.close();
     var place = autocomplete.getPlace();
@@ -56,17 +61,32 @@ function initialize() {
       location: place.geometry.location
     }));
     marker.setVisible(true);
+    // marker.setVisible(false);
 
-    infowindow.setContent('<div><strong>' + place.name + '</strong><br>' +
-        place.formatted_address);
+    infowindow.setContent('<div><b>' + place.name + '</b></div>' + '<br>' + place.formatted_address + '<br>' + '<button id=clearMarkers>' + 'Remove' + '</button>');//where to add other things to info window
     infowindow.open(map, marker);
+    
+    // google.map.event.
+    // markerArray[0].setVisible(false);
+
+    markerArray.push(marker);
+
+    //===marker toggle=======
+    google.maps.event.addListener(marker, 'click', function(){
+      console.log("remove workein");
+    });
+    //===marker off======^^^^
   });
+  
 
 }
 
 $(function(){
   $('#routeIt').on('click', function (e) {
     calcRoute();
+    for(var i =0; i<markerArray.length; i++){
+      markerArray[i].setVisible(false)
+    }
   });
 });
 
@@ -96,5 +116,6 @@ function computeTotalDistance(result) {
   total = total / 1000.0;
   document.getElementById('total').innerHTML = total + ' km';
 }
+
 
 google.maps.event.addDomListener(window, 'load', initialize);

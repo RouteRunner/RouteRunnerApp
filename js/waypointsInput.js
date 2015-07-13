@@ -17,21 +17,24 @@ var OriginPoint = Backbone.Model.extend({
 //create backbone View for Origin model
 var OriginPointView = Backbone.View.extend({
 	render : function () {
-		var originName = this.model.get("originName");
-		var originNameInput = '<input class="form-control" id=originNameInput type="text" value="Enter Origin Here..." />';
-		this.$el.html("<div>" + originNameInput + "</div>");
+	$("#inputOrigin").html(this.model.get("originName"));
+	},
+	initialize : function() {
+		this.listenTo(this.model, 'change', this.render());
+		var originName = '<div>' + '<h4>Origin: </h4><span id="inputOrigin"></span>' + '</div>';
+		var originNameInput = '<input class="form-control" id=originNameInput type="text" placeholder="Enter Origin Here..." />';
+		var submitBtn = '<div class="modal-footer"><button class="btn btn-default" data-dismiss="modal" id="originSubmit">Submit</button></div>';
+		$("#originLocale").append(originName);
+		this.$el.html(originNameInput + submitBtn);
+		this.render();
 	},
 	events : {
-		"keypress #originNameInput"  : "updateOnEnter",
-	},
-    updateOnEnter : function (e) {
-		if(e.keyCode == 13) {
-			this.setName();
-		}
+		"click #originSubmit"  : "setName"
 	},
 	setName : function () {
 		var str = this.$el.find("#originNameInput").val();
 		this.model.setName(str);
+		this.render();
 	},
 });
 
@@ -57,15 +60,16 @@ var Waypoint = Backbone.Model.extend({
 //create backbone View for Waypoint model
 var WaypointView = Backbone.View.extend({
 	render : function () {
-		var locationName = this.model.get("locationName");
-		var delBtn = "<button id=delBtn>Delete</button>";
-		this.$el.html("<div>" + locationName + delBtn + "</div>");
+		var locationName = '<div class="center-block">' + this.model.get("locationName") + '</div>';
+		var delBtn = '<span class="input-group-btn"><button type="button" class="close" id="delBtn"> X</button></span>';
+		this.$el.html(locationName + delBtn);
+
 	},
 	initialize : function () {
 		this.model.on("change", this.render, this);
 	},
 	events : {
-		"click #delBtn"        : "delete"
+		"click #delBtn" : "delete"
 	},
 	delete : function () {
 		//remove waypoint from waypointsArray
@@ -101,24 +105,20 @@ var WaypointCollection = Backbone.Collection.extend({
 //create backbone view to display collection of waypoints/stops
 var WaypointCollectionView = Backbone.View.extend({
 	render : function () {
-		var locationNameInput = '<input class="form-control" id=locationNameInput type="text" value="Enter New Waypoint Here..." />';
-		var div = '<div id="waypoint-list"></div>';
-        this.$el.html(div + locationNameInput);
+		var locationNameInput = '<input class="form-control" id=locationNameInput type="text" placeholder="Enter New Waypoint Here..." />';
+		var addBtn = '<span class="input-group-btn"><button type="button" class="btn btn-warning" id="addBtn"> Add</button></span>';
+    this.$el.html(addBtn + locationNameInput);
 	},
 	initialize : function () {
 		this.listenTo(this.collection, 'add', this.addOne)
 	},
 	events : {
-		"keypress #locationNameInput"  : "updateOnEnter",
+		"click #addBtn"  : "updateOnClick",
 	},
-	updateOnEnter : function (e) {
-		if(e.keyCode == 13) {
-			//get string from input field
+	updateOnClick : function (e) {
 			var str = this.$el.find("#locationNameInput").val();
-
 			//add a new item to collection, pass in inputted string
 			this.addToCollection(str);
-		}
 	},
 	addToCollection : function (str) {
 		// create new model, save to server and add to colleciton, triggers 'add' event in collection
@@ -133,13 +133,13 @@ var WaypointCollectionView = Backbone.View.extend({
 	},
 	addOne : function (model) {
 		// create view for new model
-        var view = new WaypointView({model : model});
+        var view = new WaypointView({model : model, tagName : "li"});
 
         //render new view
         view.render();
 
-        //append new view to list of waypoints (colleciton view's div)
-        this.$el.append(view.$el);
+        //append new view to list of waypoints (collection view's div)
+        $("#waypoint-list").append(view.$el);
 	},
 });
 
@@ -153,7 +153,7 @@ var waypointCollection,
 $(document).ready( function () {
 	//assign collection and collection view to new backbone objects
 	waypointCollection = new WaypointCollection();
-	waypointCollectionView = new WaypointCollectionView({collection : waypointCollection});
+	waypointCollectionView = new WaypointCollectionView({collection : waypointCollection, el : "#inputdiv"});
 	waypointCollectionView.render();
 
 	//assign origin point and origin point view to new backbone objects
@@ -163,6 +163,6 @@ $(document).ready( function () {
 
 	//append origin point view and collection view to appropriate divs in index.html
 	$("#origindiv").append(originPointView.$el);
-	$("#listdiv").append(waypointCollectionView.$el);
+	$("#inputdiv").append(waypointCollectionView.$el);
 
 });

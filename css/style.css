@@ -45,6 +45,7 @@ body {
     background-color: #F2EDD7;
     text-align:center;
     padding-top: 80px;
+    padding-bottom: 80px;
 }
 
 h1
@@ -84,9 +85,23 @@ h5
 }
 
 .top-buffer {
-  margin-top: 40px;
+  margin-top: 20px;
 }
 
 .bot-buffer {
   padding-bottom: 20px;
+}
+
+.pac-container {
+    background-color: #FFF;
+    z-index: 1050;
+    position: fixed;
+    display: inline-block;
+    float: left;
+}
+
+#waypoint-list{
+  margin: 10px 5px 10px 25px;
+  padding: 0;
+  list-style-type: none;
 }

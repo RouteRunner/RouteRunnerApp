@@ -26,24 +26,19 @@ var usersToAdd = [];
 // GET handler for serving home page
 app.get('/', function (req, res) {
  	var username = null;
-  
-  	console.log(req.cookies);
-
+ 
  	if (req.cookies.username != undefined) {
     	//set cookie
     	username = req.cookies.username;
 	}
-
-	console.log(username);
-
-    // res.sendFile(path.join(__dirname + '/home.html'));
+	
     res.render('home.html', {username:username});
 });
 
 
 //GET handler for serving register page
 app.get('/register', function (req, res) {
-    res.sendFile(path.join(__dirname + '/register.html'));
+     res.render('register.html');
 });
 
 //POST handler for home page

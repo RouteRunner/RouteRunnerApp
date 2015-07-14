@@ -80,8 +80,8 @@ var WaypointView = Backbone.View.extend({
 		for(var i = 0; i < waypointsArray.length; i++) {
 			if(waypointsArray[i].location === locationNameToRemove){
 				indexOfObjectToRemove = i;
-				console.log("indexOfObjectToRemove");
-				console.log(indexOfObjectToRemove);
+				// console.log("indexOfObjectToRemove");
+				// console.log(indexOfObjectToRemove);
 			}
 		}
 
@@ -128,8 +128,14 @@ var WaypointCollectionView = Backbone.View.extend({
 	updateOnClick : function (e) {
 			var str = this.$el.find("#locationNameInput").val();
 			//add a new item to collection, pass in inputted string
+			if (str !== ''){			
 			this.addToCollection(str);
 			$("#locationNameInput").val("");
+			
+		}
+
+			
+
 	},
 	addToCollection : function (str) {
 		// create new model, save to server and add to colleciton, triggers 'add' event in collection

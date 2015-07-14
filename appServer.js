@@ -5,11 +5,12 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var router = express.Router();
 var logger = require('morgan');
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 var nodemailer = require('nodemailer');
-var configs = require('./js/config.js')
 var uuid = require('node-uuid');
 var cookieParser = require('cookie-parser');
+if (!process.env.heroku) var configs = require('./js/config.js');
+
 
 var app = express();
 module.exports = app;
@@ -145,10 +146,10 @@ app.post('/register', function(request, response) {
   	var pass = require('pwd');
  	pass.hash(password, function(err, salt, hash) {
 		usersToAdd.push({
-    		nonce : newNonce, 
+    		nonce : newNonce,
     		username : username,
     		passwordhash : hash,
-    		email : email, 
+    		email : email,
     		salt : salt
   		})
 	})
@@ -157,22 +158,22 @@ app.post('/register', function(request, response) {
 	var transporter = nodemailer.createTransport({
 		service: 'Gmail',
 		auth: {
-			user: configs.emailUser,
-			pass: configs.emailPassword
+			user: process.env.emailUser || configs.emailUser,
+			pass: process.env.emailPassword || configs.emailPassword
 		}
 	})
 
 	var verificationUrl = 'http://localhost:3000/verify_email/' + newNonce;
 
-	// setup e-mail data with unicode symbols 
+	// setup e-mail data with unicode symbols
 	var mailOptions = {
-	    from: 'Route Runner ✔ <routerunner@gmail.com>', // sender address 
-	    to: email,  // list of receivers 
-	    subject: 'Route Runner Registration Verification ✔', // Subject line 
-	    html: '<p>Thank you for registering with Route Runner! Please click the link below to verify your email address.</p><a href=' + verificationUrl +'>Click here to verify.</a>' // html body 
+	    from: 'Route Runner ✔ <routerunner@gmail.com>', // sender address
+	    to: email,  // list of receivers
+	    subject: 'Route Runner Registration Verification ✔', // Subject line
+	    html: '<p>Thank you for registering with Route Runner! Please click the link below to verify your email address.</p><a href=' + verificationUrl +'>Click here to verify.</a>' // html body
 	};
-	 
-	// send mail with defined transport object 
+
+	// send mail with defined transport object
 	transporter.sendMail(mailOptions, function(error, info){
 	    if(error){
 	        console.log(error);

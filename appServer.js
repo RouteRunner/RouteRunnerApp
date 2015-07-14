@@ -124,4 +124,4 @@ app.get('/verify_email/:nonce', function(request, response) {
 	})
 });
 
-app.listen(process.env.PORT || 3000});
+app.listen(process.env.PORT || 3000);

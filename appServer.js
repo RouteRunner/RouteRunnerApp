@@ -5,10 +5,9 @@ var bodyParser = require('body-parser');
 var path = require('path');
 var router = express.Router();
 var logger = require('morgan');
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 var nodemailer = require('nodemailer');
 if (!process.env.heroku) var configs = require('./js/config.js');
-var uuid = require('node-uuid');
 
 var app = express();
 module.exports = app;

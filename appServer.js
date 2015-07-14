@@ -8,7 +8,6 @@ var logger = require('morgan');
 var uuid = require('uuid');
 var nodemailer = require('nodemailer');
 if (!process.env.heroku) var configs = require('./js/config.js');
-var port_number = server.listen(process.env.PORT || 3000);
 
 var app = express();
 module.exports = app;

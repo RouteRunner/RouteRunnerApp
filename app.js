@@ -64,7 +64,8 @@ function initialize() {
     // marker.setVisible(false);
 
     infowindow.setContent('<div><b>' + place.name + '</b></div>' + '<br>' + place.formatted_address + '<br>');//where to add other things to info window
-    infowindow.open(map, marker);
+    // infowindow.open(map, marker);
+    //^^^^turns off open window. Click still works.
     
     // google.map.event.
     // markerArray[0].setVisible(false);

@@ -1,13 +1,13 @@
-var config = require('./config.js');
+if (!process.env.heroku) var config = require('./js/config.js');
 
 module.exports = {
 
  client: 'postgresql',
  connection: {
- host     : process.env.APP_DB_HOST     || config.dbHost,
- user     : process.env.APP_DB_USER     || config.dbUser,
- password : process.env.APP_DB_PASSWORD || config.dbPassword,
- database : process.env.APP_DB_NAME     || config.dbName
+ host     : process.env.dbHost     || config.dbHost,
+ user     : process.env.dbUser     || config.dbUser,
+ password : process.env.dbPassword || config.dbPassword,
+ database : process.env.dbName     || config.dbName
 },
  pool: {
    min: 2,

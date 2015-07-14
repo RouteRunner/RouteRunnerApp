@@ -7,7 +7,7 @@ var router = express.Router();
 var logger = require('morgan');
 var uuid = require('uuid');
 var nodemailer = require('nodemailer');
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 var cookieParser = require('cookie-parser');
 if (!process.env.heroku) var configs = require('./js/config.js');
 

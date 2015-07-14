@@ -5,11 +5,17 @@ var waypointsArray = [];
 
 //create backbone model to store origin location
 var OriginPoint = Backbone.Model.extend({
+	urlRoot : "/origin",
 	defaults : {
 		originName : ""
 	},
+	initialize : function () {
+		console.log("initializing Origin Point, fetching...")
+		this.fetch();
+	},
 	setName : function (str) {
 		this.set("originName", str);
+		this.save();
 		originForExport = str;
 	},
 });
@@ -20,7 +26,8 @@ var OriginPointView = Backbone.View.extend({
 	$("#inputOrigin").html(this.model.get("originName"));
 	},
 	initialize : function() {
-		this.listenTo(this.model, 'change', this.render());
+		//this.listenTo(this.model, 'change', this.render());
+		this.model.on("change", this.render, this);
 		var originName = '<div>' + '<h4>Origin: </h4><span id="inputOrigin"></span>' + '</div>';
 		var originNameInput = '<input class="form-control" id=originNameInput type="text" placeholder="Enter Origin Here..." />';
 		var submitBtn = '<div class="modal-footer"><button class="btn btn-default" data-dismiss="modal" id="originSubmit">Submit</button></div>';

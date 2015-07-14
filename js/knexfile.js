@@ -10,7 +10,7 @@ module.exports = {
  database : process.env.APP_DB_NAME     || config.dbName
 },
  pool: {
-   min: 2,
+   min: 1,
    max: 10
  },
  migrations: {

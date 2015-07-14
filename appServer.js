@@ -8,6 +8,7 @@ var logger = require('morgan');
 var uuid = require('uuid');
 var nodemailer = require('nodemailer');
 if (!process.env.heroku) var configs = require('./js/config.js');
+var port_number = server.listen(process.env.PORT || 3000);
 
 var app = express();
 module.exports = app;
@@ -123,7 +124,4 @@ app.get('/verify_email/:nonce', function(request, response) {
 	})
 });
 
-
-app.listen(3000, function () {
-    console.log("server started, listening on port 3000");
-});
+app.listen(port_number);

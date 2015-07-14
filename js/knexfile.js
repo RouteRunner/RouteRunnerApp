@@ -1,4 +1,4 @@
-if (!process.env.heroku) var config = require('./js/config.js');
+if (!process.env.heroku) var config = require('./config.js');
 
 module.exports = {
 

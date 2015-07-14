@@ -9,20 +9,35 @@ var uuid = require('node-uuid');
 var nodemailer = require('nodemailer');
 var configs = require('./js/config.js')
 var uuid = require('node-uuid');
+var cookieParser = require('cookie-parser');
 
 var app = express();
 module.exports = app;
 //app.use(logger('dev'));
+app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname));
+app.engine('html', require('ejs').renderFile);
 
 // array for stashing user info for users to add to db after verification
 var usersToAdd = [];
 
 // GET handler for serving home page
 app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname + '/home.html'));
+ 	var username = null;
+  
+  	console.log(req.cookies);
+
+ 	if (req.cookies.username != undefined) {
+    	//set cookie
+    	username = req.cookies.username;
+	}
+
+	console.log(username);
+
+    // res.sendFile(path.join(__dirname + '/home.html'));
+    res.render('home.html', {username:username});
 });
 
 

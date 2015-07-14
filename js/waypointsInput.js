@@ -79,8 +79,8 @@ var WaypointView = Backbone.View.extend({
 		for(var i = 0; i < waypointsArray.length; i++) {
 			if(waypointsArray[i].location === locationNameToRemove){
 				indexOfObjectToRemove = i;
-				console.log("indexOfObjectToRemove");
-				console.log(indexOfObjectToRemove);
+				// console.log("indexOfObjectToRemove");
+				// console.log(indexOfObjectToRemove);
 			}
 		}
 

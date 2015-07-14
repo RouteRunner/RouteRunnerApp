@@ -41,6 +41,13 @@
     	   </div>
        </div>
      </div>
+     <div>
+      <% if (username) { %>
+        <h2>You are logged in as: <%= username %></h2>
+      <% } else { %>
+        <h2>You are not logged in.</h2>
+      <% } %>
+     </div>
       <div class="container">
         <div class="row bot-buffer top-buffer" id="originLocale">
            <div class="col-md-2 pull-right">

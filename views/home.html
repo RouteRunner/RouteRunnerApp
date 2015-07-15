@@ -33,7 +33,11 @@
     		      </button>
     	      </div>
       		  <ul class='nav navbar-nav navbar-right collapse navbar-collapse'>
-            <li><% if (username) { %><a>You are logged in as <%= username %></a><% } else { %><a href='#login'data-toggle="modal" id=#signIn>Sign In</a><% } %></li>            
+            <li><% if (username) { %>
+            <a>You are logged in as <%= username %></a></li>
+            <li><a href= '/logout'>Sign Out</a></li>
+            <% } else { %>
+            <li><a href='#login'data-toggle="modal" id=#signIn>Sign In</a><% } %></li>            
       			<li><% if (!username) { %><a href='/register'>Create Account</a><% } %></li>
       		</ul>
     	   </div>

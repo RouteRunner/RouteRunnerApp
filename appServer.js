@@ -38,6 +38,17 @@ app.get('/', function (req, res) {
     res.render('home.html', {username:username});
 });
 
+//GET handler for logging out
+app.get('/logout', function (req, res) {
+	console.log('processing GET from /logout');
+
+	//delete cookie
+	res.clearCookie('username');
+
+	//redirect back to home page
+	res.redirect('/');
+})
+
 //GET handler for fetching Origin backbone model when it initializes
 app.get('/origin', function (req, res) {
 	console.log("processing GET from '/origin'");

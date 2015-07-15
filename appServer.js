@@ -93,7 +93,13 @@ app.post('/origin', function (req, res) {
 
 //GET handler for serving register page
 app.get('/register', function (req, res) {
-     res.render('register.html');
+	 //get username from cookie in request, if user is logged in
+ 	var username = null;
+ 	if (req.cookies.username != undefined) {
+ 		username = req.cookies.username;	
+    }
+    
+     res.render('register.html', {username:username});
 });
 
 //POST handler for logging in from form on home page

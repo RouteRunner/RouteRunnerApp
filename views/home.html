@@ -10,7 +10,6 @@
     <script type="text/javascript" src="js/jquery-2.1.4.js"></script>
     <script type="text/javascript" src="js/underscore.js"></script>
     <script type="text/javascript" src="js/backbone.js"></script>
-    <script type="text/javascript" src="home.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
     <script type='text/javascript' src='app.js'></script>
     <script type='text/javascript' src='./js/waypointsInput.js'></script>
@@ -34,19 +33,11 @@
     		      </button>
     	      </div>
       		  <ul class='nav navbar-nav navbar-right collapse navbar-collapse'>
-      			<li><a href='resume.pdf'>Sign In</a></li>
+            <li><% if (username) { %><a>You are logged in as <%= username %></a><% } else { %><a href='resume.pdf'>Sign In</a><% } %></li>            
       			<li><a href='/register'>Create Account</a></li>
       		</ul>
     	   </div>
        </div>
-     </div>
-
-     <div>
-      <% if (username) { %>
-        <h2>You are logged in as: <%= username %></h2>
-      <% } else { %>
-        <h2>You are not logged in.</h2>
-      <% } %>
      </div>
 
       <div>

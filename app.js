@@ -1,5 +1,5 @@
 var map;
-
+var marker;
 var markerArray = [];
 
 var rendererOptions = {
@@ -11,7 +11,7 @@ var directionsService = new google.maps.DirectionsService();
 function initialize() {
   var mapOptions = {
     center: {lat: 45.5200, lng: -122.6819},
-    zoom: 10
+    zoom: 8
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),
     mapOptions);
@@ -31,8 +31,11 @@ function initialize() {
   
 
   google.maps.event.addListener(autocomplete, 'place_changed', function() {
-    var marker = new google.maps.Marker({
-      map: map
+     console.log('George')
+      marker = new google.maps.Marker({
+      animation: google.maps.Animation.DROP,
+      map: map,
+      
     });
 
     var infowindow = new google.maps.InfoWindow();
@@ -59,8 +62,9 @@ function initialize() {
     marker.setPlace(/** @type {!google.maps.Place} */ ({
       placeId: place.place_id,
       location: place.geometry.location
+
     }));
-    marker.setVisible(true);
+    marker.setVisible(false);
     // marker.setVisible(false);
 
     infowindow.setContent('<div><b>' + place.name + '</b></div>' + '<br>' + place.formatted_address + '<br>');//where to add other things to info window

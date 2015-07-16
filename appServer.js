@@ -24,11 +24,11 @@ app.engine('html', require('ejs').renderFile);
 // GET handler for serving home page
 app.get('/', function (req, res) {
 	console.log("processing GET from '/'");
- 	
+
  	//get username from cookie in request, if user is logged in
  	var username = null;
  	if (req.cookies.username != undefined) {
-    	username = req.cookies.username;	
+    	username = req.cookies.username;
     }
 
     //render home.html, sending username to insert into template
@@ -49,12 +49,12 @@ app.get('/logout', function (req, res) {
 //GET handler for fetching Origin backbone model when it initializes
 app.get('/origin', function (req, res) {
 	console.log("processing GET from '/origin'");
-	
+
 	var username = null;
  	if (req.cookies.username != undefined) {
 
  		//set username from cookie
-    	username = req.cookies.username;	
+    	username = req.cookies.username;
 
 		//do knex query for username entry in users table
 		knex('users').where({'username': username}).then(function(returnedUserRecords) {
@@ -65,11 +65,11 @@ app.get('/origin', function (req, res) {
 			    var user = returnedUserRecords[0];
 
 			    //send origin from user in DB to backbone model
-	          	res.send(JSON.stringify({
-	          		originName : user.origin,
-	          	}))
+          	res.send(JSON.stringify({
+          		originName : user.origin,
+          	}))
 	        }
-		})
+			})
 	}
 })
 
@@ -81,7 +81,7 @@ app.post('/origin', function (req, res) {
 	//insert origin for user if logged in (cookie present)
 	var username = null;
  	if (req.cookies.username != undefined) {
-    	
+
     	//get username from cookie
     	username = req.cookies.username;
 
@@ -97,13 +97,68 @@ app.post('/origin', function (req, res) {
 	}
 })
 
+app.get('/notes', function (req, res) {
+	console.log("processing GET from '/notes'");
+
+	var username = null;
+	if (req.cookies.username != undefined) {
+
+		//set username from cookie
+		username = req.cookies.username;
+
+		//do knex query for username entry in users table
+		knex('notes').where({'username': username}).then(function(returnedUserRecords) {
+			if (returnedUserRecords.length === 0) {
+			//popup alert box? "No Such User"
+			} else {
+			//pull out first user from returned array
+				var note = returnedUserRecords[0];
+
+				//send list-info from user in DB to backbone model
+				res.send(JSON.stringify({
+					listitem : note.listitem,
+					status : note.status
+				}))
+			}
+		})
+	}
+})
+
+//POST handler for adding listitem/status from backbone model to database
+app.post('/notes', function (req, res) {
+	console.log("req.body");
+	console.log(req.body);
+
+	var listItem = req.body.listitem,
+      status = req.body.status,
+			username = null;
+
+	//insert info for user if logged in (cookie present)
+ 	if (req.cookies.username != undefined) {
+
+    	//get username from cookie
+    	username = req.cookies.username;
+
+    	//insert origin for user in DB
+		knex('notes').where({username:username}).update({
+			listitem : listItem,
+			status : status
+		}).then(function() {
+			//need to do anything here? res.end??
+			res.end();
+		})
+	} else {
+		//user not logged in, don't insert in DB, just end response
+		res.end();
+	}
+})
 
 //GET handler for serving register page
 app.get('/register', function (req, res) {
 	 //get username from cookie in request, if user is logged in
  	var username = null;
  	if (req.cookies.username != undefined) {
- 		username = req.cookies.username;	
+ 		username = req.cookies.username;
     }
     res.render('register.html', {username:username});
 });
@@ -149,7 +204,8 @@ app.post('/register', function(request, response) {
   var username = request.body.username,
       password = request.body.password,
       password_confirm = request.body.password_confirm,
-      email = request.body.email; 
+      email = request.body.email;
+
 
   if (password === password_confirm) {
 	//stash username, password and nonce in 'userstoadd' to be able to add to 'users' later after verification
@@ -195,7 +251,10 @@ app.post('/register', function(request, response) {
 			response.render("thankyou.html");
 		});
 	});
-	
+
+	//render thankyou page after email sent
+	response.render("thankyou.html");
+
   } else { //password and password verify did not match
   	console.log('passwords do not match')
   	response.redirect("/");

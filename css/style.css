@@ -105,3 +105,19 @@ h5
   padding: 0;
   list-style-type: none;
 }
+
+.superDone {
+  color: #bbb;
+  text-decoration: line-through;
+}
+
+.notesbox {
+  margin-top: 20px;
+  display: inline;
+}
+
+#notes-list{
+  margin: 10px 5px 10px 25px;
+  padding: 0;
+  list-style-type: none;
+}

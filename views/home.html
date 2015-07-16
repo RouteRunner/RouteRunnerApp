@@ -7,16 +7,16 @@
 
     <title>Route Runner</title>
 
-    <script type="text/javascript" src="js/jquery-2.1.4.js"></script>
-    <script type="text/javascript" src="js/underscore.js"></script>
-    <script type="text/javascript" src="js/backbone.js"></script>
+    <script type="text/javascript" src="../js/jquery-2.1.4.js"></script>
+    <script type="text/javascript" src="../js/underscore.js"></script>
+    <script type="text/javascript" src="../js/backbone.js"></script>
     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
-    <script type='text/javascript' src='app.js'></script>
-    <script type='text/javascript' src='./js/waypointsInput.js'></script>
+    <script type='text/javascript' src='../app.js'></script>
+    <script type='text/javascript' src='../js/waypointsInput.js'></script>
 
     <link href='http://fonts.googleapis.com/css?family=Montserrat|PT+Sans:400,700' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link href="css/bootstrap.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="../css/style.css">
+    <link href="../css/bootstrap.css" rel="stylesheet">
   </head>
 
   <body>
@@ -24,7 +24,7 @@
       <div class="navbar-inner">
     	   <div class='container'>
     	    <div class='navbar-header'>
-    		      <a href='/' class='navbar-brand'><img id="logo" src="img/logo.png" alt="Logo"></a>
+    		      <a href='/' class='navbar-brand'><img id="logo" src="../img/logo.png" alt="Logo"></a>
     		      <button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-collapse'>
     			    <span class='sr-only'>Toggle navigation</span>
     			    <span class='icon-bar'></span>
@@ -37,7 +37,7 @@
             <a>You are logged in as <%= username %></a></li>
             <li><a href= '/logout'>Sign Out</a></li>
             <% } else { %>
-            <li><a href='#login'data-toggle="modal" id=#signIn>Sign In</a><% } %></li>            
+            <li><a href='#login'data-toggle="modal" id=#signIn>Sign In</a><% } %></li>
       			<li><% if (!username) { %><a href='/register'>Create Account</a><% } %></li>
       		</ul>
     	   </div>
@@ -70,6 +70,14 @@
         </div>
       </div>
 
+      <div class="container">
+        <div class="row bot-buffer form-group col-md-4">
+          <label for="notes"><h4>Notes</h4></label>
+            <div class="input-group" id="notesdiv" class="check"></div>
+            <ol id="notes-list" class="top-buffer"></ol>
+        </div>
+      </div>
+
       <div class='navbar navbar-default navbar-fixed-bottom'>
         <div class='container'>
           <p class='navbar-text pull-right'>Copyright &#169 2015 Route Runner</p>
@@ -95,13 +103,13 @@
                 <form method= "post" action="/login">
                   <div>
                     <label>
-                      Username: 
+                      Username:
                       <input type="text" name= "username" placeholder="Enter Your User Name">
                     </label>
                   </div>
                   <div>
                     <label>
-                      Password: 
+                      Password:
                       <input type="password" name= "password">
                     </label>
                   </div>

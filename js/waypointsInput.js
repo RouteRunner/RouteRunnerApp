@@ -73,11 +73,15 @@ var NotesCollection = Backbone.Collection.extend({
 
 var NotesCollectionView = Backbone.View.extend({
 	render : function() {
-		var label = '<div class="model-body"><label><h4>Notes</h4></label>' + '<div class="input-group" id="notesdiv"></div>' + '<ol id="notes-list" class="top-buffer"></ol></div';
-		var notesInput = '<input class="form-control" id=notesInput type="search" placeholder="Type Here..." />';
+		var body = '<div class="modal-body">';
+		var label = '<label><h4>Notes</h4></label>';
+		var notesDiv = '<div class="input-group">';
 		var tskBtn = '<span class="input-group-btn"><button type="button" class="btn btn-primary" id="tskBtn"> Add</button></span>';
+		var notesInput = '<input class="form-control" id=notesInput type="search" placeholder="Type Here..." /></div>';
+		var notesList = '<ol id="notes-list" class="top-buffer"></ol></div>';
 		var clrBtn = '<div class="modal-footer" id="notesFooter"><button class="btn btn-default" id="clrBtn" type= "submit">Clear √</button></div>';
-		this.$el.html(label + clrBtn + tskBtn + notesInput);
+		this.$el.html(body + label + notesDiv + tskBtn + notesInput  + notesList + clrBtn);
+
 	},
 	initialize : function() {
 		this.listenTo(this.collection, 'add', this.addOne)

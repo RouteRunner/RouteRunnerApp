@@ -2,38 +2,36 @@
 //variables to capture waypoints and origin input
 var originForExport = "";
 var waypointsArray = [];
+var notesArray = [];
 
 //create Backbone model to store notes
 var NotesItem = Backbone.Model.extend({
-	tagName : 'li',
 	urlRoot : "/notes",
 	defaults : {
 		listitem: "",
-		status: "incomplete"
+		status: "notDone"
 	},
 	initialize : function () {
 		this.fetch();
 	},
 	toggleNote : function(){
-		console.log("toggleNote");
-		if(this.get('status') === 'incomplete'){
-			this.set({'status' : 'complete'});
+		if(this.get('status') === 'notDone'){
+			this.set({'status' : 'superDone'});
 		}else{
-			this.set({'status' : 'incomplete'});
+			this.set({'status' : 'notDone'});
 		}
 		this.save();
 	},
 });
 
 var NotesView = Backbone.View.extend({
-	className : 'checkbox',
-	template: _.template('<label id="checky"><input type="checkbox"><h2 class="<%= status %>"><%= listitem %><h2></label>'),
+	template: _.template('<label class="center-block" id="checkOff">' + '<% if(status === "superDone") print("√  ")%>' + '<h4 class="<%= status %> notesbox"><%= listitem %></h4></label>'),
 	initialize : function() {
 		this.model.on('change', this.render, this);
 		this.model.on('destroy', this.remove, this);
 	},
 	events : {
-		"click #checky" : "toggleNote"
+		"click #checkOff" : "toggleNote"
 	},
 	toggleNote : function(){
 		this.model.toggleNote();
@@ -44,7 +42,20 @@ var NotesView = Backbone.View.extend({
 	},
 	remove : function() {
 		this.$el.remove();
-	}
+	},
+	delete : function () {
+		var noteToRemove = this.model.get("listitem");
+
+		for(var i = 0; i < notesArray.length; i++) {
+			if(notesArray[i].location === noteToRemove){
+				indexOfObjectToRemove = i;
+			}
+		}
+		notesArray.splice(indexOfObjectToRemove, 1);
+
+    	this.model.del();
+    	this.remove();
+    },
 });
 
 var NotesCollection = Backbone.Collection.extend({
@@ -79,9 +90,12 @@ var NotesCollectionView = Backbone.View.extend({
 		this.collection.create({
 			listitem : str
 		});
+
+		var noteObject = {listitem : str};
+		notesArray.push(noteObject);
 	},
 	addOne : function(model) {
-		var note = new NotesView({model : model});
+		var note = new NotesView({model : model, tagName : "li"});
 
 		note.render();
 
@@ -259,7 +273,7 @@ $(document).ready( function () {
 	waypointCollectionView.render();
 
 	notesCollection = new NotesCollection();
-	notesCollectionView = new NotesCollectionView({collection : notesCollection});
+	notesCollectionView = new NotesCollectionView({collection : notesCollection, el : "#notesdiv"});
 	notesCollectionView.render();
 
 	//assign origin point and origin point view to new backbone objects

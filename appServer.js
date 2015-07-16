@@ -21,9 +21,6 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname));
 app.engine('html', require('ejs').renderFile);
 
-// array for stashing user info for users to add to db after verification
-var usersToAdd = [];
-
 // GET handler for serving home page
 app.get('/', function (req, res) {
 	console.log("processing GET from '/'");
@@ -92,7 +89,6 @@ app.post('/origin', function (req, res) {
 		knex('users').where({username:username}).update({
 			origin:req.body.originName,
 		}).then(function() {
-			//need to do anything here? res.end??
 			res.end();
 		})
 	} else {
@@ -109,8 +105,7 @@ app.get('/register', function (req, res) {
  	if (req.cookies.username != undefined) {
  		username = req.cookies.username;	
     }
-    
-     res.render('register.html', {username:username});
+    res.render('register.html', {username:username});
 });
 
 //POST handler for logging in from form on home page
@@ -154,53 +149,52 @@ app.post('/register', function(request, response) {
   var username = request.body.username,
       password = request.body.password,
       password_confirm = request.body.password_confirm,
-      email = request.body.email;
-      //database = app.get('database');  
+      email = request.body.email; 
 
   if (password === password_confirm) {
-	//stash username, password and nonce to be able to add to db later after verification
+	//stash username, password and nonce in 'userstoadd' to be able to add to 'users' later after verification
 	var newNonce = uuid.v4();
   	var pass = require('pwd');
  	pass.hash(password, function(err, salt, hash) {
-		usersToAdd.push({
-    		nonce : newNonce,
-    		username : username,
+		knex('userstoadd').insert({
+			nonce        : newNonce,
+    		username     : username,
     		passwordhash : hash,
-    		email : email,
-    		salt : salt
-  		})
-	})
+    		email        : email,
+    		salt         : salt
+		}).then(function() {
+			//send verification email
+			var transporter = nodemailer.createTransport({
+				service: 'Gmail',
+				auth: {
+					user: process.env.emailUser || configs.emailUser,
+					pass: process.env.emailPassword || configs.emailPassword
+				}
+			});
 
-	//send verification email
-	var transporter = nodemailer.createTransport({
-		service: 'Gmail',
-		auth: {
-			user: process.env.emailUser || configs.emailUser,
-			pass: process.env.emailPassword || configs.emailPassword
-		}
-	})
+			var verificationUrl = 'http://localhost:3000/verify_email/' + newNonce;
 
-	var verificationUrl = 'http://localhost:3000/verify_email/' + newNonce;
+			// setup e-mail data with unicode symbols
+			var mailOptions = {
+			    from: 'Route Runner ✔ <routerunner@gmail.com>', // sender address
+			    to: email,  // list of receivers
+			    subject: 'Route Runner Registration Verification ✔', // Subject line
+			    html: '<p>Thank you for registering with Route Runner! Please click the link below to verify your email address.</p><a href=' + verificationUrl +'>Click here to verify.</a>' // html body
+			};
 
-	// setup e-mail data with unicode symbols
-	var mailOptions = {
-	    from: 'Route Runner ✔ <routerunner@gmail.com>', // sender address
-	    to: email,  // list of receivers
-	    subject: 'Route Runner Registration Verification ✔', // Subject line
-	    html: '<p>Thank you for registering with Route Runner! Please click the link below to verify your email address.</p><a href=' + verificationUrl +'>Click here to verify.</a>' // html body
-	};
+			// send mail with defined transport object
+			transporter.sendMail(mailOptions, function(error, info){
+			    if(error){
+			        console.log(error);
+			    }else{
+			        console.log('Message sent: ' + info.response);
+			    }
+			});
 
-	// send mail with defined transport object
-	transporter.sendMail(mailOptions, function(error, info){
-	    if(error){
-	        console.log(error);
-	    }else{
-	        console.log('Message sent: ' + info.response);
-	    }
+			//render thankyou page after email is sent
+			response.render("thankyou.html");
+		});
 	});
-
-	//redner thankyou page after email sent
-	response.render("thankyou.html");
 	
   } else { //password and password verify did not match
   	console.log('passwords do not match')
@@ -216,19 +210,23 @@ app.get('/verify_email/:nonce', function(request, response) {
 	console.log("returnedNonce:");
 	console.log(returnedNonce);
 
-	// iterate through usersToAdd array and add user to db if nonce match is found
-	usersToAdd.forEach(function (user) {
-		if(user.nonce === returnedNonce) {
-			knex('users').insert({
-				username     : user.username,
-				passwordhash : user.passwordhash,
-       			email        : user.email,
-        		salt         : user.salt
-			}).then(function () {
+	//search userstoadd table for matching nonce
+	knex('userstoadd').where({nonce:returnedNonce}).then(function(returnedUserRecords){
+		//add user to users table if nonce match is found
+		var user = returnedUserRecords[0];
+		knex('users').insert({
+			username     : user.username,
+			passwordhash : user.passwordhash,
+   			email        : user.email,
+    		salt         : user.salt
+		}).then(function(){
+			//delete nonce from userstoadd
+			knex('userstoadd').where({nonce:returnedNonce}).del().then(function(){
+				//log user in by setting cookie, and redirect to home page
 				response.cookie('username', user.username)
 				response.redirect('/');
 			})
-		}
+		})
 	})
 });
 

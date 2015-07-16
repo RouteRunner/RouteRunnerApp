@@ -199,9 +199,9 @@ app.post('/register', function(request, response) {
 	    }
 	});
 
-	//redirect to home page
-	console.log('redirecting to home page')
-	response.redirect("/");
+	//redner thankyou page after email sent
+	response.render("thankyou.html");
+	
   } else { //password and password verify did not match
   	console.log('passwords do not match')
   	response.redirect("/");

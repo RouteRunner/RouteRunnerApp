@@ -1,5 +1,5 @@
 ######## Ignore config file #########
-js/config.js
-
+config.js
+npm-debug.log
 ######### Ignore node modules ##########
 node_modules/

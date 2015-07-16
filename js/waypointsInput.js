@@ -1,3 +1,5 @@
+//
+var map;
 
 //variables to capture waypoints and origin input
 var originForExport = "";
@@ -228,6 +230,8 @@ var WaypointCollectionView = Backbone.View.extend({
 		"click #addBtn"  : "updateOnClick",
 	},
 	updateOnClick : function (e) {
+			marker.setVisible(true);
+
 			var str = this.$el.find("#locationNameInput").val();
 			//add a new item to collection, pass in inputted string
 			if (str !== ''){

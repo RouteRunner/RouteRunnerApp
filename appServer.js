@@ -38,6 +38,17 @@ app.get('/', function (req, res) {
     res.render('home.html', {username:username});
 });
 
+//GET handler for logging out
+app.get('/logout', function (req, res) {
+	console.log('processing GET from /logout');
+
+	//delete cookie
+	res.clearCookie('username');
+
+	//redirect back to home page
+	res.redirect('/');
+})
+
 //GET handler for fetching Origin backbone model when it initializes
 app.get('/origin', function (req, res) {
 	console.log("processing GET from '/origin'");
@@ -148,7 +159,13 @@ app.post('/notes', function (req, res) {
 
 //GET handler for serving register page
 app.get('/register', function (req, res) {
-     res.render('register.html');
+	 //get username from cookie in request, if user is logged in
+ 	var username = null;
+ 	if (req.cookies.username != undefined) {
+ 		username = req.cookies.username;
+    }
+
+     res.render('register.html', {username:username});
 });
 
 //POST handler for logging in from form on home page
@@ -237,9 +254,9 @@ app.post('/register', function(request, response) {
 	    }
 	});
 
-	//redirect to home page
-	console.log('redirecting to home page')
-	response.redirect("/");
+	//redner thankyou page after email sent
+	response.render("thankyou.html");
+
   } else { //password and password verify did not match
   	console.log('passwords do not match')
   	response.redirect("/");

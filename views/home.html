@@ -33,8 +33,12 @@
     		      </button>
     	      </div>
       		  <ul class='nav navbar-nav navbar-right collapse navbar-collapse'>
-      			<li><a href='resume.pdf'>Sign In</a></li>
-      			<li><a href='/register'>Create Account</a></li>
+            <li><% if (username) { %>
+            <a>You are logged in as <%= username %></a></li>
+            <li><a href= '/logout'>Sign Out</a></li>
+            <% } else { %>
+            <li><a href='#login'data-toggle="modal" id=#signIn>Sign In</a><% } %></li>
+      			<li><% if (!username) { %><a href='/register'>Create Account</a><% } %></li>
       		</ul>
     	   </div>
        </div>
@@ -113,6 +117,35 @@
           <div class="modal-content">
             <div class="modal-body" id="origindiv">
               <h4>Set Origin</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="login" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body" id="logindiv">
+              <h4>Login</h4>
+              <div>
+                <form method= "post" action="/login">
+                  <div>
+                    <label>
+                      Username:
+                      <input type="text" name= "username" placeholder="Enter Your User Name">
+                    </label>
+                  </div>
+                  <div>
+                    <label>
+                      Password:
+                      <input type="password" name= "password">
+                    </label>
+                  </div>
+                  <div class="modal-footer">
+                    <input class="btn btn-default" type= "submit" value= "Login">
+                  </div>
+                </form>
+              </div>
             </div>
           </div>
         </div>

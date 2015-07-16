@@ -70,13 +70,21 @@
         </div>
       </div>
 
-      <div class="container">
+      <!-- <div class="container">
         <div class="row bot-buffer form-group col-md-4">
           <label for="notes"><h4>Notes</h4></label>
-            <div class="input-group" id="notesdiv" class="check"></div>
+            <div class="input-group" id="notesdiv"</div>
             <ol id="notes-list" class="top-buffer"></ol>
         </div>
-      </div>
+      </div> -->
+
+      <!-- <div class="container">
+        <div class="row bot-buffer top-buffer" id="notesRow">
+           <div class="col-md-2 pull-right">
+             <a href="#notesWindow" data-toggle="modal"><button type="button" id="openNotes" class="btn btn-warning btn-large btn-block">Create Notes</button></a>
+          </div>
+        </div>
+      </div> -->
 
       <div class='navbar navbar-default navbar-fixed-bottom'>
         <div class='container'>
@@ -89,6 +97,22 @@
           <div class="modal-content">
             <div class="modal-body" id="origindiv">
               <h4>Set Origin</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="notesWindow" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content" id="notesLightbox">
+            <div class="modal-body" >
+              <label><h4>Notes</h4></label>
+                <div class="input-group">
+                </div>
+                <ol id="notes-list" class="top-buffer"></ol>
+            <div class="modal-footer" id="notesFooter">
+              <button class="btn btn-default" id="notesClear" type= "submit">Clear √</button>
+            </div>
             </div>
           </div>
         </div>

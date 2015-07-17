@@ -42,25 +42,7 @@ var NotesView = Backbone.View.extend({
 		var attributes = this.model.toJSON();
 		this.$el.html(this.template(attributes));
 	},
-	remove : function() {
-		this.$el.remove();
-	},
-	delete : function () {
-		console.log("notesClear");
-		if(this.get('status') === 'superDone'){
-			var noteToRemove = this.model.get("listitem");
 
-			for(var i = 0; i < notesArray.length; i++) {
-				if(notesArray[i].location === noteToRemove){
-					indexOfObjectToRemove = i;
-				}
-			}
-			notesArray.splice(indexOfObjectToRemove, 1);
-
-	    	this.model.del();
-	    	this.remove();
-			}
-    },
 });
 
 var NotesCollection = Backbone.Collection.extend({
@@ -113,9 +95,28 @@ var NotesCollectionView = Backbone.View.extend({
 
 		$('#notes-list').append(note.$el);
 	},
-	delete : function() {
-		console.log("delete");
-	}
+	remove : function() {
+		this.$el.remove();
+	},
+	delete : function () {
+		console.log("notesClear");
+		this.collection.each(function(note){
+			var indexOfObjectToRemove
+			if(note.get('status') === 'superDone'){
+				var noteToRemove = note.get("listitem");
+
+				for(var i = 0; i < notesArray.length; i++) {
+					if(notesArray[i].location === noteToRemove){
+						indexOfObjectToRemove = i;
+					}
+				}
+				notesArray.splice(indexOfObjectToRemove, 1);
+
+		    	note.destroy();
+				}
+			})
+			this.remove();
+    },
 });
 
 //create backbone model to store origin location

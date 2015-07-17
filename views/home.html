@@ -60,9 +60,9 @@
         <div class="col-md-7 col-md-offset-1">
           <div id="map-canvas"></div>
         </div>
-        <!-- <div id="directionsPanel" style="float:right;width:30%;height 100%">
-          <p>Total Distance: <span id="total"></span></p>
-        </div> -->
+        <div class="col-md-2 pull-right">
+          <a href="#directions" data-toggle="modal"><button type="button" id="dirList" class="btn btn-default btn-block">Directions</button></a>
+       </div>
         <div class="container">
           <div class="row top-buffer pull-left col-md-2">
             <button type="button" id="routeIt" class="btn btn-primary btn-large btn-block">Route It</button>
@@ -81,6 +81,18 @@
           <div class="modal-content">
             <div class="modal-body" id="origindiv">
               <h4>Set Origin</h4>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="directions" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body" id="directionsPanel">
+              <!-- <div id="directionsPanel" style="float:right;width:30%;height 100%"> -->
+                <h4>Directions: <span id="total"></span></h4>
+              <!-- </div> -->
             </div>
           </div>
         </div>

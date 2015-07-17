@@ -42,25 +42,7 @@ var NotesView = Backbone.View.extend({
 		var attributes = this.model.toJSON();
 		this.$el.html(this.template(attributes));
 	},
-	remove : function() {
-		this.$el.remove();
-	},
-	delete : function () {
-		console.log("notesClear");
-		if(this.get('status') === 'superDone'){
-			var noteToRemove = this.model.get("listitem");
 
-			for(var i = 0; i < notesArray.length; i++) {
-				if(notesArray[i].location === noteToRemove){
-					indexOfObjectToRemove = i;
-				}
-			}
-			notesArray.splice(indexOfObjectToRemove, 1);
-
-	    	this.model.del();
-	    	this.remove();
-			}
-    },
 });
 
 var NotesCollection = Backbone.Collection.extend({
@@ -73,11 +55,15 @@ var NotesCollection = Backbone.Collection.extend({
 
 var NotesCollectionView = Backbone.View.extend({
 	render : function() {
-		var label = '<div class="model-body"><label><h4>Notes</h4></label>' + '<div class="input-group" id="notesdiv"></div>' + '<ol id="notes-list" class="top-buffer"></ol></div';
-		var notesInput = '<input class="form-control" id=notesInput type="search" placeholder="Type Here..." />';
+		var body = '<div class="modal-body">';
+		var label = '<label><h4>Notes</h4></label>';
+		var notesDiv = '<div class="input-group">';
 		var tskBtn = '<span class="input-group-btn"><button type="button" class="btn btn-primary" id="tskBtn"> Add</button></span>';
+		var notesInput = '<input class="form-control" id=notesInput type="search" placeholder="Type Here..." /></div>';
+		var notesList = '<ol id="notes-list" class="top-buffer"></ol></div>';
 		var clrBtn = '<div class="modal-footer" id="notesFooter"><button class="btn btn-default" id="clrBtn" type= "submit">Clear √</button></div>';
-		this.$el.html(label + clrBtn + tskBtn + notesInput);
+		this.$el.html(body + label + notesDiv + tskBtn + notesInput  + notesList + clrBtn);
+
 	},
 	initialize : function() {
 		this.listenTo(this.collection, 'add', this.addOne)
@@ -88,6 +74,7 @@ var NotesCollectionView = Backbone.View.extend({
 	},
 	updateOnClick : function (e) {
 			var str = this.$el.find("#notesInput").val();
+
 			//add a new item to collection, pass in inputted string
 			if (str !== ''){
 			this.addToCollection(str);
@@ -99,8 +86,8 @@ var NotesCollectionView = Backbone.View.extend({
 			listitem : str
 		});
 
-		var noteObject = {listitem : str};
-		notesArray.push(noteObject);
+		// var noteObject = {listitem : str};
+		// notesArray.push(noteObject);
 	},
 	addOne : function(model) {
 		var note = new NotesView({model : model, tagName : "li"});
@@ -109,9 +96,17 @@ var NotesCollectionView = Backbone.View.extend({
 
 		$('#notes-list').append(note.$el);
 	},
-	delete : function() {
-		console.log("delete");
-	}
+	delete : function () {
+		var notesToDestroy = [];
+		this.collection.each(function(note){
+			if(note.get('status') === 'superDone'){
+				notesToDestroy.push(note);
+				}
+			})
+			notesToDestroy.forEach(function(note){
+				note.destroy();
+			})
+    },
 });
 
 //create backbone model to store origin location
@@ -186,6 +181,12 @@ var WaypointView = Backbone.View.extend({
 	},
 	initialize : function () {
 		this.model.on("change", this.render, this);
+
+		var notesCollection = new NotesCollection();
+		var notesCollectionView = new NotesCollectionView({collection : notesCollection, el : "#notesLightbox"});
+		notesCollectionView.render();
+
+		$("#notesLightbox").append(notesCollectionView.$el);
 	},
 	events : {
 		"click #delBtn" : "delete"
@@ -269,6 +270,7 @@ var WaypointCollectionView = Backbone.View.extend({
 
         //append new view to list of waypoints (collection view's div)
         $("#waypoint-list").append(view.$el);
+
 	},
 });
 
@@ -276,9 +278,7 @@ var WaypointCollectionView = Backbone.View.extend({
 var waypointCollection,
 	waypointCollectionView,
 	originPointModel,
-	originPointView,
-	notesCollection,
-	notesCollectionView;
+	originPointView;
 
 $(document).ready( function () {
 	//assign collection and collection view to new backbone objects
@@ -286,9 +286,9 @@ $(document).ready( function () {
 	waypointCollectionView = new WaypointCollectionView({collection : waypointCollection, el : "#inputdiv"});
 	waypointCollectionView.render();
 
-	notesCollection = new NotesCollection();
-	notesCollectionView = new NotesCollectionView({collection : notesCollection, el : "#notesLightbox"});
-	notesCollectionView.render();
+	// notesCollection = new NotesCollection();
+	// notesCollectionView = new NotesCollectionView({collection : notesCollection, el : "#notesLightbox"});
+	// notesCollectionView.render();
 
 	//assign origin point and origin point view to new backbone objects
 	originPointModel = new OriginPoint();
@@ -298,6 +298,6 @@ $(document).ready( function () {
 	//append origin point view and collection view to appropriate divs in index.html
 	$("#origindiv").append(originPointView.$el);
 	$("#inputdiv").append(waypointCollectionView.$el);
-	$("#notesLightbox").append(notesCollectionView.$el);
+	//$("#notesLightbox").append(notesCollectionView.$el);
 
 });

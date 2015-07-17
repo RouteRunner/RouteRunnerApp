@@ -86,8 +86,8 @@ var NotesCollectionView = Backbone.View.extend({
 			listitem : str
 		});
 
-		var noteObject = {listitem : str};
-		notesArray.push(noteObject);
+		// var noteObject = {listitem : str};
+		// notesArray.push(noteObject);
 	},
 	addOne : function(model) {
 		var note = new NotesView({model : model, tagName : "li"});
@@ -97,20 +97,14 @@ var NotesCollectionView = Backbone.View.extend({
 		$('#notes-list').append(note.$el);
 	},
 	delete : function () {
-		this.collection.forEach(function(note){
-			var indexOfObjectToRemove
+		var notesToDestroy = [];
+		this.collection.each(function(note){
 			if(note.get('status') === 'superDone'){
-				var noteToRemove = note.get("listitem");
-
-				for(var i = 0; i < notesArray.length; i++) {
-					if(notesArray[i].location === noteToRemove){
-						indexOfObjectToRemove = i;
-					}
+				notesToDestroy.push(note);
 				}
-				notesArray.splice(indexOfObjectToRemove, 1);
-
-		    	note.destroy();
-				}
+			})
+			notesToDestroy.forEach(function(note){
+				note.destroy();
 			})
     },
 });
@@ -187,6 +181,12 @@ var WaypointView = Backbone.View.extend({
 	},
 	initialize : function () {
 		this.model.on("change", this.render, this);
+
+		var notesCollection = new NotesCollection();
+		var notesCollectionView = new NotesCollectionView({collection : notesCollection, el : "#notesLightbox"});
+		notesCollectionView.render();
+
+		$("#notesLightbox").append(notesCollectionView.$el);
 	},
 	events : {
 		"click #delBtn" : "delete"
@@ -270,12 +270,6 @@ var WaypointCollectionView = Backbone.View.extend({
 
         //append new view to list of waypoints (collection view's div)
         $("#waypoint-list").append(view.$el);
-
-				var notesCollection = new NotesCollection();
-				var notesCollectionView = new NotesCollectionView({collection : notesCollection, el : "#notesLightbox"});
-				notesCollectionView.render();
-
-				$("#notesLightbox").append(notesCollectionView.$el);
 
 	},
 });

@@ -11,7 +11,6 @@ var directionsService = new google.maps.DirectionsService();
 function initialize() {
   var mapOptions = {
     center: {lat: 45.5200, lng: -122.6819},
-    // center: {lat:}
     zoom: 8
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),
@@ -29,20 +28,20 @@ function initialize() {
   var autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo('bounds', map);
 
-
   google.maps.event.addListener(autocomplete, 'place_changed', function() {
-    var infowindow = new google.maps.InfoWindow();
-    var place = autocomplete.getPlace();
     marker = new google.maps.Marker({
       animation: google.maps.Animation.DROP,
-      map: map
+      map: map,
     });
+
+    var infowindow = new google.maps.InfoWindow();
 
     google.maps.event.addListener(marker, 'click', function() {
       infowindow.open(map, marker);
     });
     infowindow.close();
 
+    var place = autocomplete.getPlace();
     if (!place.geometry) {
       return;
     }
@@ -50,37 +49,44 @@ function initialize() {
       map.fitBounds(place.geometry.viewport);
     } else {
       map.setCenter(place.geometry.location);
-      // map.setZoom(8);
+      //map.setZoom(8);
     }
 
+    // Set the position of the marker using the place ID and location
     marker.setPlace(/** @type {!google.maps.Place} */ ({
       placeId: place.place_id,
-      location: place.geometry.location,
+      location: place.geometry.location
     }));
-
     marker.setVisible(false);
 
     infowindow.setContent('<div><b>' + place.name + '</b></div>' + '<br>' + place.formatted_address + '<br>');
 
-    markerArray.push(marker.place.location);
+    markerArray.push(marker);
     console.log(markerArray);
-    });
-};
 
-function addWaypoint() {
-  var bounds = new google.maps.LatLngBounds();
-  console.log("addWaypoint successfully called")
-  for(i = 0; i < markerArray.length; i++) {
-    bounds.extend(markerArray[i].getPosition());
-  }
-  map.fitBounds(bounds);
-};
+    var bounds = new google.maps.LatLngBounds();
+    for(i = 0; i < markerArray.length; i++) {
+      bounds.extend(markerArray[i].getPosition());
+    }
+    map.fitBounds(bounds);
 
-$(function(){
-  $('#setOrigin').on('click', function (e) {
-    addWaypoint();
   });
-});
+}
+
+// function addWaypoint() {
+//   var bounds = new google.maps.LatLngBounds();
+//   console.log("addWaypoint successfully called")
+//   for(i = 0; i < markerArray.length; i++) {
+//     bounds.extend(markerArray[i].getPosition());
+//   }
+//   map.fitBounds(bounds);
+// };
+//
+// $(function(){
+//   $('#setOrigin').on('click', function (e) {
+//     addWaypoint();
+//   });
+// });
 
 $(function(){
   $('#routeIt').on('click', function (e) {

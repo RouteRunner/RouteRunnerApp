@@ -11,6 +11,7 @@ var directionsService = new google.maps.DirectionsService();
 function initialize() {
   var mapOptions = {
     center: {lat: 45.5200, lng: -122.6819},
+    // center: {lat:}
     zoom: 8
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),
@@ -28,59 +29,85 @@ function initialize() {
   var autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo('bounds', map);
 
-  
 
   google.maps.event.addListener(autocomplete, 'place_changed', function() {
-     console.log('George')
-      marker = new google.maps.Marker({
-      animation: google.maps.Animation.DROP,
-      map: map,
-      
-    });
-
-    var infowindow = new google.maps.InfoWindow();
-
-    google.maps.event.addListener(marker, 'click', function() {
-      infowindow.open(map, marker);
-    });
-
-
-    infowindow.close();
-    var place = autocomplete.getPlace();
-    if (!place.geometry) {
-      return;
-    }
-
-    if (place.geometry.viewport) {
-      map.fitBounds(place.geometry.viewport);
-    } else {
-      map.setCenter(place.geometry.location);
-      map.setZoom(8);
-    }
-
-    // Set the position of the marker using the place ID and location
-    marker.setPlace(/** @type {!google.maps.Place} */ ({
-      placeId: place.place_id,
-      location: place.geometry.location
-
-    }));
-    marker.setVisible(false);
-    // marker.setVisible(false);
-
-    infowindow.setContent('<div><b>' + place.name + '</b></div>' + '<br>' + place.formatted_address + '<br>');//where to add other things to info window
-    // infowindow.open(map, marker);
-    //^^^^turns off open window. Click still works.
-    
-    // google.map.event.
-    // markerArray[0].setVisible(false);
-
-    markerArray.push(marker);
-
+    marker = new google.maps.Marker({
+    animation: google.maps.Animation.DROP,
+    map: map
 
   });
-  
 
-}
+  var infowindow = new google.maps.InfoWindow();
+
+  google.maps.event.addListener(marker, 'click', function() {
+    infowindow.open(map, marker);
+  });
+  infowindow.close();
+
+
+  var place = autocomplete.getPlace();
+  if (!place.geometry) {
+    return;
+  }
+  // console.log(place)
+  if (place.geometry.viewport) {
+    map.fitBounds(place.geometry.viewport);
+    // console.log(map.fitBounds)
+  } else {
+    map.setCenter(place.geometry.location);
+    console.log(map.setCenter)
+    // map.setZoom(8);
+  }
+
+   marker.setPlace(/** @type {!google.maps.Place} */ ({
+    placeId: place.place_id,
+    location: place.geometry.location,
+
+  }));
+  marker.setVisible(false);
+  // marker.setVisible(false);
+
+  infowindow.setContent('<div><b>' + place.name + '</b></div>' + '<br>' + place.formatted_address + '<br>');
+
+  markerArray.push(marker.place.location);
+
+  var lats = markerArray.map(function(val){
+    return val.A;
+  })
+  var longs = markerArray.map(function(val){
+    return val.F;
+  })
+
+  var latMax = Math.max(lats);
+  var latMin = Math.min(lats);
+  var longMax = Math.max(longs);
+  var longMin = Math.min(longs);
+
+  var mapBoundaries = new google.maps.LatLngBounds(swObject, neObject, false);
+
+  var swObject = new google.maps.LatLng(latMin, longMin, false);
+  var neObject = new google.maps.LatLng(latMax, longMax, false);
+
+  console.log(longs)
+  console.log(markerArray);
+  console.log(longMin);
+  console.log(swObject);
+  console.log(mapBoundaries);
+  console.log(place.geometry.viewport);
+
+  });
+};
+
+// function addWaypoint () {
+//
+// };
+
+// $(function(){
+//   $('#addBtn').on('click', function (e) {
+//     addWaypoint();
+//   });
+// });
+
 
 $(function(){
   $('#routeIt').on('click', function (e) {

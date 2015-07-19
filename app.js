@@ -31,83 +31,56 @@ function initialize() {
 
 
   google.maps.event.addListener(autocomplete, 'place_changed', function() {
+    var infowindow = new google.maps.InfoWindow();
+    var place = autocomplete.getPlace();
     marker = new google.maps.Marker({
-    animation: google.maps.Animation.DROP,
-    map: map
+      animation: google.maps.Animation.DROP,
+      map: map
+    });
 
-  });
+    google.maps.event.addListener(marker, 'click', function() {
+      infowindow.open(map, marker);
+    });
+    infowindow.close();
 
-  var infowindow = new google.maps.InfoWindow();
+    if (!place.geometry) {
+      return;
+    }
+    if (place.geometry.viewport) {
+      map.fitBounds(place.geometry.viewport);
+    } else {
+      map.setCenter(place.geometry.location);
+      // map.setZoom(8);
+    }
 
-  google.maps.event.addListener(marker, 'click', function() {
-    infowindow.open(map, marker);
-  });
-  infowindow.close();
+    marker.setPlace(/** @type {!google.maps.Place} */ ({
+      placeId: place.place_id,
+      location: place.geometry.location,
+    }));
 
+    marker.setVisible(false);
 
-  var place = autocomplete.getPlace();
-  if (!place.geometry) {
-    return;
-  }
-  // console.log(place)
-  if (place.geometry.viewport) {
-    map.fitBounds(place.geometry.viewport);
-    // console.log(map.fitBounds)
-  } else {
-    map.setCenter(place.geometry.location);
-    console.log(map.setCenter)
-    // map.setZoom(8);
-  }
+    infowindow.setContent('<div><b>' + place.name + '</b></div>' + '<br>' + place.formatted_address + '<br>');
 
-   marker.setPlace(/** @type {!google.maps.Place} */ ({
-    placeId: place.place_id,
-    location: place.geometry.location,
-
-  }));
-  marker.setVisible(false);
-  // marker.setVisible(false);
-
-  infowindow.setContent('<div><b>' + place.name + '</b></div>' + '<br>' + place.formatted_address + '<br>');
-
-  markerArray.push(marker.place.location);
-
-  var lats = markerArray.map(function(val){
-    return val.A;
-  })
-  var longs = markerArray.map(function(val){
-    return val.F;
-  })
-
-  var latMax = Math.max(lats);
-  var latMin = Math.min(lats);
-  var longMax = Math.max(longs);
-  var longMin = Math.min(longs);
-
-  var mapBoundaries = new google.maps.LatLngBounds(swObject, neObject, false);
-
-  var swObject = new google.maps.LatLng(latMin, longMin, false);
-  var neObject = new google.maps.LatLng(latMax, longMax, false);
-
-  console.log(longs)
-  console.log(markerArray);
-  console.log(longMin);
-  console.log(swObject);
-  console.log(mapBoundaries);
-  console.log(place.geometry.viewport);
-
-  });
+    markerArray.push(marker.place.location);
+    console.log(markerArray);
+    });
 };
 
-// function addWaypoint () {
-//
-// };
+function addWaypoint() {
+  var bounds = new google.maps.LatLngBounds();
+  console.log("addWaypoint successfully called")
+  for(i = 0; i < markerArray.length; i++) {
+    bounds.extend(markerArray[i].getPosition());
+  }
+  map.fitBounds(bounds);
+};
 
-// $(function(){
-//   $('#addBtn').on('click', function (e) {
-//     addWaypoint();
-//   });
-// });
-
+$(function(){
+  $('#setOrigin').on('click', function (e) {
+    addWaypoint();
+  });
+});
 
 $(function(){
   $('#routeIt').on('click', function (e) {
@@ -144,6 +117,5 @@ function computeTotalDistance(result) {
   total = total / 1000.0;
   document.getElementById('total').innerHTML = total + ' km';
 }
-
 
 google.maps.event.addDomListener(window, 'load', initialize);

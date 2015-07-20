@@ -11,10 +11,11 @@ var directionsService = new google.maps.DirectionsService();
 function initialize() {
   var mapOptions = {
     center: {lat: 45.5200, lng: -122.6819},
-    zoom: 8
+    zoom: 12,
+    maxZoom: 12
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),
-    mapOptions);
+    mapOptions, { maxZoom: 10 });
 
   directionsDisplay.setMap(map);
   directionsDisplay.setPanel(document.getElementById('directionsPanel'));
@@ -49,20 +50,19 @@ function initialize() {
       map.fitBounds(place.geometry.viewport);
     } else {
       map.setCenter(place.geometry.location);
-      //map.setZoom(8);
+
     }
 
     // Set the position of the marker using the place ID and location
     marker.setPlace(/** @type {!google.maps.Place} */ ({
       placeId: place.place_id,
-      location: place.geometry.location
+      location: place.geometry.location,
     }));
     marker.setVisible(false);
 
     infowindow.setContent('<div><b>' + place.name + '</b></div>' + '<br>' + place.formatted_address + '<br>');
 
     markerArray.push(marker);
-    console.log(markerArray);
 
 //Implementation of this is causing the error
     var bounds = new google.maps.LatLngBounds();
@@ -70,7 +70,6 @@ function initialize() {
       bounds.extend(markerArray[i].getPlace().location);
     }
     map.fitBounds(bounds);
-    map.setZoom(12);
 
   });
 }

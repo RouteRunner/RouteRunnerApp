@@ -140,7 +140,8 @@ app.post('/notes', function (req, res) {
     	username = req.cookies.username;
 
     	//insert origin for user in DB
-		knex('notes').where({username:username}).insert({
+		knex('notes').insert({
+			username:username,
 			listitem : listItem,
 			status : status
 		}).then(function() {

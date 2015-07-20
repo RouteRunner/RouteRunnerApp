@@ -64,8 +64,10 @@ function initialize() {
     markerArray.push(marker);
     console.log(markerArray);
 
+//Implementation of this is causing the error
     var bounds = new google.maps.LatLngBounds();
     for(i = 0; i < markerArray.length; i++) {
+      console.log(markerArray[i].getPosition());
       bounds.extend(markerArray[i].getPosition());
     }
     map.fitBounds(bounds);

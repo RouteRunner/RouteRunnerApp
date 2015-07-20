@@ -15,7 +15,7 @@ function initialize() {
     maxZoom: 12
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),
-    mapOptions, { maxZoom: 10 });
+    mapOptions);
 
   directionsDisplay.setMap(map);
   directionsDisplay.setPanel(document.getElementById('directionsPanel'));

@@ -67,10 +67,10 @@ function initialize() {
 //Implementation of this is causing the error
     var bounds = new google.maps.LatLngBounds();
     for(i = 0; i < markerArray.length; i++) {
-      console.log(markerArray[i].getPosition());
-      bounds.extend(markerArray[i].getPosition());
+      bounds.extend(markerArray[i].getPlace().location);
     }
     map.fitBounds(bounds);
+    map.setZoom(12);
 
   });
 }
@@ -79,7 +79,7 @@ function initialize() {
 //   var bounds = new google.maps.LatLngBounds();
 //   console.log("addWaypoint successfully called")
 //   for(i = 0; i < markerArray.length; i++) {
-//     bounds.extend(markerArray[i].getPosition());
+//     bounds.extend(markerArray[i].getPlace().location);
 //   }
 //   map.fitBounds(bounds);
 // };

@@ -35,6 +35,12 @@ app.get('/', function (req, res) {
     res.render('home.html', {username:username});
 });
 
+//POST handler for saving waypoint collection
+app.post('/', function (req, res) {
+	console.log("req.body");
+	console.log(req.body);
+});
+
 //GET handler for logging out
 app.get('/logout', function (req, res) {
 	console.log('processing GET from /logout');
@@ -65,11 +71,11 @@ app.get('/origin', function (req, res) {
 			    var user = returnedUserRecords[0];
 
 			    //send origin from user in DB to backbone model
-          	res.send(JSON.stringify({
-          		originName : user.origin,
-          	}))
+	          	res.send(JSON.stringify({
+	          		originName : user.origin,
+	          	}))
 	        }
-			})
+		})
 	}
 })
 
@@ -126,23 +132,26 @@ app.get('/notes', function (req, res) {
 
 //POST handler for adding listitem/status from backbone model to database
 app.post('/notes', function (req, res) {
+	console.log("processing POST from '/notes'");
+
 	console.log("req.body");
 	console.log(req.body);
 
 	var listItem = req.body.listitem,
-      status = req.body.status,
-			username = null;
+      	status = req.body.status,
+		username = null;
 
-	//insert info for user if logged in (cookie present)
+	//insert note if user logged in (cookie present)
  	if (req.cookies.username != undefined) {
 
     	//get username from cookie
     	username = req.cookies.username;
 
-    	//insert origin for user in DB
-		knex('notes').where({username:username}).update({
+    	//insert note in DB
+		knex('notes').insert({
+			username : username,
 			listitem : listItem,
-			status : status
+			status   : status
 		}).then(function() {
 			//need to do anything here? res.end??
 			res.end();

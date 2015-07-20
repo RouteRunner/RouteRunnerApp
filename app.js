@@ -11,7 +11,8 @@ var directionsService = new google.maps.DirectionsService();
 function initialize() {
   var mapOptions = {
     center: {lat: 45.5200, lng: -122.6819},
-    zoom: 8
+    zoom: 12,
+    maxZoom: 12
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),
     mapOptions);
@@ -28,14 +29,10 @@ function initialize() {
   var autocomplete = new google.maps.places.Autocomplete(input);
   autocomplete.bindTo('bounds', map);
 
-  
-
   google.maps.event.addListener(autocomplete, 'place_changed', function() {
-     console.log('George')
-      marker = new google.maps.Marker({
+    marker = new google.maps.Marker({
       animation: google.maps.Animation.DROP,
       map: map,
-      
     });
 
     var infowindow = new google.maps.InfoWindow();
@@ -43,44 +40,54 @@ function initialize() {
     google.maps.event.addListener(marker, 'click', function() {
       infowindow.open(map, marker);
     });
-
-
     infowindow.close();
+
     var place = autocomplete.getPlace();
     if (!place.geometry) {
       return;
     }
-
     if (place.geometry.viewport) {
       map.fitBounds(place.geometry.viewport);
     } else {
       map.setCenter(place.geometry.location);
-      map.setZoom(8);
+
     }
 
     // Set the position of the marker using the place ID and location
     marker.setPlace(/** @type {!google.maps.Place} */ ({
       placeId: place.place_id,
-      location: place.geometry.location
-
+      location: place.geometry.location,
     }));
     marker.setVisible(false);
-    // marker.setVisible(false);
 
-    infowindow.setContent('<div><b>' + place.name + '</b></div>' + '<br>' + place.formatted_address + '<br>');//where to add other things to info window
-    // infowindow.open(map, marker);
-    //^^^^turns off open window. Click still works.
-    
-    // google.map.event.
-    // markerArray[0].setVisible(false);
+    infowindow.setContent('<div><b>' + place.name + '</b></div>' + '<br>' + place.formatted_address + '<br>');
 
     markerArray.push(marker);
 
+//Implementation of this is causing the error
+    var bounds = new google.maps.LatLngBounds();
+    for(i = 0; i < markerArray.length; i++) {
+      bounds.extend(markerArray[i].getPlace().location);
+    }
+    map.fitBounds(bounds);
 
   });
-  
-
 }
+
+// function addWaypoint() {
+//   var bounds = new google.maps.LatLngBounds();
+//   console.log("addWaypoint successfully called")
+//   for(i = 0; i < markerArray.length; i++) {
+//     bounds.extend(markerArray[i].getPlace().location);
+//   }
+//   map.fitBounds(bounds);
+// };
+//
+// $(function(){
+//   $('#setOrigin').on('click', function (e) {
+//     addWaypoint();
+//   });
+// });
 
 $(function(){
   $('#routeIt').on('click', function (e) {
@@ -117,6 +124,5 @@ function computeTotalDistance(result) {
   total = total / 1000.0;
   document.getElementById('total').innerHTML = total + ' km';
 }
-
 
 google.maps.event.addDomListener(window, 'load', initialize);

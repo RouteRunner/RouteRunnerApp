@@ -1,12 +1,9 @@
-//
+// create global map object
 var map;
 
 //variables to capture waypoints and origin input
 var originForExport = "";
 var waypointsArray = [];
-var notesArray = [];
-var notesCollectionArray = [];
-var notesCollectionViewArray = [];
 
 //create Backbone model to store notes
 var NotesItem = Backbone.Model.extend({
@@ -59,16 +56,13 @@ var NotesCollection = Backbone.Collection.extend({
 });
 
 var NotesCollectionView = Backbone.View.extend({
-	//uniqueName : "",
 	render : function() {
-		//var modalContainer = '<div class="modal fade" id="notesWindow" role="dialog"><div class="modal-dialog"><div class="modal-content" id="notesLightbox">'
-		var modalContainer = '<div class="modal fade" id="' + this.uniqueName + '" role="dialog"><div class="modal-dialog"><div class="modal-content" id="notesLightbox">'
+		var modalContainer = '<div class="modal fade" id="' + this.uniqueName + '" role="dialog"><div class="modal-dialog"><div class="modal-content" id="notesLightbox">';
 		var body = '<div class="modal-body">';
 		var label = '<label><h4>Notes' + this.uniqueName + '</h4></label>';
 		var notesDiv = '<div class="input-group">';
 		var tskBtn = '<span class="input-group-btn"><button type="button" class="btn btn-primary" id="tskBtn"> Add</button></span>';
 		var notesInput = '<input class="form-control" id=notesInput type="search" placeholder="Type Here..." /></div>';
-		//var notesList = '<ol id="notes-list" class="top-buffer"></ol></div>';
 		var notesList = '<ol id="notes-list' + this.uniqueName + '" class="top-buffer"></ol></div>';
 		var clrBtn = '<div class="modal-footer" id="notesFooter"><button class="btn btn-default" id="clrBtn" type= "submit">Clear √</button></div>';
 		var closingStuff = '</div></div></div>'
@@ -79,6 +73,8 @@ var NotesCollectionView = Backbone.View.extend({
 
 		//enable uniqueName to be passed in from constructor and stored in view
 		_.extend(this, _.pick(options, "uniqueName"));
+
+		//tie 'add' event to trigger addOne
 		this.listenTo(this.collection, 'add', this.addOne);
 	},
 	events : {
@@ -106,7 +102,6 @@ var NotesCollectionView = Backbone.View.extend({
 
 		noteView.render();
 
-		//$('#notes-list').append(note.$el);
 		$('#notes-list' + this.uniqueName).append(noteView.$el);
 	},
 	delete : function () {
@@ -191,11 +186,8 @@ var WaypointView = Backbone.View.extend({
 
 		//remove spaces and commas
 		uniqueName = uniqueName.replace(/[,\s]+/g, '');
-		console.log("uniqueName from render");
-		console.log(uniqueName);
 
-		var noteBtn = '<span class="input-group-btn"><a href="#' + uniqueName + '" data-toggle="modal"><button type="button" id="openNotes" class="btn btn-default"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></button></a></span>'
-		//var noteBtn = '<span class="input-group-btn"><a href="#notesWindow" data-toggle="modal"><button type="button" id="openNotes" class="btn btn-default"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></button></a></span>'
+		var noteBtn = '<span class="input-group-btn"><a href="#' + uniqueName + '" data-toggle="modal"><button type="button" id="openNotes" class="btn btn-default"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></button></a></span>';
 		var locationName = '<div class="center-block text-center">' + this.model.get("locationName") + '</div>';
 		var delBtn = '<span class="input-group-btn"><button type="button" class="btn btn-default" id="delBtn"> <span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true"></span></button></span>';
 		this.$el.html(noteBtn + locationName + delBtn);
@@ -209,21 +201,12 @@ var WaypointView = Backbone.View.extend({
 
 		//remove spaces and commas
 		uniqueName = uniqueName.replace(/[,\s]+/g, '');
-		console.log("uniqueName from initialize");
-		console.log(uniqueName);
 
 		//pass uniqueName to NotesCollectionView constructor so that it can build new modal with matching id
 		var notesCollection = new NotesCollection();
-		//var notesCollectionView = new NotesCollectionView({collection : notesCollection, el : "#notesLightbox"});
 		var notesCollectionView = new NotesCollectionView({collection : notesCollection, uniqueName : uniqueName});
 		notesCollectionView.render();
 
-		//push new collection onto array for recordkeeping and debugging 
-		notesCollectionArray.push(notesCollection);
-		notesCollectionViewArray.push(notesCollectionView);
-
-		//$("#notesLightbox").append(notesCollectionView.$el);
-		// $("#notesSpace").append(notesCollectionView.$el);
 		$(notesCollectionView.$el).appendTo(document.body);
 
 	},
@@ -238,8 +221,6 @@ var WaypointView = Backbone.View.extend({
 		for(var i = 0; i < waypointsArray.length; i++) {
 			if(waypointsArray[i].location === locationNameToRemove){
 				indexOfObjectToRemove = i;
-				// console.log("indexOfObjectToRemove");
-				// console.log(indexOfObjectToRemove);
 			}
 		}
 
@@ -247,7 +228,6 @@ var WaypointView = Backbone.View.extend({
 		waypointsArray.splice(indexOfObjectToRemove, 1);
 
 		//removing flags
-		// markerArray[indexOfObjectToRemove].visible = false;
 		markerArray[indexOfObjectToRemove].setMap(null);
 		markerArray.splice(indexOfObjectToRemove,1);
 
@@ -280,9 +260,9 @@ var WaypointCollectionView = Backbone.View.extend({
 		"click #addBtn"  : "updateOnClick",
 	},
 	updateOnClick : function (e) {
-		//marker.setVisible(true);
 
 		var str = this.$el.find("#locationNameInput").val();
+
 		//add a new item to collection, pass in inputted string
 		if (str !== ''){
 			this.addToCollection(str);
@@ -325,10 +305,6 @@ $(document).ready( function () {
 	waypointCollectionView = new WaypointCollectionView({collection : waypointCollection, el : "#inputdiv"});
 	waypointCollectionView.render();
 
-	// notesCollection = new NotesCollection();
-	// notesCollectionView = new NotesCollectionView({collection : notesCollection, el : "#notesLightbox"});
-	// notesCollectionView.render();
-
 	//assign origin point and origin point view to new backbone objects
 	originPointModel = new OriginPoint();
 	var originPointView = new OriginPointView({model : originPointModel});
@@ -337,6 +313,5 @@ $(document).ready( function () {
 	//append origin point view and collection view to appropriate divs in index.html
 	$("#origindiv").append(originPointView.$el);
 	$("#inputdiv").append(waypointCollectionView.$el);
-	//$("#notesLightbox").append(notesCollectionView.$el);
 
 });

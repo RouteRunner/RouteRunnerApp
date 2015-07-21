@@ -173,7 +173,7 @@ var OriginPointView = Backbone.View.extend({
 //create backbone model to store data about each waypoint/stop in route
 var Waypoint = Backbone.Model.extend({
 	defaults : {
-		locationName :  "",
+		location :  "",
 	},
 	initialize : function () {
 		this.fetch();
@@ -184,7 +184,7 @@ var Waypoint = Backbone.Model.extend({
 		}});
 	},
 	replaceName : function (str) {
-		this.set("locationName" , str);
+		this.set("location" , str);
 		this.save();
 	},
 });
@@ -193,13 +193,13 @@ var Waypoint = Backbone.Model.extend({
 var WaypointView = Backbone.View.extend({
 	render : function () {
 		//get unique name for noteBtn id
-		var uniqueName = this.model.get("locationName");
+		var uniqueName = this.model.get("location");
 
 		//remove spaces and commas
 		uniqueName = uniqueName.replace(/[,\s]+/g, '');
 
 		var noteBtn = '<span class="input-group-btn"><a href="#' + uniqueName + '" data-toggle="modal"><button type="button" id="openNotes" class="btn btn-default"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></button></a></span>';
-		var locationName = '<div class="center-block text-center">' + this.model.get("locationName") + '</div>';
+		var locationName = '<div class="center-block text-center">' + this.model.get("location") + '</div>';
 		var delBtn = '<span class="input-group-btn"><button type="button" class="btn btn-default" id="delBtn"> <span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true"></span></button></span>';
 		this.$el.html(noteBtn + locationName + delBtn);
 
@@ -208,7 +208,7 @@ var WaypointView = Backbone.View.extend({
 		this.model.on("change", this.render, this);
 
 		//get unique name for noteBtn id
-		var uniqueName = this.model.get("locationName");
+		var uniqueName = this.model.get("location");
 
 		//remove spaces and commas
 		uniqueName = uniqueName.replace(/[,\s]+/g, '');
@@ -226,7 +226,7 @@ var WaypointView = Backbone.View.extend({
 	},
 	delete : function () {
 		//remove waypoint from waypointsArray
-		var locationNameToRemove = this.model.get("locationName");
+		var locationNameToRemove = this.model.get("location");
 
 		//iterate over array and find index of matching location
 		for(var i = 0; i < waypointsArray.length; i++) {
@@ -253,7 +253,10 @@ var WaypointCollection = Backbone.Collection.extend({
 	model      : Waypoint,
 	url        : "/waypointCollection", 
 	initialize : function () {
-		this.fetch();
+		this.fetch({success: function (collection, response) {
+				waypointsArray = response;
+			}
+		});
 	}
 });
 
@@ -283,7 +286,7 @@ var WaypointCollectionView = Backbone.View.extend({
 	addToCollection : function (str) {
 		// create new model, save to server and add to colleciton, triggers 'add' event in collection
 		this.collection.create({
-			locationName : str
+			location : str
 			//view created/appended in 'addOne' method, called in 'add' event listener
 		});
 

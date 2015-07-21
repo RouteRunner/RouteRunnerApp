@@ -137,16 +137,26 @@ app.get('/notesCollection', function (req, res) {
 				console.log('no note records found for username and waypoint query, ending response')
 				res.end();
 			} else {
-				//pull out first user from returned array
-				console.log("found records for username and waypoint, grabbing first one")
-				var note = returnedUserRecords[0];
+				console.log("returnedUserRecords:");
+				console.log(returnedUserRecords);
 
-				//send list-info from user in DB to backbone model
-				res.send(JSON.stringify({
-					listitem : note.listitem,
-					status   : note.status,
-					waypoint : note.waypoint,
-				}))
+				//stringify and send returnedUserRecords array
+				res.send(JSON.stringify(returnedUserRecords));
+
+
+
+
+
+				// //pull out first user from returned array
+				// console.log("found records for username and waypoint, grabbing first one")
+				// var note = returnedUserRecords[0];
+
+				// //send list-info from user in DB to backbone model
+				// res.send(JSON.stringify({
+				// 	listitem : note.listitem,
+				// 	status   : note.status,
+				// 	waypoint : note.waypoint,
+				// }))
 			}
 		})
 	} else {

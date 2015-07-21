@@ -142,21 +142,6 @@ app.get('/notesCollection', function (req, res) {
 
 				//stringify and send returnedUserRecords array
 				res.send(JSON.stringify(returnedUserRecords));
-
-
-
-
-
-				// //pull out first user from returned array
-				// console.log("found records for username and waypoint, grabbing first one")
-				// var note = returnedUserRecords[0];
-
-				// //send list-info from user in DB to backbone model
-				// res.send(JSON.stringify({
-				// 	listitem : note.listitem,
-				// 	status   : note.status,
-				// 	waypoint : note.waypoint,
-				// }))
 			}
 		})
 	} else {
@@ -168,8 +153,7 @@ app.get('/notesCollection', function (req, res) {
 
 //POST handler for adding listitem/status from backbone model to database
 app.post('/notesCollection', function (req, res) {
-//app.post('/notes', function (req, res) {
-	console.log("processing POST from '/notes'");
+	console.log("processing POST from '/notesCollection'");
 	console.log("req.body");
 	console.log(req.body);
 
@@ -213,6 +197,105 @@ app.post('/notesCollection', function (req, res) {
 		res.end();
 	}
 })
+
+//GET handler for fetching waypoint collection
+app.get('/waypointCollection', function (req, res) {
+	console.log("processing GET from '/waypointCollection'");
+	console.log('req.body:');
+	console.log(req.body);
+	console.log("req.params:");
+	console.log(req.params);
+	console.log('req.query:');
+	console.log(req.query);
+
+	// var waypoint = req.query.waypoint;
+	// // console.log('waypoint stored from req.query:');
+	// // console.log(waypoint);
+
+	var username = null;
+	if (req.cookies.username != undefined) {
+
+		//set username from cookie
+		username = req.cookies.username;
+
+		//do knex query for username entry in users table
+		knex('waypoints').where({'username': username}).then(function(returnedWaypointRecords) {
+			if (returnedWaypointRecords.length === 0) {
+				//popup alert box? "No Records for This User"
+				console.log('no waypoint records found for this username, ending response')
+				res.end();
+			} else {
+				console.log("returnedWaypointRecords:");
+				console.log(returnedWaypointRecords);
+
+				//rename 'location_name' key from DB to 'locationName' to match backbone
+				var renamedWaypointRecords = [];
+				for (i = 0; i < returnedWaypointRecords.length; i++) {
+					renamedWaypointRecords.push({locationName : returnedWaypointRecords[i].location_name});
+					// renamedWaypointRecords[i].locationName = returnedWaypointRecords.location_name;
+				}
+
+				console.log(renamedWaypointRecords);
+
+				//stringify and send renamedWaypointRecords array
+				res.send(JSON.stringify(renamedWaypointRecords));
+			}
+		})
+	} else {
+		//user not logged in, end response
+		console.log("user not logged in, ending response")
+		res.end();
+	}
+})
+
+
+//POST handler for adding waypoint from backbone model to database
+app.post('/waypointCollection', function (req, res) {
+	console.log("processing POST from '/waypointCollection'");
+	console.log("req.body");
+	console.log(req.body);
+
+	var locationName = req.body.locationName;
+	// var listItem = req.body.listitem,
+ //      	status = req.body.status,
+	// 	username = null;
+	// 	waypoint = req.body.waypoint;
+
+
+	//insert waypoint if user logged in (cookie present)
+ 	if (req.cookies.username != undefined) {
+
+    	//get username from cookie
+    	username = req.cookies.username;
+
+    	//check to see if entry already exits
+    	knex('waypoints').where({username : username, locationname : locationName})
+    		.then(function(returnedNotes){
+	    		if (returnedNotes.length === 0) {
+	    			//no matching locations for user, insert new location in DB
+					knex('waypoints').insert({
+						username      : username,
+						location_name : locationName,
+					}).then(function() {
+						//need to do anything here? res.end??
+						res.end();
+						})
+    			} else {
+    				// //matching location aready in DB, update status
+    				// knex('notes').where({username : username, waypoint : waypoint, listitem : listItem})
+    				// 	.update({status : status})
+    				// 	.then(function () {
+    				// 		res.end();
+    				// 		});
+	   			}
+    		})
+ 
+	} else {
+		//user not logged in, don't insert in DB, just end response
+		res.end();
+	}
+})
+
 
 //GET handler for serving register page
 app.get('/register', function (req, res) {

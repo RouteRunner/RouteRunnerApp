@@ -109,9 +109,9 @@ var NotesCollectionView = Backbone.View.extend({
 			listitem : str,
 			waypoint : this.uniqueName,
 		});
-		console.log('creating new model in collection:');
-		console.log('str:' + str);
-		console.log('uniqueName' + this.uniqueName);
+		// console.log('creating new model in collection:');
+		// console.log('str:' + str);
+		// console.log('uniqueName' + this.uniqueName);
 	},
 	addOne : function(model) {
 		var noteView = new NotesView({model : model, tagName : "li"});

@@ -70,7 +70,8 @@ var NotesCollectionView = Backbone.View.extend({
 	},
 	events : {
 		"click #tskBtn" : "updateOnClick",
-		"click #clrBtn" : "delete"
+		"click #clrBtn" : "delete",
+		"keypress #notesInput": "enterKey"
 	},
 	updateOnClick : function (e) {
 			var str = this.$el.find("#notesInput").val();
@@ -107,6 +108,13 @@ var NotesCollectionView = Backbone.View.extend({
 				note.destroy();
 			})
     },
+   
+    enterKey: function (e){
+        if(e.keyCode == 13) {
+            this.updateOnClick();
+        }
+    },    
+
 });
 
 //create backbone model to store origin location

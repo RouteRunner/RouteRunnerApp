@@ -209,14 +209,18 @@ app.get('/waypointCollection', function (req, res) {
 				// console.log('no waypoint records found for this username, ending response')
 				res.end();
 			} else {
-				//rename 'location_name' key from DB to 'locationName' to match backbone
+				//rename 'location_name' key from DB to 'location' to match backbone
 				var renamedWaypointRecords = [];
 				for (i = 0; i < returnedWaypointRecords.length; i++) {
-					renamedWaypointRecords.push({locationName : returnedWaypointRecords[i].location_name});
+					renamedWaypointRecords.push({location : returnedWaypointRecords[i].location_name});
 				}
+
+				console.log("renamedWaypointRecords");
+				console.log(renamedWaypointRecords);
 
 				//stringify and send renamedWaypointRecords array
 				res.send(JSON.stringify(renamedWaypointRecords));
+
 			}
 		})
 	} else {
@@ -233,7 +237,7 @@ app.post('/waypointCollection', function (req, res) {
 	console.log("req.body");
 	console.log(req.body);
 
-	var locationName = req.body.locationName;
+	var location = req.body.location;
 
 	//insert waypoint if user logged in (cookie present)
  	if (req.cookies.username != undefined) {
@@ -242,13 +246,13 @@ app.post('/waypointCollection', function (req, res) {
     	username = req.cookies.username;
 
     	//check to see if entry already exits
-    	knex('waypoints').where({username : username, locationname : locationName})
+    	knex('waypoints').where({username : username, location_name : location})
     		.then(function(returnedNotes){
 	    		if (returnedNotes.length === 0) {
 	    			//no matching locations for user, insert new location in DB
 					knex('waypoints').insert({
 						username      : username,
-						location_name : locationName,
+						location_name : location,
 					}).then(function() {
 						//need to do anything here? res.end??
 						res.end();

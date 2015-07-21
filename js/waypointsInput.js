@@ -67,10 +67,9 @@ var NotesCollectionView = Backbone.View.extend({
 		var tskBtn = '<span class="input-group-btn"><button type="button" class="btn btn-primary" id="tskBtn"> Add</button></span>';
 		var notesInput = '<input class="form-control" id=notesInput type="search" placeholder="Type Here..." /></div>';
 		var notesList = '<ol id="notes-list' + this.uniqueName + '" class="top-buffer"></ol></div>';
-		var clrBtn = '<div class="modal-footer" id="notesFooter"><button class="btn btn-default" id="clrBtn" type= "submit">Clear √</button></div>';
+		var clrBtn = '<div class="modal-footer" id="notesFooter"><button class=" btn btn-default btn-sm pull-left" data-dismiss="modal">X</button><button class="btn btn-default" id="clrBtn" type= "submit">Clear √</button></div>';
 		var closingStuff = '</div></div></div>'
 		this.$el.html(modalContainer + body + label + notesDiv + tskBtn + notesInput  + notesList + clrBtn + closingStuff);
-
 	},
 	initialize : function(options) {
 

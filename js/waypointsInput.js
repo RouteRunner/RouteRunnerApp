@@ -136,7 +136,11 @@ var OriginPoint = Backbone.Model.extend({
 	},
 	initialize : function () {
 		console.log("initializing Origin Point, fetching...")
-		this.fetch();
+		//this.fetch();
+		this.fetch({success: function (collection, response) {
+				originForExport = response.originName;
+			}
+		});
 	},
 	setName : function (str) {
 		this.set("originName", str);

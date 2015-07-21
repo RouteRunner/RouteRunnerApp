@@ -30,7 +30,8 @@ function initialize() {
   autocomplete.bindTo('bounds', map);
 
   google.maps.event.addListener(autocomplete, 'place_changed', function() {
-    marker = new google.maps.Marker({
+
+      marker = new google.maps.Marker({
       animation: google.maps.Animation.DROP,
       map: map,
     });
@@ -74,20 +75,6 @@ function initialize() {
   });
 }
 
-// function addWaypoint() {
-//   var bounds = new google.maps.LatLngBounds();
-//   console.log("addWaypoint successfully called")
-//   for(i = 0; i < markerArray.length; i++) {
-//     bounds.extend(markerArray[i].getPlace().location);
-//   }
-//   map.fitBounds(bounds);
-// };
-//
-// $(function(){
-//   $('#setOrigin').on('click', function (e) {
-//     addWaypoint();
-//   });
-// });
 
 $(function(){
   $('#routeIt').on('click', function (e) {

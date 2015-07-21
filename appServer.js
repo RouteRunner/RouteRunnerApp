@@ -341,7 +341,16 @@ app.post('/register', function(request, response) {
 				}
 			});
 
-			var verificationUrl = 'http://localhost:3000/verify_email/' + newNonce;
+			//create email verification url for routing to from verification email
+			var verificationUrl;
+
+			if (!process.env.heroku) {
+				//not running on heroku, use localhost
+				verificationUrl = 'http://localhost:3000/verify_email/' + newNonce;
+			} else {
+				//running on heroku, user heroku url
+				verificationUrl = 'https://routerunnerapp.herokuapp.com/verify_email/' + newNonce;
+			}
 
 			// setup e-mail data with unicode symbols
 			var mailOptions = {

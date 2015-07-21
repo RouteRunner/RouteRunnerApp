@@ -49,6 +49,7 @@ app.get('/logout', function (req, res) {
 	console.log('processing GET from /logout');
 	console.log('req.body:');
 	console.log(req.body);
+
 	//delete cookie
 	res.clearCookie('username');
 
@@ -113,16 +114,10 @@ app.post('/origin', function (req, res) {
 //GET handler for fetching notes collection, uses unique waypoint from url query string
 app.get('/notesCollection', function (req, res) {
 	console.log("processing GET from '/notesCollection'");
-	// console.log('req.body:');
-	// console.log(req.body);
-	// console.log("req.params:");
-	// console.log(req.params);
 	console.log('req.query:');
 	console.log(req.query);
 
 	var waypoint = req.query.waypoint;
-	// console.log('waypoint stored from req.query:');
-	// console.log(waypoint);
 
 	var username = null;
 	if (req.cookies.username != undefined) {
@@ -134,12 +129,9 @@ app.get('/notesCollection', function (req, res) {
 		knex('notes').where({'username': username, 'waypoint' : waypoint}).then(function(returnedUserRecords) {
 			if (returnedUserRecords.length === 0) {
 				//popup alert box? "No Such User"
-				console.log('no note records found for username and waypoint query, ending response')
+				// console.log('no note records found for username and waypoint query, ending response')
 				res.end();
 			} else {
-				console.log("returnedUserRecords:");
-				console.log(returnedUserRecords);
-
 				//stringify and send returnedUserRecords array
 				res.send(JSON.stringify(returnedUserRecords));
 			}
@@ -203,14 +195,6 @@ app.get('/waypointCollection', function (req, res) {
 	console.log("processing GET from '/waypointCollection'");
 	console.log('req.body:');
 	console.log(req.body);
-	console.log("req.params:");
-	console.log(req.params);
-	console.log('req.query:');
-	console.log(req.query);
-
-	// var waypoint = req.query.waypoint;
-	// // console.log('waypoint stored from req.query:');
-	// // console.log(waypoint);
 
 	var username = null;
 	if (req.cookies.username != undefined) {
@@ -222,20 +206,14 @@ app.get('/waypointCollection', function (req, res) {
 		knex('waypoints').where({'username': username}).then(function(returnedWaypointRecords) {
 			if (returnedWaypointRecords.length === 0) {
 				//popup alert box? "No Records for This User"
-				console.log('no waypoint records found for this username, ending response')
+				// console.log('no waypoint records found for this username, ending response')
 				res.end();
 			} else {
-				console.log("returnedWaypointRecords:");
-				console.log(returnedWaypointRecords);
-
 				//rename 'location_name' key from DB to 'locationName' to match backbone
 				var renamedWaypointRecords = [];
 				for (i = 0; i < returnedWaypointRecords.length; i++) {
 					renamedWaypointRecords.push({locationName : returnedWaypointRecords[i].location_name});
-					// renamedWaypointRecords[i].locationName = returnedWaypointRecords.location_name;
 				}
-
-				console.log(renamedWaypointRecords);
 
 				//stringify and send renamedWaypointRecords array
 				res.send(JSON.stringify(renamedWaypointRecords));
@@ -256,11 +234,6 @@ app.post('/waypointCollection', function (req, res) {
 	console.log(req.body);
 
 	var locationName = req.body.locationName;
-	// var listItem = req.body.listitem,
- //      	status = req.body.status,
-	// 	username = null;
-	// 	waypoint = req.body.waypoint;
-
 
 	//insert waypoint if user logged in (cookie present)
  	if (req.cookies.username != undefined) {
@@ -281,12 +254,7 @@ app.post('/waypointCollection', function (req, res) {
 						res.end();
 						})
     			} else {
-    				// //matching location aready in DB, update status
-    				// knex('notes').where({username : username, waypoint : waypoint, listitem : listItem})
-    				// 	.update({status : status})
-    				// 	.then(function () {
-    				// 		res.end();
-    				// 		});
+    				//matching location aready in DB
 	   			}
     		})
  

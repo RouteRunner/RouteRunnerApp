@@ -7,8 +7,6 @@ var waypointsArray = [];
 
 //create Backbone model to store notes
 var NotesItem = Backbone.Model.extend({
-	//urlRoot : "/notes",
-	//urlRoot : "/NOTEMODELTEST",
 	defaults : {
 		listitem : "",
 		status   : "notDone",
@@ -55,14 +53,7 @@ var NotesCollection = Backbone.Collection.extend({
 		//enable uniqueName to be passed in from constructor and stored
 		_.extend(this, _.pick(options, "uniqueName"));
 
-		// console.log("this.uniqueName from notesCollection initialize");
-		// console.log(this.uniqueName);
-
-		// console.log("this from notesCollection initialize");
-		// console.log(this);
-
 		console.log("initializing notesCollection, fecthing");
-		//this.fetch({waypoint : this.uniqueName});
 		this.fetch({data : {waypoint : this.uniqueName}});
 	}
 });
@@ -109,9 +100,6 @@ var NotesCollectionView = Backbone.View.extend({
 			listitem : str,
 			waypoint : this.uniqueName,
 		});
-		// console.log('creating new model in collection:');
-		// console.log('str:' + str);
-		// console.log('uniqueName' + this.uniqueName);
 	},
 	addOne : function(model) {
 		var noteView = new NotesView({model : model, tagName : "li"});
@@ -256,7 +244,7 @@ var WaypointView = Backbone.View.extend({
 //create backbone collection for Waypoints
 var WaypointCollection = Backbone.Collection.extend({
 	model      : Waypoint,
-	url        : "/waypointCollection", // <------------------------------------------------CHECK
+	url        : "/waypointCollection", 
 	initialize : function () {
 		this.fetch();
 	}

@@ -8,7 +8,7 @@ var waypointsArray = [];
 //create Backbone model to store notes
 var NotesItem = Backbone.Model.extend({
 	//urlRoot : "/notes",
-	urlRoot : "/notesTEST",
+	//urlRoot : "/NOTEMODELTEST",
 	defaults : {
 		listitem : "",
 		status   : "notDone",
@@ -48,10 +48,22 @@ var NotesView = Backbone.View.extend({
 
 var NotesCollection = Backbone.Collection.extend({
 	model      : NotesItem,
-	//url        : "/notes",
-	url        : "/notesTEST",
-	initialize : function () {
-		this.fetch();
+	url        : "/notesCollection",
+	//url        : "/NOTECOLLECTIONTEST",
+	initialize : function (options) {
+
+		//enable uniqueName to be passed in from constructor and stored
+		_.extend(this, _.pick(options, "uniqueName"));
+
+		// console.log("this.uniqueName from notesCollection initialize");
+		// console.log(this.uniqueName);
+
+		// console.log("this from notesCollection initialize");
+		// console.log(this);
+
+		console.log("initializing notesCollection, fecthing");
+		//this.fetch({waypoint : this.uniqueName});
+		this.fetch({data : {waypoint : this.uniqueName}});
 	}
 });
 
@@ -94,8 +106,12 @@ var NotesCollectionView = Backbone.View.extend({
 	},
 	addToCollection : function(str) {
 		this.collection.create({
-			listitem : str
+			listitem : str,
+			waypoint : this.uniqueName,
 		});
+		console.log('creating new model in collection:');
+		console.log('str:' + str);
+		console.log('uniqueName' + this.uniqueName);
 	},
 	addOne : function(model) {
 		var noteView = new NotesView({model : model, tagName : "li"});
@@ -203,7 +219,7 @@ var WaypointView = Backbone.View.extend({
 		uniqueName = uniqueName.replace(/[,\s]+/g, '');
 
 		//pass uniqueName to NotesCollectionView constructor so that it can build new modal with matching id
-		var notesCollection = new NotesCollection();
+		var notesCollection = new NotesCollection({uniqueName : uniqueName});
 		var notesCollectionView = new NotesCollectionView({collection : notesCollection, uniqueName : uniqueName});
 		notesCollectionView.render();
 
@@ -240,7 +256,7 @@ var WaypointView = Backbone.View.extend({
 //create backbone collection for Waypoints
 var WaypointCollection = Backbone.Collection.extend({
 	model      : Waypoint,
-	url        : "/", // <------------------------------------------------CHECK
+	url        : "/waypointCollection", // <------------------------------------------------CHECK
 	initialize : function () {
 		this.fetch();
 	}

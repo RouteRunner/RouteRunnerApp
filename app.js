@@ -31,7 +31,6 @@ function initialize() {
   
 
   google.maps.event.addListener(autocomplete, 'place_changed', function() {
-     console.log('George')
       marker = new google.maps.Marker({
       animation: google.maps.Animation.DROP,
       map: map,

@@ -24,6 +24,8 @@ app.engine('html', require('ejs').renderFile);
 // GET handler for serving home page
 app.get('/', function (req, res) {
 	console.log("processing GET from '/'");
+	console.log('req.body:');
+	console.log(req.body);
 
  	//get username from cookie in request, if user is logged in
  	var username = null;
@@ -37,6 +39,7 @@ app.get('/', function (req, res) {
 
 //POST handler for saving waypoint collection
 app.post('/', function (req, res) {
+	console.log("processing POST from '/'");
 	console.log("req.body");
 	console.log(req.body);
 });
@@ -44,7 +47,8 @@ app.post('/', function (req, res) {
 //GET handler for logging out
 app.get('/logout', function (req, res) {
 	console.log('processing GET from /logout');
-
+	console.log('req.body:');
+	console.log(req.body);
 	//delete cookie
 	res.clearCookie('username');
 
@@ -55,6 +59,8 @@ app.get('/logout', function (req, res) {
 //GET handler for fetching Origin backbone model when it initializes
 app.get('/origin', function (req, res) {
 	console.log("processing GET from '/origin'");
+	console.log('req.body:');
+	console.log(req.body);
 
 	var username = null;
  	if (req.cookies.username != undefined) {
@@ -81,7 +87,8 @@ app.get('/origin', function (req, res) {
 
 //POST handler for adding originName from backbone model to database
 app.post('/origin', function (req, res) {
-	console.log("req.body");
+	console.log("processing POST from '/orgin'");
+	console.log("req.body:");
 	console.log(req.body);
 
 	//insert origin for user if logged in (cookie present)
@@ -103,8 +110,19 @@ app.post('/origin', function (req, res) {
 	}
 })
 
-app.get('/notes', function (req, res) {
-	console.log("processing GET from '/notes'");
+//GET handler for fetching notes collection, uses unique waypoint from url query string
+app.get('/notesCollection', function (req, res) {
+	console.log("processing GET from '/notesCollection'");
+	// console.log('req.body:');
+	// console.log(req.body);
+	// console.log("req.params:");
+	// console.log(req.params);
+	console.log('req.query:');
+	console.log(req.query);
+
+	var waypoint = req.query.waypoint;
+	// console.log('waypoint stored from req.query:');
+	// console.log(waypoint);
 
 	var username = null;
 	if (req.cookies.username != undefined) {
@@ -113,33 +131,42 @@ app.get('/notes', function (req, res) {
 		username = req.cookies.username;
 
 		//do knex query for username entry in users table
-		knex('notes').where({'username': username}).then(function(returnedUserRecords) {
+		knex('notes').where({'username': username, 'waypoint' : waypoint}).then(function(returnedUserRecords) {
 			if (returnedUserRecords.length === 0) {
-			//popup alert box? "No Such User"
+				//popup alert box? "No Such User"
+				console.log('no note records found for username and waypoint query, ending response')
+				res.end();
 			} else {
-			//pull out first user from returned array
+				//pull out first user from returned array
+				console.log("found records for username and waypoint, grabbing first one")
 				var note = returnedUserRecords[0];
 
 				//send list-info from user in DB to backbone model
 				res.send(JSON.stringify({
 					listitem : note.listitem,
-					status : note.status
+					status   : note.status,
+					waypoint : note.waypoint,
 				}))
 			}
 		})
+	} else {
+		//user not logged in, end response
+		console.log("user not logged in, ending response")
+		res.end();
 	}
 })
 
 //POST handler for adding listitem/status from backbone model to database
-app.post('/notes', function (req, res) {
+app.post('/notesCollection', function (req, res) {
+//app.post('/notes', function (req, res) {
 	console.log("processing POST from '/notes'");
-
 	console.log("req.body");
 	console.log(req.body);
 
 	var listItem = req.body.listitem,
       	status = req.body.status,
 		username = null;
+		waypoint = req.body.waypoint;
 
 	//insert note if user logged in (cookie present)
  	if (req.cookies.username != undefined) {
@@ -147,15 +174,30 @@ app.post('/notes', function (req, res) {
     	//get username from cookie
     	username = req.cookies.username;
 
-    	//insert note in DB
-		knex('notes').insert({
-			username : username,
-			listitem : listItem,
-			status   : status
-		}).then(function() {
-			//need to do anything here? res.end??
-			res.end();
-		})
+    	//check to see if entry already exits
+    	knex('notes').where({username : username, waypoint : waypoint, listitem : listItem})
+    		.then(function(returnedNotes){
+	    		if (returnedNotes.length === 0) {
+	    			//no matching note, insert new note in DB
+					knex('notes').insert({
+						username : username,
+						listitem : listItem,
+						status   : status,
+						waypoint : waypoint,
+					}).then(function() {
+						//need to do anything here? res.end??
+						res.end();
+						})
+    			} else {
+    				//matching note laready in DB, update status
+    				knex('notes').where({username : username, waypoint : waypoint, listitem : listItem})
+    					.update({status : status})
+    					.then(function () {
+    						res.end();
+    						});
+	   			}
+    		})
+ 
 	} else {
 		//user not logged in, don't insert in DB, just end response
 		res.end();
@@ -174,6 +216,7 @@ app.get('/register', function (req, res) {
 
 //POST handler for logging in from form on home page
 app.post('/login', function(req, res) {
+	console.log("processing POST from '/login'");
 	console.log("req.body");
 	console.log(req.body);
 

@@ -37,13 +37,6 @@ app.get('/', function (req, res) {
     res.render('home.html', {username:username});
 });
 
-//POST handler for saving waypoint collection
-app.post('/', function (req, res) {
-	console.log("processing POST from '/'");
-	console.log("req.body");
-	console.log(req.body);
-});
-
 //GET handler for logging out
 app.get('/logout', function (req, res) {
 	console.log('processing GET from /logout');
@@ -178,34 +171,9 @@ app.post('/notesCollection', function (req, res) {
 				status   : status,
 				waypoint : waypoint,
 			}).then(function(id) {
-				//send back id to note backbone model
+				//send back id to note's backbone model
 				res.send(JSON.stringify({id : id}));
 				})
-
-    	// //check to see if entry already exits
-    	// knex('notes').where({username : username, waypoint : waypoint, listitem : listItem})
-    	// 	.then(function(returnedNotes){
-	    // 		if (returnedNotes.length === 0) {
-	    // 			//no matching note, insert new note in DB
-					// knex('notes').insert({
-					// 	username : username,
-					// 	listitem : listItem,
-					// 	status   : status,
-					// 	waypoint : waypoint,
-					// }).then(function() {
-					// 	//need to do anything here? res.end??
-					// 	res.end();
-					// 	})
-    	// 		} else {
-    	// 			//matching note laready in DB, update status
-    	// 			knex('notes').where({username : username, waypoint : waypoint, listitem : listItem})
-    	// 				.update({status : status})
-    	// 				.then(function () {
-    	// 					res.end();
-    	// 					});
-	   	// 		}
-    	// 	})
- 
 	} else {
 		//user not logged in, don't insert in DB, just end response
 		res.end();
@@ -220,10 +188,6 @@ app.put('/notesCollection/:id', function (req, res) {
 	console.log('req.params:');
 	console.log(req.params);
 
-	// var listItem = req.body.listitem,
- //      	status = req.body.status,
-	// 	username = null,
-	// 	waypoint = req.body.waypoint;
 	var	id = req.params.id;
 	var status = req.body.status;
 
@@ -238,32 +202,7 @@ app.put('/notesCollection/:id', function (req, res) {
     		.update({status : status})
     		.then(function () {
     			res.end();
-    		})
-
-    	// //check to see if entry already exits
-    	// knex('notes').where({username : username, waypoint : waypoint, listitem : listItem})
-    	// 	.then(function(returnedNotes){
-	    // 		if (returnedNotes.length === 0) {
-	    // 			//no matching note, insert new note in DB
-					// knex('notes').insert({
-					// 	username : username,
-					// 	listitem : listItem,
-					// 	status   : status,
-					// 	waypoint : waypoint,
-					// }).then(function() {
-					// 	//need to do anything here? res.end??
-					// 	res.end();
-					// 	})
-    	// 		} else {
-    	// 			//matching note laready in DB, update status
-    	// 			knex('notes').where({username : username, waypoint : waypoint, listitem : listItem})
-    	// 				.update({status : status})
-    	// 				.then(function () {
-    	// 					res.end();
-    	// 					});
-	   	// 		}
-    	// 	})
- 
+    		}) 
 	} else {
 		//user not logged in, don't insert in DB, just end response
 		res.end();
@@ -306,16 +245,10 @@ app.get('/waypointCollection/', function (req, res) {
 				res.end();
 			} else {
 				//rename 'location_name' key from DB to 'location' to match backbone
-				console.log('returnedWaypointRecords:');
-				console.log(returnedWaypointRecords);
-
 				var renamedWaypointRecords = [];
 				for (i = 0; i < returnedWaypointRecords.length; i++) {
 					renamedWaypointRecords.push({location : returnedWaypointRecords[i].location_name, id : returnedWaypointRecords[i].id});
 				}
-
-				console.log("renamedWaypointRecords");
-				console.log(renamedWaypointRecords);
 
 				//stringify and send renamedWaypointRecords array
 				res.send(JSON.stringify(renamedWaypointRecords));
@@ -363,7 +296,6 @@ app.post('/waypointCollection', function (req, res) {
 						username      : username,
 						location_name : location,
 					}).then(function() {
-						//need to do anything here? res.end??
 						res.end();
 						})
     			} else {

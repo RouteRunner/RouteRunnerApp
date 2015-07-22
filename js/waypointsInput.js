@@ -115,6 +115,9 @@ var NotesCollectionView = Backbone.View.extend({
 				notesToDestroy.push(note);
 			}
 		})
+		if(notesToDestroy.length === 0){
+      alert('Please select one or more "notes" to Clear');
+		}
 		notesToDestroy.forEach(function(note){
 			note.destroy();
 		})
@@ -280,7 +283,7 @@ var WaypointCollectionView = Backbone.View.extend({
 	updateOnClick : function (e) {
 
 		var str = this.$el.find("#locationNameInput").val();
-
+		marker.setVisible(true);
 		//add a new item to collection, pass in inputted string
 		if (str !== ''){
 			this.addToCollection(str);

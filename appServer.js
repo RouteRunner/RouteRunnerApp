@@ -143,7 +143,17 @@ app.get('/notesCollection', function (req, res) {
 	}
 })
 
-//POST handler for adding listitem/status from backbone model to database
+//GET handler for fetching notes
+app.get('/notesCollection/:id', function (req, res) {
+	console.log("processing GET from '/notesCollection/:id'");
+	console.log('req.body:');
+	console.log(req.body);
+	console.log('req.params:');
+	console.log(req.params);
+	res.end();
+})
+
+//POST handler for adding new listitem/status from backbone model to database
 app.post('/notesCollection', function (req, res) {
 	console.log("processing POST from '/notesCollection'");
 	console.log("req.body");
@@ -151,7 +161,7 @@ app.post('/notesCollection', function (req, res) {
 
 	var listItem = req.body.listitem,
       	status = req.body.status,
-		username = null;
+		username = null,
 		waypoint = req.body.waypoint;
 
 	//insert note if user logged in (cookie present)
@@ -160,34 +170,120 @@ app.post('/notesCollection', function (req, res) {
     	//get username from cookie
     	username = req.cookies.username;
 
-    	//check to see if entry already exits
-    	knex('notes').where({username : username, waypoint : waypoint, listitem : listItem})
-    		.then(function(returnedNotes){
-	    		if (returnedNotes.length === 0) {
-	    			//no matching note, insert new note in DB
-					knex('notes').insert({
-						username : username,
-						listitem : listItem,
-						status   : status,
-						waypoint : waypoint,
-					}).then(function() {
-						//need to do anything here? res.end??
-						res.end();
-						})
-    			} else {
-    				//matching note laready in DB, update status
-    				knex('notes').where({username : username, waypoint : waypoint, listitem : listItem})
-    					.update({status : status})
-    					.then(function () {
-    						res.end();
-    						});
-	   			}
-    		})
+    	//insert new note into db
+    	knex('notes').returning('id')
+    		.insert({
+				username : username,
+				listitem : listItem,
+				status   : status,
+				waypoint : waypoint,
+			}).then(function() {
+				//send back id to note backbone model
+				res.send(JSON.stringify({id : id}));
+				})
+
+    	// //check to see if entry already exits
+    	// knex('notes').where({username : username, waypoint : waypoint, listitem : listItem})
+    	// 	.then(function(returnedNotes){
+	    // 		if (returnedNotes.length === 0) {
+	    // 			//no matching note, insert new note in DB
+					// knex('notes').insert({
+					// 	username : username,
+					// 	listitem : listItem,
+					// 	status   : status,
+					// 	waypoint : waypoint,
+					// }).then(function() {
+					// 	//need to do anything here? res.end??
+					// 	res.end();
+					// 	})
+    	// 		} else {
+    	// 			//matching note laready in DB, update status
+    	// 			knex('notes').where({username : username, waypoint : waypoint, listitem : listItem})
+    	// 				.update({status : status})
+    	// 				.then(function () {
+    	// 					res.end();
+    	// 					});
+	   	// 		}
+    	// 	})
  
 	} else {
 		//user not logged in, don't insert in DB, just end response
 		res.end();
 	}
+})
+
+//PUT handler for updating listitem/status from backbone model to database
+app.put('/notesCollection/:id', function (req, res) {
+	console.log("processing PUT from '/notesCollection'");
+	console.log("req.body");
+	console.log(req.body);
+	console.log('req.params:');
+	console.log(req.params);
+
+	// var listItem = req.body.listitem,
+ //      	status = req.body.status,
+	// 	username = null,
+	// 	waypoint = req.body.waypoint;
+	var	id = req.params.id;
+	var status = req.body.status;
+
+	//insert note if user logged in (cookie present)
+ 	if (req.cookies.username != undefined) {
+
+    	//get username from cookie
+    	username = req.cookies.username;
+
+    	//update status of existing note, matched by id
+    	knex('notes').where({id : id})
+    		.update({status : status})
+    		.then(function () {
+    			res.end();
+    		})
+
+    	// //check to see if entry already exits
+    	// knex('notes').where({username : username, waypoint : waypoint, listitem : listItem})
+    	// 	.then(function(returnedNotes){
+	    // 		if (returnedNotes.length === 0) {
+	    // 			//no matching note, insert new note in DB
+					// knex('notes').insert({
+					// 	username : username,
+					// 	listitem : listItem,
+					// 	status   : status,
+					// 	waypoint : waypoint,
+					// }).then(function() {
+					// 	//need to do anything here? res.end??
+					// 	res.end();
+					// 	})
+    	// 		} else {
+    	// 			//matching note laready in DB, update status
+    	// 			knex('notes').where({username : username, waypoint : waypoint, listitem : listItem})
+    	// 				.update({status : status})
+    	// 				.then(function () {
+    	// 					res.end();
+    	// 					});
+	   	// 		}
+    	// 	})
+ 
+	} else {
+		//user not logged in, don't insert in DB, just end response
+		res.end();
+	}
+})
+
+//DELETE handler for deleting a note from the db
+app.delete('/notesCollection/:id', function (req, res) {
+	console.log("processing DELETE from '/notesCollection'");
+	console.log("req.params");
+	console.log(req.params);
+
+	//get id from url
+	var id = req.params.id;
+
+	//delete waypoint entry where id matches in DB
+	knex('notes').where({id:id}).del().then(function(){
+		console.log('note deleted from DB');
+		res.end();
+	})
 })
 
 //GET handler for fetching waypoint collection
@@ -281,6 +377,7 @@ app.post('/waypointCollection', function (req, res) {
 	}
 })
 
+//DELETE handler for deleting waypoint from DB
 app.delete('/waypointCollection/:id', function (req, res) {
 	console.log("processing DELETE from '/waypointCollection'");
 	console.log("req.params");

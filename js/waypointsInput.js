@@ -8,6 +8,7 @@ var waypointsArray = [];
 //create Backbone model to store notes
 var NotesItem = Backbone.Model.extend({
 	defaults : {
+		id       : null,
 		listitem : "",
 		status   : "notDone",
 		waypoint : ""
@@ -47,7 +48,6 @@ var NotesView = Backbone.View.extend({
 var NotesCollection = Backbone.Collection.extend({
 	model      : NotesItem,
 	url        : "/notesCollection",
-	//url        : "/NOTECOLLECTIONTEST",
 	initialize : function (options) {
 
 		//enable uniqueName to be passed in from constructor and stored

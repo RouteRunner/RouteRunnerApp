@@ -177,7 +177,7 @@ app.post('/notesCollection', function (req, res) {
 				listitem : listItem,
 				status   : status,
 				waypoint : waypoint,
-			}).then(function() {
+			}).then(function(id) {
 				//send back id to note backbone model
 				res.send(JSON.stringify({id : id}));
 				})

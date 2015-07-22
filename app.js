@@ -9,45 +9,6 @@ var rendererOptions = {
 var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);;
 var directionsService = new google.maps.DirectionsService();
 
-if(navigator.geolocation) {
-    browserSupportFlag = true;
-    navigator.geolocation.getCurrentPosition(function(position) {
-      initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-       var geocoder = geocoder = new google.maps.Geocoder();
-
-            locationID = geocoder.geocode({ 'location': initialLocation }, function (results, status) {
-                if (status == google.maps.GeocoderStatus.OK) {
-                    if (results[1]) {
-                        locationID = results[1].formatted_address;
-                        originPointModel.setName(locationID);
-                        console.log(locationID);
-                    }
-                }
-            });
-      initialLocationID = new geocoder.geocode({'location': initialLocation});
-      map.setCenter(initialLocation);
-    }, function() {
-      handleNoGeolocation(browserSupportFlag);
-    });
-  }
-  // Browser doesn't support Geolocation
-  else {
-    browserSupportFlag = false;
-    handleNoGeolocation(browserSupportFlag);
-  }
-
-  function handleNoGeolocation(errorFlag) {
-    if (errorFlag == true) {
-      alert("Geolocation service failed.");
-      initialLocation = newyork;
-    } else {
-      alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
-      initialLocation = siberia;
-    }
-    map.setCenter(initialLocation);
-    console.log(initialLocation);
-  }
-
 function initialize() {
   var mapOptions = {
     mapTypeId: google.maps.MapTypeId.ROADMAP,
@@ -60,6 +21,47 @@ function initialize() {
 
   directionsDisplay.setMap(map);
   directionsDisplay.setPanel(document.getElementById('directionsPanel'));
+
+  if(navigator.geolocation) {
+      browserSupportFlag = true;
+      navigator.geolocation.getCurrentPosition(function(position) {
+        initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+         var geocoder = geocoder = new google.maps.Geocoder();
+        locationID = geocoder.geocode({ 'location': initialLocation }, function (results, status) {
+          if (status == google.maps.GeocoderStatus.OK) {
+            if (results[1]) {
+                locationID = results[1].formatted_address;
+                originPointModel.setName(locationID);
+            }
+          }
+        });
+        initialLocationID = new geocoder.geocode({'location': initialLocation});
+        marker = new google.maps.Marker({
+          animation: google.maps.Animation.DROP,
+          map: map,
+          position: initialLocation
+        });
+        markerArray.push(marker);
+        map.setCenter(initialLocation);
+
+      }, function() {
+        handleNoGeolocation(browserSupportFlag);
+      });
+    }else {
+      browserSupportFlag = false;
+      handleNoGeolocation(browserSupportFlag);
+    }
+    function handleNoGeolocation(errorFlag) {
+      if (errorFlag == true) {
+        alert("Geolocation service failed.");
+        initialLocation = newyork;
+      } else {
+        alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
+        initialLocation = siberia;
+      }
+      map.setCenter(initialLocation);
+      console.log(initialLocation);
+    }
 
   var origin = (document.getElementById('originNameInput'));
   var input = (document.getElementById('locationNameInput'));

@@ -50,9 +50,10 @@ if(navigator.geolocation) {
 
 function initialize() {
   var mapOptions = {
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
     center: {lat: 45.5200, lng: -122.6819},
     zoom: 12,
-    maxZoom: 12
+    maxZoom: 12,
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),
     mapOptions);
@@ -62,6 +63,46 @@ function initialize() {
 
   var origin = (document.getElementById('originNameInput'));
   var input = (document.getElementById('locationNameInput'));
+  var searchBox = new google.maps.places.SearchBox(
+    /** @type {HTMLInputElement} */(input));
+
+    google.maps.event.addListener(searchBox, 'places_changed', function() {
+      var places = searchBox.getPlaces();
+
+      if (places.length == 0) {
+        return;
+      }
+      for (var i = 0, marker; marker = markerArray[i]; i++) {
+        marker.setMap(null);
+      }
+
+      // For each place, get the icon, place name, and location.
+      markerArray = [];
+      var bounds = new google.maps.LatLngBounds();
+      for (var i = 0, place; place = places[i]; i++) {
+        var image = {
+          url: place.icon,
+          size: new google.maps.Size(71, 71),
+          origin: new google.maps.Point(0, 0),
+          anchor: new google.maps.Point(17, 34),
+          scaledSize: new google.maps.Size(25, 25)
+        };
+
+        // Create a marker for each place.
+        var marker = new google.maps.Marker({
+          map: map,
+          //icon: image,
+          title: place.name,
+          position: place.geometry.location
+        });
+        marker.setVisible(false);
+        markerArray.push(marker);
+
+        bounds.extend(place.geometry.location);
+      }
+
+      map.fitBounds(bounds);
+    });
 
   var autocomplete = new google.maps.places.Autocomplete(origin);
   autocomplete.bindTo('bounds', map);

@@ -119,12 +119,12 @@ var NotesCollectionView = Backbone.View.extend({
 			note.destroy();
 		})
     },
-   
+
     enterKey: function (e){
         if(e.keyCode == 13) {
             this.updateOnClick();
         }
-    },    
+    },
 
 });
 
@@ -132,7 +132,7 @@ var NotesCollectionView = Backbone.View.extend({
 var OriginPoint = Backbone.Model.extend({
 	urlRoot : "/origin",
 	defaults : {
-		originName : ""
+		originName : "Finding Current GPS location..."
 	},
 	initialize : function () {
 		console.log("initializing Origin Point, fetching...")
@@ -255,7 +255,7 @@ var WaypointView = Backbone.View.extend({
 //create backbone collection for Waypoints
 var WaypointCollection = Backbone.Collection.extend({
 	model      : Waypoint,
-	url        : "/waypointCollection", 
+	url        : "/waypointCollection",
 	initialize : function () {
 		this.fetch({success: function (collection, response) {
 				waypointsArray = response;

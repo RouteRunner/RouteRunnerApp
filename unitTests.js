@@ -1,5 +1,5 @@
 describe('NotesCollectionView', function(){
-  describe('when a note is clicked', function(){
+  context('when a list item is added to a note', function(){
     var collection = $el = view = null;
 
     //setup the view
@@ -8,18 +8,18 @@ describe('NotesCollectionView', function(){
       collection.createCallCount = 0;
       collection.create = function(){
         this.createCallCount++;
-      }
+      };
       $el = $('<div />');
       view = new NotesCollectionView({
         collection: collection,
-        $el: el
+        el: $el
       });
       view.render();
     });
 
     //add an input & click button
     beforeEach(function(){
-      view.$('#notesInput').val('Some Test Input');
+      view.$('#notesInput').val('List Item');
       view.$('#tskBtn').click();
     })
 
@@ -28,14 +28,18 @@ describe('NotesCollectionView', function(){
       $el.remove();
     });
 
-    it('updates CSS');
-    it('resets input', function(){
-      expect(view.$('#notesInput').val()).to.eq('');
+    it('resets input field to nothing', function(){
+      chai.expect(view.$('#notesInput').val()).to.equal('');
     });
     it('adds new note to the collection', function(){
-      expect(view.collection.createCallCount).to.eq(1);
+      chai.expect(view.collection.createCallCount).to.equal(1);
     });
   })
+
+  context('when a list item is clicked', function(){
+    it('changes the status');
+  })
+
   describe('when the "clear" button is clicked', function(){
     it('removes "superDone" notes');
   })

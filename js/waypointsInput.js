@@ -13,7 +13,7 @@ var NotesItem = Backbone.Model.extend({
 		waypoint : ""
 	},
 	initialize : function () {
-		this.fetch();
+		//this.fetch();
 	},
 	toggleNote : function(){
 		if(this.get('status') === 'notDone'){
@@ -177,15 +177,18 @@ var OriginPointView = Backbone.View.extend({
 //create backbone model to store data about each waypoint/stop in route
 var Waypoint = Backbone.Model.extend({
 	defaults : {
+		id       : null,
 		location :  "",
 	},
 	initialize : function () {
-		this.fetch();
+		//this.fetch();
 	},
-	del : function () {
-		this.destroy({success: function() {
-			console.log("model destroyed");
-		}});
+	del : function () {this.destroy({
+			success: function() {
+				console.log("model destroyed");
+			},
+			wait: true
+		});
 	},
 	replaceName : function (str) {
 		this.set("location" , str);
@@ -242,9 +245,9 @@ var WaypointView = Backbone.View.extend({
 		//remove 1 item from array at index found for location
 		waypointsArray.splice(indexOfObjectToRemove, 1);
 
-		//removing flags
-		markerArray[indexOfObjectToRemove].setMap(null);
-		markerArray.splice(indexOfObjectToRemove,1);
+		// //removing flags
+		// markerArray[indexOfObjectToRemove].setMap(null);
+		// markerArray.splice(indexOfObjectToRemove,1);
 
 		//delete model and remove view
     	this.model.del();

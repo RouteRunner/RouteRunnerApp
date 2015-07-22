@@ -191,7 +191,7 @@ app.post('/notesCollection', function (req, res) {
 })
 
 //GET handler for fetching waypoint collection
-app.get('/waypointCollection', function (req, res) {
+app.get('/waypointCollection/', function (req, res) {
 	console.log("processing GET from '/waypointCollection'");
 	console.log('req.body:');
 	console.log(req.body);
@@ -210,9 +210,12 @@ app.get('/waypointCollection', function (req, res) {
 				res.end();
 			} else {
 				//rename 'location_name' key from DB to 'location' to match backbone
+				console.log('returnedWaypointRecords:');
+				console.log(returnedWaypointRecords);
+
 				var renamedWaypointRecords = [];
 				for (i = 0; i < returnedWaypointRecords.length; i++) {
-					renamedWaypointRecords.push({location : returnedWaypointRecords[i].location_name});
+					renamedWaypointRecords.push({location : returnedWaypointRecords[i].location_name, id : returnedWaypointRecords[i].id});
 				}
 
 				console.log("renamedWaypointRecords");
@@ -228,6 +231,16 @@ app.get('/waypointCollection', function (req, res) {
 		console.log("user not logged in, ending response")
 		res.end();
 	}
+})
+
+//GET handler for fetching waypoint
+app.get('/waypointCollection/:id', function (req, res) {
+	console.log("processing GET from '/waypointCollection/:id'");
+	console.log('req.body:');
+	console.log(req.body);
+	console.log('req.params:');
+	console.log(req.params);
+	res.end();
 })
 
 
@@ -266,6 +279,21 @@ app.post('/waypointCollection', function (req, res) {
 		//user not logged in, don't insert in DB, just end response
 		res.end();
 	}
+})
+
+app.delete('/waypointCollection/:id', function (req, res) {
+	console.log("processing DELETE from '/waypointCollection'");
+	console.log("req.params");
+	console.log(req.params);
+
+	//get id from url
+	var id = req.params.id;
+
+	//delete waypoint entry where id matches in DB
+	knex('waypoints').where({id:id}).del().then(function(){
+		console.log('waypoint deleted from DB');
+		res.end();
+	})
 })
 
 

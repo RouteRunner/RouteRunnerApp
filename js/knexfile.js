@@ -10,8 +10,8 @@ module.exports = {
  database : process.env.dbName     || config.dbName
 },
  pool: {
-   min: 1,
-   max: 10
+   min: 0,
+   max: 15
  },
  migrations: {
    tableName: 'knex_migrations'

@@ -78,7 +78,7 @@ var NotesCollectionView = Backbone.View.extend({
 			//add a new item to collection, pass in inputted string
 			if (str !== ''){
 			this.addToCollection(str);
-			$("#notesInput").val("");
+			this.$("#notesInput").val("");
 		}
 	},
 	addToCollection : function(str) {

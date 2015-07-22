@@ -1,12 +1,52 @@
 var map;
 var marker;
 var markerArray = [];
+var locationID;
 
 var rendererOptions = {
   draggable: true
 };
 var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);;
 var directionsService = new google.maps.DirectionsService();
+
+if(navigator.geolocation) {
+    browserSupportFlag = true;
+    navigator.geolocation.getCurrentPosition(function(position) {
+      initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
+       var geocoder = geocoder = new google.maps.Geocoder();
+
+            locationID = geocoder.geocode({ 'location': initialLocation }, function (results, status) {
+                if (status == google.maps.GeocoderStatus.OK) {
+                    if (results[1]) {
+                        locationID = results[1].formatted_address;
+                        originPointModel.setName(locationID);
+                        console.log(locationID);
+                    }
+                }
+            });
+      initialLocationID = new geocoder.geocode({'location': initialLocation});
+      map.setCenter(initialLocation);
+    }, function() {
+      handleNoGeolocation(browserSupportFlag);
+    });
+  }
+  // Browser doesn't support Geolocation
+  else {
+    browserSupportFlag = false;
+    handleNoGeolocation(browserSupportFlag);
+  }
+
+  function handleNoGeolocation(errorFlag) {
+    if (errorFlag == true) {
+      alert("Geolocation service failed.");
+      initialLocation = newyork;
+    } else {
+      alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
+      initialLocation = siberia;
+    }
+    map.setCenter(initialLocation);
+    console.log(initialLocation);
+  }
 
 function initialize() {
   var mapOptions = {
@@ -65,7 +105,6 @@ function initialize() {
 
     markerArray.push(marker);
 
-//Implementation of this is causing the error
     var bounds = new google.maps.LatLngBounds();
     for(i = 0; i < markerArray.length; i++) {
       bounds.extend(markerArray[i].getPlace().location);
@@ -74,7 +113,6 @@ function initialize() {
 
   });
 }
-
 
 $(function(){
   $('#routeIt').on('click', function (e) {

@@ -13,7 +13,7 @@ var NotesItem = Backbone.Model.extend({
 		waypoint : ""
 	},
 	initialize : function () {
-		this.fetch();
+		//this.fetch();
 	},
 	toggleNote : function(){
 		if(this.get('status') === 'notDone'){
@@ -181,7 +181,7 @@ var Waypoint = Backbone.Model.extend({
 		location :  "",
 	},
 	initialize : function () {
-		this.fetch();
+		//this.fetch();
 	},
 	del : function () {this.destroy({
 			success: function() {

@@ -70,7 +70,8 @@ function initialize() {
   autocomplete.bindTo('bounds', map);
 
   google.maps.event.addListener(autocomplete, 'place_changed', function() {
-    marker = new google.maps.Marker({
+
+      marker = new google.maps.Marker({
       animation: google.maps.Animation.DROP,
       map: map,
     });

@@ -264,7 +264,10 @@ var WaypointCollection = Backbone.Collection.extend({
 	url        : "/waypointCollection",
 	initialize : function () {
 		this.fetch({success: function (collection, response) {
-				waypointsArray = response;
+				//strip id's from response objects and save as waypointsArray for use in calcRoute
+				for (i = 0; i < response.length; i++) {
+					waypointsArray.push({location : response[i].location});
+				}
 			}
 		});
 	}

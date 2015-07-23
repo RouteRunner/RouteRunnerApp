@@ -267,6 +267,9 @@ var WaypointCollection = Backbone.Collection.extend({
 				//strip id's from response objects and save as waypointsArray for use in calcRoute
 				for (i = 0; i < response.length; i++) {
 					waypointsArray.push({location : response[i].location});
+					var tempEl = document.createElement('input');
+					tempEl.innerHTML = response[i].location;
+					buildMarker(tempEl);
 				}
 			}
 		});
@@ -287,9 +290,10 @@ var WaypointCollectionView = Backbone.View.extend({
 		"click #addBtn"  : "updateOnClick",
 	},
 	updateOnClick : function (e) {
+		marker.setVisible(true);
 
 		var str = this.$el.find("#locationNameInput").val();
-		marker.setVisible(true);
+
 		//add a new item to collection, pass in inputted string
 		if (str !== ''){
 			this.addToCollection(str);

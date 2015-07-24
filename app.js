@@ -6,8 +6,8 @@ var map,
   input,
   searchbox,
   autocomplete,
-  tempAuto;
-
+  tempAuto,
+  add;
 
 var rendererOptions = {
   draggable: true
@@ -27,6 +27,7 @@ function initialize() {
   directionsDisplay.setMap(map);
   directionsDisplay.setPanel(document.getElementById('directionsPanel'));
 
+  add = (document.getElementById('addBtn'));
   origin = (document.getElementById('originNameInput'));
   input = (document.getElementById('locationNameInput'));
   searchBox = new google.maps.places.SearchBox(input);
@@ -39,30 +40,17 @@ function initialize() {
 
   //geoLocate();
 
-  google.maps.event.addListener(autocomplete, 'place_changed', function() {
-    buildMarker();
-  });
-
-  google.maps.event.addListener(searchBox, 'places_changed', function() {
-    buildMarker();
-  });
+  google.maps.event.addDomListener(add, 'click', buildMarker);
 
 }
 
-function buildMarker(inputEl){
-  console.log("in buildMarker");
+function buildMarker(){
+  var place = autocomplete.getPlace();
 
   marker = new google.maps.Marker({
     animation: google.maps.Animation.DROP,
     map: map,
   });
-
-  if(!inputEl){
-    var place = autocomplete.getPlace();
-  }else{
-    tempAuto = new google.maps.places.Autocomplete(inputEl);
-    var place = tempAuto.getPlace();
-  }
 
   // Set the position of the marker using the place ID and location
   marker.setPlace({
@@ -83,9 +71,6 @@ function buildMarker(inputEl){
 $(function(){
   $('#routeIt').on('click', function (e) {
     calcRoute();
-    for(var i =0; i<markerArray.length; i++){
-      markerArray[i].setVisible(false)
-    }
   });
 });
 
@@ -97,14 +82,19 @@ function calcRoute() {
     optimizeWaypoints: true,
     travelMode: google.maps.TravelMode.DRIVING
   };
-
-  directionsService.route(request, function(response, status) {
-    if (status === google.maps.DirectionsStatus.OK) {
-      directionsDisplay.setDirections(response);
-
+  if(!originForExport){
+    $('#origin').modal('show');
+  }else{
+    for(var i =0; i<markerArray.length; i++){
+      markerArray[i].setVisible(false)
     }
-  });
-}
+    directionsService.route(request, function(response, status) {
+      if (status === google.maps.DirectionsStatus.OK) {
+        directionsDisplay.setDirections(response);
+      }
+    })
+  }
+};
 
 function computeTotalDistance(result) {
   var total = 0;

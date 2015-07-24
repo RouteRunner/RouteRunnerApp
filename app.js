@@ -62,10 +62,6 @@ function initialize() {
       label: 'origin'
     });
 
-    marker.setPlace({
-      placeId: place.place_id,
-      location: place.geometry.location,
-    });
     for(i = 0; i < centerArray.length; i++) {
       if(centerArray[i].label = 'origin'){
         centerArray[i].setMap(null);
@@ -142,7 +138,7 @@ function calcRoute() {
   if(!originForExport){
     $('#origin').modal('show');
   }else{
-    for(var i =0; i<markerArray.length; i++){
+    for(var i = 0; i < markerArray.length; i++){
       markerArray[i].setVisible(false)
     }
     directionsService.route(request, function(response, status) {

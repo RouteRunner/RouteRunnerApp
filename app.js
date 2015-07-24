@@ -50,18 +50,15 @@ function initialize() {
   google.maps.event.addDomListener(gpsBtn, 'click', geoLocate);
 
   google.maps.event.addDomListener(originBtn, 'click', function(){
-    var place = autoOrigin.getPlace();
+    place = autoOrigin.getPlace();
 
     marker = new google.maps.Marker({
-      animation: google.maps.Animation.DROP,
-      map: map,
+      animation : google.maps.Animation.DROP,
+      map       : map,
+      position  : {lat : place.geometry.location.A, lng : place.geometry.location.F},
       label: 'origin'
     });
 
-    marker.setPlace({
-      placeId: place.place_id,
-      location: place.geometry.location,
-    });
     for(i = 0; i < centerArray.length; i++) {
       if(centerArray[i].label = 'origin'){
         centerArray.splice(i, 1);
@@ -70,7 +67,7 @@ function initialize() {
     centerArray.push(marker);
     var bounds = new google.maps.LatLngBounds();
     for(i = 0; i < centerArray.length; i++) {
-      bounds.extend(centerArray[i].getPlace().location);
+      bounds.extend(centerArray[i].getPosition());
     }
     map.fitBounds(bounds);
 
@@ -80,14 +77,14 @@ function initialize() {
 
 /*helper funciton to build new marker, if no place is passed in, marker is created
   by grabbing entry from autocomplete bar, if placeInput is passed in marker is created using
-  lat,lng from that place object (JSON string)*/ 
+  lat,lng from that place object (JSON string)*/
 function buildMarker(placeInput){
   console.log("in buildMarker");
 
   //check to see if placeInput has been provided
   if(!placeInput){
     //no input, get place info from autocomplete.getPlace() and assign to global place var
-    place = autocomplete.getPlace();
+    place = autoInput.getPlace();
   }else{
     //input provided, assign passed in place object to global place var
     place = JSON.parse(placeInput);
@@ -133,7 +130,7 @@ function calcRoute() {
   if(!originForExport){
     $('#origin').modal('show');
   }else{
-    for(var i =0; i<markerArray.length; i++){
+    for(var i = 0; i < markerArray.length; i++){
       markerArray[i].setVisible(false)
     }
     directionsService.route(request, function(response, status) {
@@ -163,15 +160,10 @@ function geoLocate(){
         if (status == google.maps.GeocoderStatus.OK) {
           if (results[1]) {
             marker = new google.maps.Marker({
-              animation: google.maps.Animation.DROP,
-              map: map,
-              position: pos
-            });
-
-            //place = geocoder.getPlace();
-            marker.setPlace({
-              placeId: results[1].formatted_address,
-              location: pos
+              animation : google.maps.Animation.DROP,
+              map       : map,
+              position  : {lat : place.geometry.location.A, lng : place.geometry.location.F},
+              label: 'origin'
             });
 
            centerArray.push(marker);

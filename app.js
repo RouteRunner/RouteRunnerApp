@@ -50,18 +50,14 @@ function initialize() {
   google.maps.event.addDomListener(gpsBtn, 'click', geoLocate);
 
   google.maps.event.addDomListener(originBtn, 'click', function(){
-    var place = autoOrigin.getPlace();
+    place = autoOrigin.getPlace();
 
     marker = new google.maps.Marker({
-      animation: google.maps.Animation.DROP,
-      map: map,
-      label: 'origin'
+      animation : google.maps.Animation.DROP,
+      map       : map,
+      position  : {lat : place.geometry.location.A, lng : place.geometry.location.F},
     });
 
-    marker.setPlace({
-      placeId: place.place_id,
-      location: place.geometry.location,
-    });
     for(i = 0; i < centerArray.length; i++) {
       if(centerArray[i].label = 'origin'){
         centerArray.splice(i, 1);
@@ -70,7 +66,7 @@ function initialize() {
     centerArray.push(marker);
     var bounds = new google.maps.LatLngBounds();
     for(i = 0; i < centerArray.length; i++) {
-      bounds.extend(centerArray[i].getPlace().location);
+      bounds.extend(centerArray[i].getPosition);
     }
     map.fitBounds(bounds);
 
@@ -80,7 +76,7 @@ function initialize() {
 
 /*helper funciton to build new marker, if no place is passed in, marker is created
   by grabbing entry from autocomplete bar, if placeInput is passed in marker is created using
-  lat,lng from that place object (JSON string)*/ 
+  lat,lng from that place object (JSON string)*/
 function buildMarker(placeInput){
   console.log("in buildMarker");
 
@@ -107,8 +103,8 @@ function buildMarker(placeInput){
   //redefine bounds to include all current markers
   var bounds = new google.maps.LatLngBounds();
 
-  for(j = 0; j < markerArray.length; j++) {
-    bounds.extend(markerArray[j].getPosition());
+  for(j = 0; j < centerArray.length; j++) {
+    bounds.extend(centerArray[j].getPosition());
   }
 
   //apply new bounds to map
@@ -166,12 +162,6 @@ function geoLocate(){
               animation: google.maps.Animation.DROP,
               map: map,
               position: pos
-            });
-
-            //place = geocoder.getPlace();
-            marker.setPlace({
-              placeId: results[1].formatted_address,
-              location: pos
             });
 
            centerArray.push(marker);

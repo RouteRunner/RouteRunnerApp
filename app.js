@@ -11,8 +11,7 @@ var map,
   add,
   origin,
   browserSupportFlag =  new Boolean(),
-  place,
-  geocoder;
+  place;
 
 var rendererOptions = {
   draggable: true
@@ -54,11 +53,15 @@ function initialize() {
     place = autoOrigin.getPlace();
 
     marker = new google.maps.Marker({
-      animation : google.maps.Animation.DROP,
-      map       : map,
-      position  : {lat : place.geometry.location.A, lng : place.geometry.location.F},
+      animation: google.maps.Animation.DROP,
+      map: map,
+      label: 'origin'
     });
 
+    marker.setPlace({
+      placeId: place.place_id,
+      location: place.geometry.location,
+    });
     for(i = 0; i < centerArray.length; i++) {
       if(centerArray[i].label = 'origin'){
         centerArray.splice(i, 1);
@@ -67,7 +70,7 @@ function initialize() {
     centerArray.push(marker);
     var bounds = new google.maps.LatLngBounds();
     for(i = 0; i < centerArray.length; i++) {
-      bounds.extend(centerArray[i].getPosition());
+      bounds.extend(centerArray[i].getPlace().location);
     }
     map.fitBounds(bounds);
 
@@ -104,8 +107,8 @@ function buildMarker(placeInput){
   //redefine bounds to include all current markers
   var bounds = new google.maps.LatLngBounds();
 
-  for(j = 0; j < centerArray.length; j++) {
-    bounds.extend(centerArray[j].getPosition());
+  for(j = 0; j < markerArray.length; j++) {
+    bounds.extend(markerArray[j].getPosition());
   }
 
   //apply new bounds to map
@@ -155,18 +158,22 @@ function geoLocate(){
   if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-      geocoder = new google.maps.Geocoder();
-      locationID = geocoder.geocode({'location': pos}, function(results, status) {
+      var geocoder = new google.maps.Geocoder();
+      geocoder.geocode({'location': pos}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
           if (results[1]) {
             marker = new google.maps.Marker({
               animation: google.maps.Animation.DROP,
               map: map,
-              position: pos,
-              label: 'origin'
+              position: pos
             });
 
-           originPointModel.setName(locationID);
+            //place = geocoder.getPlace();
+            marker.setPlace({
+              placeId: results[1].formatted_address,
+              location: pos
+            });
+
            centerArray.push(marker);
            map.setCenter(pos);
          }

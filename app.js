@@ -16,7 +16,7 @@ var map,
 var rendererOptions = {
   draggable: true
 };
-var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);;
+var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 var directionsService = new google.maps.DirectionsService();
 
 //function used to initialize new map object

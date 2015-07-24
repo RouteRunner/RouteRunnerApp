@@ -1,4 +1,4 @@
-<!doctype html>
+!doctype html>
 <html>
   <head>
     <meta charset="utf-8">
@@ -23,25 +23,25 @@
   <body>
     <div class='navbar navbar-default navbar-fixed-top'>
       <div class="navbar-inner">
-    	   <div class='container'>
-    	    <div class='navbar-header'>
-    		      <a href='/' class='navbar-brand'><img id="logo" src="../img/logo.png" alt="Logo"></a>
-    		      <button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-collapse'>
-    			    <span class='sr-only'>Toggle navigation</span>
-    			    <span class='icon-bar'></span>
-    			    <span class='icon-bar'></span>
-    			    <span class='icon-bar'></span>
-    		      </button>
-    	      </div>
-      		  <ul class='nav navbar-nav navbar-right collapse navbar-collapse'>
+         <div class='container'>
+          <div class='navbar-header'>
+              <a href='/' class='navbar-brand'><img id="logo" src="../img/logo.png" alt="Logo"></a>
+              <button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-collapse'>
+              <span class='sr-only'>Toggle navigation</span>
+              <span class='icon-bar'></span>
+              <span class='icon-bar'></span>
+              <span class='icon-bar'></span>
+              </button>
+            </div>
+            <ul class='nav navbar-nav navbar-right collapse navbar-collapse'>
             <li><% if (username) { %>
             <a>You are logged in as <%= username %></a></li>
             <li><a href= '/logout'>Sign Out</a></li>
             <% } else { %>
             <li><a href='#login'data-toggle="modal" id=#signIn>Sign In</a><% } %></li>
-      			<li><% if (!username) { %><a href='#register' data-toggle='modal'>Register</a><% } %></li>
-      		</ul>
-    	   </div>
+            <li><% if (!username) { %><a href='#register' data-toggle='modal'>Register</a><% } %></li>
+          </ul>
+         </div>
        </div>
      </div>
 
@@ -58,30 +58,40 @@
       mocha.run();
     </script> -->
 
-      <div class="container">
-        <div class="row bot-buffer top-buffer" id="originRow">
-           <div class="col-md-2 pull-right">
-             <a href="#origin" data-toggle="modal"><button type="button" id="setOrigin" class="btn btn-warning btn-large btn-block">Set Origin</button></a>
-             <button type="button" class="btn btn-link" id="gpsBtn">Use Current GPS Location</button>
+    <div class="container">
+         <div class="row bot-buffer top-buffer">
+          <div class="row top-buffer col-md-2">
+            <button type="button" id="routeIt" class="btn btn-primary btn-large btn-block col-md-offset-4" onclick="showDiv()">Route It</button>
+
+<script type="text/javascript">
+  function showDiv() {
+     document.getElementById('dirList').style.display = "block";
+}
+</script>
+          
+          <a href="#directions" data-toggle="modal"><button type="button" id="dirList" class="btn btn-default btn-block col-md-offset-4" style="display:none">Directions</button></a>
+           </div>
           </div>
         </div>
+      <div class="container">
+        <div class="top-buffer">
+           <div class="col-md-2 col-md-offset-5" >
+             <a href="#origin" data-toggle="modal" ><button type="button" id="setOrigin" class="btn btn-warning btn-large btn-block ">Set Origin</button></a>
+          </div>
+          <div id="originRow" class="text-center"></div>
+      </div>
       </div>
       <div class="container">
-        <div id="destinations" class="row bot-buffer form-group col-md-4">
+        <div id="destinations" class="row bot-buffer form-group">
           <label for="usr"><h4>Destinations</h4></label>
           <div class="input-group" id="inputdiv"></div>
           <ol id="waypoint-list"></ol>
         </div>
-        <div class="col-md-7 col-md-offset-1">
+        <div class="col-md-10 col-md-offset-1">
           <div id="map-canvas"></div>
         </div>
-        <div class="col-md-2 pull-right">
-          <a href="#directions" data-toggle="modal"><button type="button" id="dirList" class="btn btn-default btn-block">Directions</button></a>
-       </div>
-        <div class="container">
-          <div class="row top-buffer pull-left col-md-2">
-            <button type="button" id="routeIt" class="btn btn-primary btn-large btn-block">Route It</button>
-          </div>
+        
+        
         </div>
       </div>
 
@@ -92,7 +102,7 @@
       </div>
 
       <div class="modal fade" id="origin" role="dialog">
-        <div class="modal-dialog">
+        <div class="modal-dialog col-md-offset-3">
           <div class="modal-content">
             <div class="modal-body" id="origindiv">
               <h4>Set Origin</h4>
@@ -117,27 +127,29 @@
       <div class="modal fade" id="login" role="dialog">
         <div class="modal-dialog">
           <div class="modal-content">
-            <div class="modal-body" id="logindiv">
-              <button class=" btn btn-default btn-sm pull-left" data-dismiss="modal">X</button>
-              <h4>Login</h4>
-              <form method= "post" action="/login" class="form-horizontal">
-                <div class="form-group">
-                  <label for="inputUser" class="control-label col-xs-4">Username:</label>
-                  <div class="col-xs-6">
-                    <input class="form-control" type="text" name="username" placeholder="Enter Your User Name" id="inputUser">
+            <!-- <form method= "post" action="/login"> -->
+              <div class="modal-body" id="logindiv">
+                <button class=" btn btn-default btn-sm pull-left" data-dismiss="modal">X</button>
+                <h4>Login</h4>
+                <form method= "post" action="/login" class="form-horizontal">
+                  <div class="form-group">
+                    <label for="inputUser" class="control-label col-xs-4">Username:</label>
+                    <div class="col-xs-6">
+                      <input class="form-control" type="text" name="username" placeholder="Enter Your User Name" id="inputUser">
+                    </div>
                   </div>
+                  <div class="form-group">
+                    <label for="inputPass" class="control-label col-xs-4">Password:</label>
+                    <div class="col-xs-6">
+                      <input class="form-control" type="password" name= "password" placeholder="Enter Your Password" id="inputPass">
+                  </div>
+                  </div>
+                  <div class="center-block">
+                    <input class="btn btn-default btn-primary center-block" type= "submit" value= "Login">
+                  </div>
+                </form>
                 </div>
-                <div class="form-group">
-                  <label for="inputPass" class="control-label col-xs-4">Password:</label>
-                  <div class="col-xs-6">
-                    <input class="form-control" type="password" name= "password" placeholder="Enter Your Password" id="inputPass">
-                </div>
-                </div>
-                <div class="center-block">
-                  <input class="btn btn-default btn-primary center-block" type= "submit" value= "Login">
-                </div>
-              </form>
-              </div>
+                <!-- </form> -->
             </div>
           </div>
         </div>
@@ -146,35 +158,33 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-body" id="registerdiv">
-              <button class=" btn btn-default btn-sm pull-left" data-dismiss="modal">X</button>
-              <h4>Register</h4>
-              <form method= "post" action="/register" class="form-horizontal">
-                <div class="form-group">
-                  <label for="inputUser" class="control-label col-xs-4">Username:</label>
-                  <div class="col-xs-6">
-                    <input class="form-control" type="text" name="username" placeholder="Enter Your User Name" id="inputUser">
-                  </div>
+              <form method= "post" action="/register">
+                <div>
+                  <label>
+                    Username:
+                    <input type="text" name= "username" placeholder="Enter a User Name">
+                  </label>
                 </div>
-                <div class="form-group">
-                  <label for="inputEmail" class="control-label col-xs-4">Email:</label>
-                  <div class="col-xs-6">
-                    <input class="form-control" type="text" name="username" placeholder="Enter Your Email" id="inputEmail">
-                  </div>
+                <div>
+                  <label>
+                    email:
+                    <input type="text" name= "email" placeholder="Enter an email Address">
+                  </label>
                 </div>
-                <div class="form-group">
-                  <label for="inputPass" class="control-label col-xs-4">Password:</label>
-                  <div class="col-xs-6">
-                    <input class="form-control" type="password" name="password" placeholder="Enter Your Password" id="inputPass">
-                  </div>
+                 <div>
+                  <label>
+                    Password:
+                    <input type="password" name= "password">
+                  </label>
                 </div>
-                <div class="form-group">
-                  <label for="confirmPass" class="control-label col-xs-4">Confirm Password:</label>
-                  <div class="col-xs-6">
-                    <input class="form-control" type="password" name="password_confirm" placeholder="Confirm Password" id="confirmPass">
-                  </div>
+                 <div>
+                  <label>
+                    Confirm Password:
+                    <input type="password" name= "password_confirm">
+                  </label>
                 </div>
-                <div class="center-block">
-                  <input class="btn btn-default btn-primary center-block" type= "submit" value= "Register">
+                <div class="row top-buffer vertical-center-row text-center col-md-4 col-md-offset-4">
+                  <input class="btn btn-primary btn-large btn-block" type= "submit" value= "Register">
                 </div>
               </form>
             </div>

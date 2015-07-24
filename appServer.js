@@ -247,7 +247,11 @@ app.get('/waypointCollection/', function (req, res) {
 				//rename 'location_name' key from DB to 'location' to match backbone
 				var renamedWaypointRecords = [];
 				for (i = 0; i < returnedWaypointRecords.length; i++) {
-					renamedWaypointRecords.push({location : returnedWaypointRecords[i].location_name, id : returnedWaypointRecords[i].id});
+					renamedWaypointRecords.push({
+						location : returnedWaypointRecords[i].location_name, 
+						id : returnedWaypointRecords[i].id,
+						place : returnedWaypointRecords[i].place,
+					});
 				}
 
 				//stringify and send renamedWaypointRecords array
@@ -280,6 +284,7 @@ app.post('/waypointCollection', function (req, res) {
 	console.log(req.body);
 
 	var location = req.body.location;
+	var place = req.body.place;
 
 	//insert waypoint if user logged in (cookie present)
  	if (req.cookies.username != undefined) {
@@ -295,6 +300,7 @@ app.post('/waypointCollection', function (req, res) {
 					knex('waypoints').insert({
 						username      : username,
 						location_name : location,
+						place         : place,
 					}).then(function() {
 						res.end();
 						})

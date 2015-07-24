@@ -1,12 +1,13 @@
 var map,
-  marker,
-  markerArray = [],
-  locationID,
-  origin,
-  input,
-  searchbox,
-  autocomplete,
-  tempAuto;
+    marker,
+    markerArray = [],
+    locationID,
+    origin,
+    input,
+    searchbox,
+    autocomplete,
+    //tempAuto,
+    place;
 
 
 var rendererOptions = {
@@ -15,6 +16,7 @@ var rendererOptions = {
 var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);;
 var directionsService = new google.maps.DirectionsService();
 
+//function used to initialize new map object
 function initialize() {
   var mapOptions = {
     center: {lat: 45.5200, lng: -122.6819},
@@ -49,33 +51,38 @@ function initialize() {
 
 }
 
-function buildMarker(inputEl){
+/*helper funciton to build new marker, if no place is passed in, marker is created
+  by grabbing entry from autocomplete bar, if placeInput is passed in marker is created using
+  lat,lng from that place object (JSON string)*/ 
+function buildMarker(placeInput){
   console.log("in buildMarker");
 
-  marker = new google.maps.Marker({
-    animation: google.maps.Animation.DROP,
-    map: map,
-  });
-
-  if(!inputEl){
-    var place = autocomplete.getPlace();
+  //check to see if placeInput has been provided
+  if(!placeInput){
+    //no input, get place info from autocomplete.getPlace() and assign to global place var
+    place = autocomplete.getPlace();
   }else{
-    tempAuto = new google.maps.places.Autocomplete(inputEl);
-    var place = tempAuto.getPlace();
+    //input provided, assign passed in place object to global place var
+    place = JSON.parse(placeInput);
   }
 
-  // Set the position of the marker using the place ID and location
-  marker.setPlace({
-    placeId: place.place_id,
-    location: place.geometry.location,
+  //create new marker, using location info from global place object
+  marker = new google.maps.Marker({
+    animation : google.maps.Animation.DROP,
+    map       : map,
+    position  : {lat : place.geometry.location.A, lng : place.geometry.location.F},
   });
-  marker.setVisible(false);
+
+  //push new marker onto markerArray
   markerArray.push(marker);
 
+  //redefine bounds to include all current markers
   var bounds = new google.maps.LatLngBounds();
-  for(i = 0; i < markerArray.length; i++) {
-    bounds.extend(markerArray[i].getPlace().location);
+  for(j = 0; j < markerArray.length; j++) {
+    bounds.extend(markerArray[j].getPosition());
   }
+
+  //apply new bounds to map
   map.fitBounds(bounds);
 
 };

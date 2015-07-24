@@ -182,6 +182,7 @@ var Waypoint = Backbone.Model.extend({
 	defaults : {
 		id       : null,
 		location :  "",
+		place    : {},
 	},
 	initialize : function () {
 		//this.fetch();
@@ -190,7 +191,7 @@ var Waypoint = Backbone.Model.extend({
 			success: function() {
 				console.log("model destroyed");
 			},
-			wait: true
+			//wait: true
 		});
 	},
 	replaceName : function (str) {
@@ -249,8 +250,8 @@ var WaypointView = Backbone.View.extend({
 		waypointsArray.splice(indexOfObjectToRemove, 1);
 
 		// //removing flags
-		// markerArray[indexOfObjectToRemove].setMap(null);
-		// markerArray.splice(indexOfObjectToRemove,1);
+		markerArray[indexOfObjectToRemove].setMap(null);
+		markerArray.splice(indexOfObjectToRemove,1);
 
 		//delete model and remove view
     	this.model.del();
@@ -264,12 +265,15 @@ var WaypointCollection = Backbone.Collection.extend({
 	url        : "/waypointCollection",
 	initialize : function () {
 		this.fetch({success: function (collection, response) {
+				console.log('response:');
+				console.log(response);
 				//strip id's from response objects and save as waypointsArray for use in calcRoute
 				for (i = 0; i < response.length; i++) {
 					waypointsArray.push({location : response[i].location});
-					var tempEl = document.createElement('input');
-					tempEl.innerHTML = response[i].location;
-					buildMarker(tempEl);
+					// var tempEl = document.createElement('input');
+					// tempEl.innerHTML = response[i].location;
+					//buildMarker(tempEl);
+					buildMarker(response[i].place);
 				}
 			}
 		});
@@ -303,7 +307,8 @@ var WaypointCollectionView = Backbone.View.extend({
 	addToCollection : function (str) {
 		// create new model, save to server and add to colleciton, triggers 'add' event in collection
 		this.collection.create({
-			location : str
+			location : str,
+			place    : place,
 			//view created/appended in 'addOne' method, called in 'add' event listener
 		});
 

@@ -6,10 +6,11 @@ var map,
   origin,
   input,
   searchbox,
-  autocomplete,
-  tempAuto,
-  add,
-  origin,
+  autoInput,
+  autoOrigin,
+  addBtn,
+  originBtn,
+  gpsBtn,
   browserSupportFlag =  new Boolean(),
   place;
 
@@ -53,8 +54,9 @@ function initialize() {
     place = autoOrigin.getPlace();
 
     marker = new google.maps.Marker({
-      animation: google.maps.Animation.DROP,
-      map: map,
+      animation : google.maps.Animation.DROP,
+      map       : map,
+      position  : {lat : place.geometry.location.A, lng : place.geometry.location.F},
       label: 'origin'
     });
 
@@ -64,13 +66,14 @@ function initialize() {
     });
     for(i = 0; i < centerArray.length; i++) {
       if(centerArray[i].label = 'origin'){
+        centerArray[i].setMap(null);
         centerArray.splice(i, 1);
       }
     }
     centerArray.push(marker);
     var bounds = new google.maps.LatLngBounds();
     for(i = 0; i < centerArray.length; i++) {
-      bounds.extend(centerArray[i].getPlace().location);
+      bounds.extend(centerArray[i].getPosition());
     }
     map.fitBounds(bounds);
 
@@ -83,11 +86,12 @@ function initialize() {
   lat,lng from that place object (JSON string)*/
 function buildMarker(placeInput){
   console.log("in buildMarker");
+  console.log(autoInput);
 
   //check to see if placeInput has been provided
   if(!placeInput){
     //no input, get place info from autocomplete.getPlace() and assign to global place var
-    place = autocomplete.getPlace();
+    place = autoInput.getPlace();
   }else{
     //input provided, assign passed in place object to global place var
     place = JSON.parse(placeInput);
@@ -98,6 +102,11 @@ function buildMarker(placeInput){
     animation : google.maps.Animation.DROP,
     map       : map,
     position  : {lat : place.geometry.location.A, lng : place.geometry.location.F},
+  });
+
+  marker.setPlace({
+    placeId: place.place_id,
+    location: place.geometry.location,
   });
 
   //push new marker onto markerArray
@@ -163,19 +172,27 @@ function geoLocate(){
         if (status == google.maps.GeocoderStatus.OK) {
           if (results[1]) {
             marker = new google.maps.Marker({
-              animation: google.maps.Animation.DROP,
-              map: map,
-              position: pos
+              animation : google.maps.Animation.DROP,
+              map       : map,
+              position  : pos,
+              label: 'origin'
             });
 
-            //place = geocoder.getPlace();
-            marker.setPlace({
-              placeId: results[1].formatted_address,
-              location: pos
-            });
+           locationID = results[1].formatted_address;
+           originPointModel.setName(locationID);
 
+           for(i = 0; i < centerArray.length; i++) {
+             if(centerArray[i].label = 'origin'){
+               centerArray[i].setMap(null);
+               centerArray.splice(i, 1);
+             }
+           }
            centerArray.push(marker);
-           map.setCenter(pos);
+           var bounds = new google.maps.LatLngBounds();
+           for(i = 0; i < centerArray.length; i++) {
+             bounds.extend(centerArray[i].getPosition());
+           }
+           map.fitBounds(bounds);
          }
        }
      });

@@ -135,7 +135,7 @@ var NotesCollectionView = Backbone.View.extend({
 var OriginPoint = Backbone.Model.extend({
 	urlRoot : "/origin",
 	defaults : {
-		originName : "Finding Current GPS location..."
+		originName : ""
 	},
 	initialize : function () {
 		console.log("initializing Origin Point, fetching...")

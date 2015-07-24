@@ -1,13 +1,16 @@
 var map,
   marker,
   markerArray = [],
+  centerArray = [],
   locationID,
   origin,
   input,
   searchbox,
   autocomplete,
   tempAuto,
-  add;
+  add,
+  origin,
+  browserSupportFlag =  new Boolean();
 
 var rendererOptions = {
   draggable: true
@@ -27,25 +30,54 @@ function initialize() {
   directionsDisplay.setMap(map);
   directionsDisplay.setPanel(document.getElementById('directionsPanel'));
 
-  add = (document.getElementById('addBtn'));
+  originBtn = (document.getElementById('originSubmit'));
+  addBtn = (document.getElementById('addBtn'));
+  gpsBtn = (document.getElementById('gpsBtn'));
   origin = (document.getElementById('originNameInput'));
   input = (document.getElementById('locationNameInput'));
   searchBox = new google.maps.places.SearchBox(input);
 
-  autocomplete = new google.maps.places.Autocomplete(origin);
-  autocomplete.bindTo('bounds', map);
+  autoOrigin = new google.maps.places.Autocomplete(origin);
+  autoOrigin.bindTo('bounds', map);
 
-  autocomplete = new google.maps.places.Autocomplete(input);
-  autocomplete.bindTo('bounds', map);
+  autoInput = new google.maps.places.Autocomplete(input);
+  autoInput.bindTo('bounds', map);
 
-  //geoLocate();
+  google.maps.event.addDomListener(addBtn, 'click', buildMarker);
 
-  google.maps.event.addDomListener(add, 'click', buildMarker);
+  google.maps.event.addDomListener(gpsBtn, 'click', geoLocate);
+
+  google.maps.event.addDomListener(originBtn, 'click', function(){
+    var place = autoOrigin.getPlace();
+
+    marker = new google.maps.Marker({
+      animation: google.maps.Animation.DROP,
+      map: map,
+      label: 'origin'
+    });
+
+    marker.setPlace({
+      placeId: place.place_id,
+      location: place.geometry.location,
+    });
+    for(i = 0; i < centerArray.length; i++) {
+      if(centerArray[i].label = 'origin'){
+        centerArray.splice(i, 1);
+      }
+    }
+    centerArray.push(marker);
+    var bounds = new google.maps.LatLngBounds();
+    for(i = 0; i < centerArray.length; i++) {
+      bounds.extend(centerArray[i].getPlace().location);
+    }
+    map.fitBounds(bounds);
+
+  });
 
 }
 
 function buildMarker(){
-  var place = autocomplete.getPlace();
+  var place = autoInput.getPlace();
 
   marker = new google.maps.Marker({
     animation: google.maps.Animation.DROP,
@@ -59,10 +91,11 @@ function buildMarker(){
   });
   marker.setVisible(false);
   markerArray.push(marker);
+  centerArray.push(marker);
 
   var bounds = new google.maps.LatLngBounds();
-  for(i = 0; i < markerArray.length; i++) {
-    bounds.extend(markerArray[i].getPlace().location);
+  for(i = 0; i < centerArray.length; i++) {
+    bounds.extend(centerArray[i].getPlace().location);
   }
   map.fitBounds(bounds);
 
@@ -106,48 +139,52 @@ function computeTotalDistance(result) {
   document.getElementById('total').innerHTML = total + ' km';
 }
 
-// function geoLocate(){
-//   if(navigator.geolocation) {
-//         browserSupportFlag = true;
-//         navigator.geolocation.getCurrentPosition(function(position) {
-//           initialLocation = new google.maps.LatLng(position.coords.latitude,position.coords.longitude);
-//           var geocoder = geocoder = new google.maps.Geocoder();
-//           locationID = geocoder.geocode({ 'location': initialLocation }, function (results, status) {
-//             if (status == google.maps.GeocoderStatus.OK) {
-//               if (results[1]) {
-//                   locationID = results[1].formatted_address;
-//                   originPointModel.setName(locationID);
-//               }
-//             }
-//           });
-//           initialLocationID = new geocoder.geocode({'location': initialLocation});
-//           marker = new google.maps.Marker({
-//             animation: google.maps.Animation.DROP,
-//             map: map,
-//             //position: initialLocation
-//           });
-//
-//           //markerArray.push(marker);
-//           map.setCenter(initialLocation);
-//
-//         }, function() {
-//           handleNoGeolocation(browserSupportFlag);
-//         });
-//       }else {
-//         browserSupportFlag = false;
-//         handleNoGeolocation(browserSupportFlag);
-//       }
-//       function handleNoGeolocation(errorFlag) {
-//         if (errorFlag == true) {
-//           alert("Geolocation service failed.");
-//           initialLocation = newyork;
-//         } else {
-//           alert("Your browser doesn't support geolocation. We've placed you in Siberia.");
-//           initialLocation = siberia;
-//         }
-//         map.setCenter(initialLocation);
-//         console.log(initialLocation);
-//       }
-// };
+function geoLocate(){
+  if(navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(function(position) {
+      var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      var geocoder = new google.maps.Geocoder();
+      geocoder.geocode({'location': pos}, function(results, status) {
+        if (status == google.maps.GeocoderStatus.OK) {
+          if (results[1]) {
+            marker = new google.maps.Marker({
+              animation: google.maps.Animation.DROP,
+              map: map,
+              position: pos
+            });
+
+            //place = geocoder.getPlace();
+            marker.setPlace({
+              placeId: results[1].formatted_address,
+              location: pos
+            });
+
+           centerArray.push(marker);
+           map.setCenter(pos);
+         }
+       }
+     });
+   }), function() {
+      handleNoGeolocation(true);
+    };
+  } else {
+    // Browser doesn't support Geolocation
+    handleNoGeolocation(false);
+  }
+}
+
+function handleNoGeolocation(errorFlag) {
+  if (errorFlag) {
+    var content = 'Error: The Geolocation service failed.';
+  } else {
+    var content = 'Error: Your browser doesn\'t support geolocation.';
+  }
+
+  var options = {
+    map: map,
+    position: new google.maps.LatLng(45.5200, -122.6819),
+    content: content
+  };
+};
 
 google.maps.event.addDomListener(window, 'load', initialize);

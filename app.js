@@ -46,7 +46,9 @@ function initialize() {
   autoInput = new google.maps.places.Autocomplete(input);
   autoInput.bindTo('bounds', map);
 
-  google.maps.event.addDomListener(addBtn, 'click', buildMarker);
+  google.maps.event.addDomListener(addBtn, 'click', function(){
+    buildMarker();
+  });
 
   google.maps.event.addDomListener(gpsBtn, 'click', geoLocate);
 
@@ -85,8 +87,6 @@ function initialize() {
   by grabbing entry from autocomplete bar, if placeInput is passed in marker is created using
   lat,lng from that place object (JSON string)*/
 function buildMarker(placeInput){
-  console.log("in buildMarker");
-  console.log(autoInput);
 
   //check to see if placeInput has been provided
   if(!placeInput){
@@ -104,10 +104,10 @@ function buildMarker(placeInput){
     position  : {lat : place.geometry.location.A, lng : place.geometry.location.F},
   });
 
-  marker.setPlace({
-    placeId: place.place_id,
-    location: place.geometry.location,
-  });
+  // marker.setPlace({
+  //   placeId: place.place_id,
+  //   location: place.geometry.location,
+  // });
 
   //push new marker onto markerArray
   markerArray.push(marker);
@@ -116,8 +116,8 @@ function buildMarker(placeInput){
   //redefine bounds to include all current markers
   var bounds = new google.maps.LatLngBounds();
 
-  for(j = 0; j < markerArray.length; j++) {
-    bounds.extend(markerArray[j].getPosition());
+  for(j = 0; j < centerArray.length; j++) {
+    bounds.extend(centerArray[j].getPosition());
   }
 
   //apply new bounds to map
@@ -169,32 +169,28 @@ function geoLocate(){
       var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
       var geocoder = new google.maps.Geocoder();
       geocoder.geocode({'location': pos}, function(results, status) {
-        if (status == google.maps.GeocoderStatus.OK) {
-          if (results[1]) {
-            marker = new google.maps.Marker({
-              animation : google.maps.Animation.DROP,
-              map       : map,
-              position  : pos,
-              label: 'origin'
-            });
+       marker = new google.maps.Marker({
+         animation : google.maps.Animation.DROP,
+         map       : map,
+         position  : pos,
+         label: 'origin'
+       });
 
-           locationID = results[1].formatted_address;
-           originPointModel.setName(locationID);
+      locationID = results[0].formatted_address;
+      originPointModel.setName(locationID);
 
-           for(i = 0; i < centerArray.length; i++) {
-             if(centerArray[i].label = 'origin'){
-               centerArray[i].setMap(null);
-               centerArray.splice(i, 1);
-             }
-           }
-           centerArray.push(marker);
-           var bounds = new google.maps.LatLngBounds();
-           for(i = 0; i < centerArray.length; i++) {
-             bounds.extend(centerArray[i].getPosition());
-           }
-           map.fitBounds(bounds);
-         }
-       }
+      for(i = 0; i < centerArray.length; i++) {
+        if(centerArray[i].label = 'origin'){
+          centerArray[i].setMap(null);
+          centerArray.splice(i, 1);
+        }
+      }
+      centerArray.push(marker);
+      var bounds = new google.maps.LatLngBounds();
+      for(i = 0; i < centerArray.length; i++) {
+        bounds.extend(centerArray[i].getPosition());
+      }
+      map.fitBounds(bounds);
      });
    }), function() {
       handleNoGeolocation(true);

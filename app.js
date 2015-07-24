@@ -11,7 +11,8 @@ var map,
   add,
   origin,
   browserSupportFlag =  new Boolean(),
-  place;
+  place,
+  geocoder;
 
 var rendererOptions = {
   draggable: true
@@ -66,7 +67,7 @@ function initialize() {
     centerArray.push(marker);
     var bounds = new google.maps.LatLngBounds();
     for(i = 0; i < centerArray.length; i++) {
-      bounds.extend(centerArray[i].getPosition);
+      bounds.extend(centerArray[i].getPosition());
     }
     map.fitBounds(bounds);
 
@@ -154,16 +155,18 @@ function geoLocate(){
   if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
       var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-      var geocoder = new google.maps.Geocoder();
-      geocoder.geocode({'location': pos}, function(results, status) {
+      geocoder = new google.maps.Geocoder();
+      locationID = geocoder.geocode({'location': pos}, function(results, status) {
         if (status == google.maps.GeocoderStatus.OK) {
           if (results[1]) {
             marker = new google.maps.Marker({
               animation: google.maps.Animation.DROP,
               map: map,
-              position: pos
+              position: pos,
+              label: 'origin'
             });
 
+           originPointModel.setName(locationID);
            centerArray.push(marker);
            map.setCenter(pos);
          }

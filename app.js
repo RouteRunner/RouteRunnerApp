@@ -100,22 +100,15 @@ function buildMarker(placeInput){
     position  : {lat : place.geometry.location.A, lng : place.geometry.location.F},
   });
 
-  // marker.setPlace({
-  //   placeId: place.place_id,
-  //   location: place.geometry.location,
-  // });
-
   //push new marker onto markerArray
   markerArray.push(marker);
   centerArray.push(marker);
 
   //redefine bounds to include all current markers
   var bounds = new google.maps.LatLngBounds();
-
   for(j = 0; j < centerArray.length; j++) {
     bounds.extend(centerArray[j].getPosition());
   }
-
   //apply new bounds to map
   map.fitBounds(bounds);
 

@@ -294,7 +294,7 @@ var WaypointCollectionView = Backbone.View.extend({
 		"click #addBtn"  : "updateOnClick",
 	},
 	updateOnClick : function (e) {
-		//marker.setVisible(true);
+		marker.setVisible(true);
 
 		var str = this.$el.find("#locationNameInput").val();
 

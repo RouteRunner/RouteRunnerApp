@@ -63,11 +63,13 @@ function initialize() {
     });
 
     for(i = 0; i < centerArray.length; i++) {
-      if(centerArray[i].label = 'origin'){
+      if(centerArray[i].label === 'origin'){
         centerArray[i].setMap(null);
         centerArray.splice(i, 1);
       }
     }
+    console.log("marker from Modal:");
+    console.log(marker);
     centerArray.push(marker);
     var bounds = new google.maps.LatLngBounds();
     for(i = 0; i < centerArray.length; i++) {
@@ -102,6 +104,8 @@ function buildMarker(placeInput){
 
   //push new marker onto markerArray
   markerArray.push(marker);
+  console.log("marker from buildMaker:");
+  console.log(marker);
   centerArray.push(marker);
 
   //redefine bounds to include all current markers
@@ -169,11 +173,14 @@ function geoLocate(){
       originPointModel.setName(locationID);
 
       for(i = 0; i < centerArray.length; i++) {
-        if(centerArray[i].label = 'origin'){
+        //console.log(centerArray[i]);
+        if(centerArray[i].label === 'origin'){
           centerArray[i].setMap(null);
           centerArray.splice(i, 1);
         }
       }
+      console.log("marker from GPS:");
+      console.log(marker);
       centerArray.push(marker);
       var bounds = new google.maps.LatLngBounds();
       for(i = 0; i < centerArray.length; i++) {

@@ -45,7 +45,9 @@ function initialize() {
   autoInput = new google.maps.places.Autocomplete(input);
   autoInput.bindTo('bounds', map);
 
-  google.maps.event.addDomListener(addBtn, 'click', buildMarker);
+  google.maps.event.addDomListener(addBtn, 'click', function(){
+    buildMarker();
+  });
 
   google.maps.event.addDomListener(gpsBtn, 'click', geoLocate);
 
@@ -53,8 +55,9 @@ function initialize() {
     var place = autoOrigin.getPlace();
 
     marker = new google.maps.Marker({
-      animation: google.maps.Animation.DROP,
-      map: map,
+      animation : google.maps.Animation.DROP,
+      map       : map,
+      position  : {lat : place.geometry.location.A, lng : place.geometry.location.F},
       label: 'origin'
     });
 
@@ -64,12 +67,10 @@ function initialize() {
         centerArray.splice(i, 1);
       }
     }
-    console.log("marker from Modal:");
-    console.log(marker);
     centerArray.push(marker);
     var bounds = new google.maps.LatLngBounds();
     for(i = 0; i < centerArray.length; i++) {
-      bounds.extend(centerArray[i].getPlace().location);
+      bounds.extend(centerArray[i].getPosition());
     }
     map.fitBounds(bounds);
 
@@ -81,12 +82,11 @@ function initialize() {
   by grabbing entry from autocomplete bar, if placeInput is passed in marker is created using
   lat,lng from that place object (JSON string)*/
 function buildMarker(placeInput){
-  console.log("in buildMarker");
 
   //check to see if placeInput has been provided
   if(!placeInput){
     //no input, get place info from autocomplete.getPlace() and assign to global place var
-    place = autocomplete.getPlace();
+    place = autoInput.getPlace();
   }else{
     //input provided, assign passed in place object to global place var
     place = JSON.parse(placeInput);
@@ -101,8 +101,6 @@ function buildMarker(placeInput){
 
   //push new marker onto markerArray
   markerArray.push(marker);
-  console.log("marker from buildMaker:");
-  console.log(marker);
   centerArray.push(marker);
 
   //redefine bounds to include all current markers
@@ -177,8 +175,6 @@ function geoLocate(){
           centerArray.splice(i, 1);
         }
       }
-      console.log("marker from GPS:");
-      console.log(marker);
       centerArray.push(marker);
       var bounds = new google.maps.LatLngBounds();
       for(i = 0; i < centerArray.length; i++) {

@@ -59,28 +59,24 @@
     </script> -->
 
       <div class="container">
-        <div class="row bot-buffer top-buffer" id="originRow">
-           <div class="col-md-2 pull-right">
-             <a href="#origin" data-toggle="modal"><button type="button" id="setOrigin" class="btn btn-warning btn-large btn-block">Set Origin</button></a>
-             <button type="button" class="btn btn-link" id="gpsBtn">Use Current GPS Location</button>
+         <div class="col-md-6 top-buffer">
+           <div class-"col-md-6" id="originRow">
+           </div>
+           <div class="btn-group top-buffer">
+             <button href="#origin" data-toggle="modal" type="button" id="setOrigin" class="btn btn-warning btn-large">Set Origin</button>
+             <button type="button" class="btn btn-default" id="gpsBtn">Use GPS Location</button>
+           </div>
+          <div class="top-buffer col-md-4" id="map-canvas"></div>
+        </div>
+        <div class="col-md-6 top-buffer">
+          <h3>Route</h3>
+          <div class="btn-group">
+            <button type="button" id="routeIt" class="btn btn-primary btn-large">Route It</button>
+            <button type="button" id="dirList" class="btn btn-default"><a href="#directions" data-toggle="modal">Directions</a></button>
           </div>
-        </div>
-      </div>
-      <div class="container">
-        <div id="destinations" class="row bot-buffer form-group col-md-4">
-          <label for="usr"><h4>Destinations</h4></label>
-          <div class="input-group" id="inputdiv"></div>
-          <ol id="waypoint-list"></ol>
-        </div>
-        <div class="col-md-7 col-md-offset-1">
-          <div id="map-canvas"></div>
-        </div>
-        <div class="col-md-2 pull-right">
-          <a href="#directions" data-toggle="modal"><button type="button" id="dirList" class="btn btn-default btn-block">Directions</button></a>
-       </div>
-        <div class="container">
-          <div class="row top-buffer pull-left col-md-2">
-            <button type="button" id="routeIt" class="btn btn-primary btn-large btn-block">Route It</button>
+          <div class="top-buffer" id="destinations">
+            <div class="input-group" id="inputdiv"></div>
+            <ol id="waypoint-list"></ol>
           </div>
         </div>
       </div>

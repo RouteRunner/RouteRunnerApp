@@ -135,7 +135,7 @@ var NotesCollectionView = Backbone.View.extend({
 var OriginPoint = Backbone.Model.extend({
 	urlRoot : "/origin",
 	defaults : {
-		originName : ""
+		originName : "Origin not currently set"
 	},
 	initialize : function () {
 		console.log("initializing Origin Point, fetching...")
@@ -159,7 +159,7 @@ var OriginPointView = Backbone.View.extend({
 	},
 	initialize : function() {
 		this.model.on("change", this.render, this);
-		var originName = '<div class="col-md-4 pull-right">' + '<h4>Origin: </h4><span id="inputOrigin"></span>' + '</div>';
+		var originName = '<h3>Origin: </h3><span id="inputOrigin"></span>';
 		var originNameInput = '<input class="form-control" id=originNameInput type="search" placeholder="Enter Origin Here..." />';
 		var submitBtn = '<div class="modal-footer"><button class="btn btn-default" data-dismiss="modal" id="originSubmit">Submit</button></div>';
 		$("#originRow").append(originName);
@@ -284,7 +284,7 @@ var WaypointCollection = Backbone.Collection.extend({
 var WaypointCollectionView = Backbone.View.extend({
 	render : function () {
 		var locationNameInput = '<input class="form-control" id=locationNameInput type="search" placeholder="Enter New Waypoint Here..." />';
-		var addBtn = '<span class="input-group-btn"><button type="button" class="btn btn-warning" id="addBtn"> Add</button></span>';
+		var addBtn = '<span class="input-group-btn"><button type="button" class="btn btn-primary btn-round btn-outline" id="addBtn"><i class="glyphicon glyphicon-plus"></i></button></span>';
     	this.$el.html(addBtn + locationNameInput);
 	},
 	initialize : function () {

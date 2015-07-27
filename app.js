@@ -120,12 +120,6 @@ $(function(){
   });
 });
 
-$(function(){
-  $('#routeIt').on('click', function (e) {
-    calcRoute();
-  });
-});
-
 function calcRoute() {
   var request = {
     origin: originForExport,

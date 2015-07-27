@@ -37,7 +37,7 @@ app.get('/', function (req, res) {
   //   }
 
   	//set user name from cookie if present
- 	var username = getUsernameFromCookie();
+ 	var username = getUsernameFromCookie(req);
 
     //render home.html, sending username to insert into template
     res.render('home.html', {username:username});
@@ -59,7 +59,7 @@ app.get('/origin', function (req, res) {
  //    	username = req.cookies.username;
 
  	//set user name from cookie if present
- 	var username = getUsernameFromCookie();
+ 	var username = getUsernameFromCookie(req);
 
  	//search DB for user's origin if cookie present (user logged in)
  	if (username) {
@@ -94,7 +94,7 @@ app.post('/origin', function (req, res) {
  //    	username = req.cookies.username;
 
   	//set user name from cookie if present
- 	var username = getUsernameFromCookie();
+ 	var username = getUsernameFromCookie(req);
 
  	//update origin for user in DB if cookie present (user logged in)
  	if (username) {
@@ -130,7 +130,7 @@ app.get('/notesCollection', function (req, res) {
 	// 	username = req.cookies.username;
 
 	//set user name from cookie if present
- 	var username = getUsernameFromCookie();
+ 	var username = getUsernameFromCookie(req);
 
  	//serach DB for notes collection if cookie present (user logged in)
  	if (username) {
@@ -180,7 +180,7 @@ app.post('/notesCollection', function (req, res) {
  //    	username = req.cookies.username;
 
    	//set user name from cookie if present
- 	var username = getUsernameFromCookie();
+ 	var username = getUsernameFromCookie(req);
 
  	//insert new note into DB if cookiet present (user logged in)
  	if (username) {
@@ -219,7 +219,7 @@ app.put('/notesCollection/:id', function (req, res) {
  //    	username = req.cookies.username;
 
    	//set user name from cookie if present
- 	var username = getUsernameFromCookie();
+ 	var username = getUsernameFromCookie(req);
 
  	//update note entry in DB if cookie present (user logged in)
  	if (username) {
@@ -268,7 +268,7 @@ app.get('/waypointCollection/', function (req, res) {
 	// 	username = req.cookies.username;
 
 	//set user name from cookie if present
- 	var username = getUsernameFromCookie();
+ 	var username = getUsernameFromCookie(req);
 
  	//search DB for waypoint collection for user if cookie present (user logged in)
  	if (username) {
@@ -329,7 +329,7 @@ app.post('/waypointCollection', function (req, res) {
  //    	username = req.cookies.username;
 
    	//set user name from cookie if present
- 	var username = getUsernameFromCookie();
+ 	var username = getUsernameFromCookie(req);
 
  	//insert waypoint into DB if cookie present (user logged in)
  	if (username) {
@@ -385,7 +385,7 @@ app.get('/register', function (req, res) {
  //    }
 
    	//set user name from cookie if present
- 	var username = getUsernameFromCookie();
+ 	var username = getUsernameFromCookie(req);
 
     res.render('register.html', {username:username});
 });
@@ -536,7 +536,7 @@ app.get('/logout', function (req, res) {
 })
 
 //helper function to set username to username from cookie, returns null if no cookie present
-var getUsernameFromCookie = function () {
+var getUsernameFromCookie = function (req) {
 
 	var usernameFromCookie = null;
 

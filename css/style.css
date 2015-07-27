@@ -114,7 +114,7 @@ h5
 
 .waypointName {
   margin-left: 45px;
-  padding-top: 6px;
+  padding-top: 4px;
 }
 
 .superDone {
@@ -144,6 +144,15 @@ h5
 #gpsBtn {
   color: #e9862f;
 }
+
+#delBtn {
+  border: none;
+}
+
+/*#openNotes {
+  color: #e9862f;
+  border:1px solid #e9862f;
+}*/
 
 .menu_button {
     min-width: 150px !important;

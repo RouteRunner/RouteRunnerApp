@@ -209,8 +209,8 @@ var WaypointView = Backbone.View.extend({
 		//remove spaces and commas
 		uniqueName = uniqueName.replace(/[,\s]+/g, '');
 
-		var noteBtn = '<div class="pull-left"><a class="pull-left" href="#' + uniqueName + '" data-toggle="modal"><button type="button" id="openNotes" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></button></a></div>';
-		var locationName = '<h4>' + this.model.get("location") + '</h4>';
+		var noteBtn = '<div class="pull-left"><a href="#' + uniqueName + '" data-toggle="modal"><button type="button" id="openNotes" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></button></a></div>';
+		var locationName = '<h4 class="waypointName">' + this.model.get("location") + '</h4>';
 		var delBtn = '<div class="pull-right"><button type="button" class="btn btn-default btn-sm" id="delBtn"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true"></span></button></div>';
 		this.$el.html(noteBtn + delBtn + locationName);
 
@@ -317,7 +317,7 @@ var WaypointCollectionView = Backbone.View.extend({
 	},
 	addOne : function (model) {
 		// create view for new model
-        var view = new WaypointView({model : model, tagName : "li"});
+        var view = new WaypointView({model : model, tagName : "li", className : "waypointStyle"});
 
         //render new view
         view.render();

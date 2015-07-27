@@ -106,6 +106,17 @@ h5
   list-style-type: none;
 }
 
+.waypointStyle {
+  margin-bottom: 15px;
+  margin-left: 22px;
+  text-align: left;
+}
+
+.waypointName {
+  margin-left: 45px;
+  padding-top: 6px;
+}
+
 .superDone {
   color: #bbb;
   text-decoration: line-through;
@@ -123,7 +134,7 @@ h5
 }
 
 #addBtn {
-    border-radius: 30%;
+    border-radius: 25%;
     background: none;
     margin-right: 5px;
     border: 2px solid #0099cc;
@@ -139,12 +150,6 @@ h5
     max-width: 1800px !important;
 }
 
-.btn.outline {
-
-}
-.btn-primary.outline {
-
-}
 .btn-primary.outline:hover, .btn-primary.outline:focus, .btn-primary.outline:active, .btn-primary.outline.active, .open > .dropdown-toggle.btn-primary {
     color: #33a6cc;
     border-color: #33a6cc;

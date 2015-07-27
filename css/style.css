@@ -44,7 +44,7 @@ body {
     font-family: 'PT Sans', sans-serif;
     background-color: #F2EDD7;
     text-align:center;
-    padding-top: 80px;
+    padding-top: 60px;
     padding-bottom: 80px;
 }
 
@@ -74,7 +74,7 @@ h5
 }
 
 #logo {
-  height: 35px;
+  height: 33px;
   margin-top: -0.4em;
 }
 
@@ -120,4 +120,37 @@ h5
   margin: 10px 5px 10px 25px;
   padding: 0;
   list-style-type: none;
+}
+
+#addBtn {
+    border-radius: 30%;
+    background: none;
+    margin-right: 5px;
+    border: 2px solid #0099cc;
+    color: #0099cc;
+}
+
+#gpsBtn {
+  color: #e9862f;
+}
+
+.menu_button {
+    min-width: 150px !important;
+    max-width: 1800px !important;
+}
+
+.btn.outline {
+
+}
+.btn-primary.outline {
+
+}
+.btn-primary.outline:hover, .btn-primary.outline:focus, .btn-primary.outline:active, .btn-primary.outline.active, .open > .dropdown-toggle.btn-primary {
+    color: #33a6cc;
+    border-color: #33a6cc;
+}
+.btn-primary.outline:active, .btn-primary.outline.active {
+    border-color: #007299;
+    color: #007299;
+    box-shadow: none;
 }

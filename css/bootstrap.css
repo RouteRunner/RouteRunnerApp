@@ -3124,8 +3124,8 @@ fieldset[disabled] .btn-default.active {
 }
 .btn-primary {
   color: #fff;
-  background-color: #337ab7;
-  border-color: #2e6da4;
+  background-color: #0099cc;
+  border-color: #0099cc;
 }
 .btn-primary:focus,
 .btn-primary.focus {
@@ -3454,7 +3454,7 @@ fieldset[disabled] .btn-danger.active {
 }
 .btn-link {
   font-weight: normal;
-  color: #337ab7;
+  color: #0099cc;
   border-radius: 0;
 }
 .btn-link,

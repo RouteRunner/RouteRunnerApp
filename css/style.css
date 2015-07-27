@@ -44,7 +44,7 @@ body {
     font-family: 'PT Sans', sans-serif;
     background-color: #F2EDD7;
     text-align:center;
-    padding-top: 80px;
+    padding-top: 60px;
     padding-bottom: 80px;
 }
 
@@ -128,6 +128,15 @@ h5
     margin-right: 5px;
     border: 2px solid #0099cc;
     color: #0099cc;
+}
+
+#gpsBtn {
+  color: #e9862f;
+}
+
+.menu_button {
+    min-width: 150px !important;
+    max-width: 1800px !important;
 }
 
 .btn.outline {

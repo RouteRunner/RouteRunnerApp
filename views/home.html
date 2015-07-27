@@ -60,19 +60,18 @@
 
       <div class="container">
          <div class="col-md-6 top-buffer">
-           <div class-"col-md-6" id="originRow">
+           <div class="btn-group">
+             <button href="#origin" data-toggle="modal" type="button" id="setOrigin" class="btn btn-warning menu_button">Set Origin</button>
+             <button type="button" class="btn btn-default menu_button" id="gpsBtn">Use GPS Location</button>
            </div>
-           <div class="btn-group top-buffer">
-             <button href="#origin" data-toggle="modal" type="button" id="setOrigin" class="btn btn-warning btn-large">Set Origin</button>
-             <button type="button" class="btn btn-default" id="gpsBtn">Use GPS Location</button>
+           <div id="originRow">
            </div>
-          <div class="top-buffer col-md-4" id="map-canvas"></div>
+          <div class="col-md-4" id="map-canvas"></div>
         </div>
-        <div class="col-md-6 top-buffer">
-          <h3>Route</h3>
-          <div class="btn-group">
-            <button type="button" id="routeIt" class="btn btn-primary btn-large">Route It</button>
-            <button type="button" id="dirList" class="btn btn-default"><a href="#directions" data-toggle="modal">Directions</a></button>
+        <div class="col-md-6">
+          <div class="btn-group top-buffer">
+            <button type="button" id="routeIt" class="btn btn-primary menu_button">Route It</button>
+            <button type="button" id="dirList" class="btn btn-default menu_button"><a href="#directions" data-toggle="modal">Directions</a></button>
           </div>
           <div class="top-buffer" id="destinations">
             <div class="input-group" id="inputdiv"></div>

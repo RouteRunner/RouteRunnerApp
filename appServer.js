@@ -21,6 +21,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname));
 app.engine('html', require('ejs').renderFile);
 
+
+/***************************** HOME PAGE ***************************************/
+
 // GET handler for serving home page
 app.get('/', function (req, res) {
 	console.log("processing GET from '/'");
@@ -37,18 +40,8 @@ app.get('/', function (req, res) {
     res.render('home.html', {username:username});
 });
 
-//GET handler for logging out
-app.get('/logout', function (req, res) {
-	console.log('processing GET from /logout');
-	console.log('req.body:');
-	console.log(req.body);
 
-	//delete cookie
-	res.clearCookie('username');
-
-	//redirect back to home page
-	res.redirect('/');
-})
+/***************************** ORIGIN ROUTES ***************************************/
 
 //GET handler for fetching Origin backbone model when it initializes
 app.get('/origin', function (req, res) {
@@ -103,6 +96,10 @@ app.post('/origin', function (req, res) {
 		res.end();
 	}
 })
+
+
+
+/***************************** NOTES COLLECTION ROUTES ***************************************/
 
 //GET handler for fetching notes collection, uses unique waypoint from url query string
 app.get('/notesCollection', function (req, res) {
@@ -225,6 +222,9 @@ app.delete('/notesCollection/:id', function (req, res) {
 	})
 })
 
+
+/***************************** WAYPOINT COLLECTION ROUTES ***************************************/
+
 //GET handler for fetching waypoint collection
 app.get('/waypointCollection/', function (req, res) {
 	console.log("processing GET from '/waypointCollection'");
@@ -332,9 +332,11 @@ app.delete('/waypointCollection/:id', function (req, res) {
 })
 
 
+/***************************** LOGIN/REGISTER/VERIFICATION ROUTES ***************************************/
+
 //GET handler for serving register page
 app.get('/register', function (req, res) {
-	 //get username from cookie in request, if user is logged in
+	//get username from cookie in request, if user is logged in
  	var username = null;
  	if (req.cookies.username != undefined) {
  		username = req.cookies.username;
@@ -342,44 +344,9 @@ app.get('/register', function (req, res) {
     res.render('register.html', {username:username});
 });
 
-//POST handler for logging in from form on home page
-app.post('/login', function(req, res) {
-	console.log("processing POST from '/login'");
-	console.log("req.body");
-	console.log(req.body);
-
-	var username = req.body.username,
-	  	password = req.body.password;
-
-	var pass = require('pwd');
-	pass.hash(password, function(err, salt, hash) {
-		knex('users').where({'username': username}).then(function(returnedUserRecords) {
-			if (returnedUserRecords.length === 0) {
-				//popup alert box? "No Such User"
-			} else {
-				//user was found in DB, pull out first one from array
-			    var user = returnedUserRecords[0];
-
-			    //create hash for entered password
-	      		var pass = require('pwd');
-	      		pass.hash(password, user.salt, function(err, hash) {
-	      			//check new password hash against password from DB
-	      			if(user.passwordhash === hash) {
-	      				//password hashes match, log user in (set cookie)
-	          			res.cookie('username', username);
-	          			res.redirect('/');
-	        		} else {
-	        			//popup alert box? "Incorrect Password"
-					}
-				})
-			}
-	  	})
-	})
-});
-
-
 //POST handler for registering new user
 app.post('/register', function(request, response) {
+  
   //get inputs from request
   var username = request.body.username,
       password = request.body.password,
@@ -441,15 +408,11 @@ app.post('/register', function(request, response) {
 		});
 	});
 
-	//render thankyou page after email sent
-	response.render("thankyou.html");
-
   } else { //password and password verify did not match
   	console.log('passwords do not match')
   	response.redirect("/");
   }
 });
-
 
 //GET handler for email verification
 app.get('/verify_email/:nonce', function(request, response) {
@@ -477,5 +440,55 @@ app.get('/verify_email/:nonce', function(request, response) {
 		})
 	})
 });
+
+//POST handler for logging in from form on home page
+app.post('/login', function(req, res) {
+	console.log("processing POST from '/login'");
+	console.log("req.body");
+	console.log(req.body);
+
+	var username = req.body.username,
+	  	password = req.body.password;
+
+	var pass = require('pwd');
+	pass.hash(password, function(err, salt, hash) {
+		knex('users').where({'username': username}).then(function(returnedUserRecords) {
+			if (returnedUserRecords.length === 0) {
+				//popup alert box? "No Such User"
+			} else {
+				//user was found in DB, pull out first one from array
+			    var user = returnedUserRecords[0];
+
+			    //create hash for entered password
+	      		var pass = require('pwd');
+	      		pass.hash(password, user.salt, function(err, hash) {
+	      			//check new password hash against password from DB
+	      			if(user.passwordhash === hash) {
+	      				//password hashes match, log user in (set cookie)
+	          			res.cookie('username', username);
+	          			res.redirect('/');
+	        		} else {
+	        			//popup alert box? "Incorrect Password"
+					}
+				})
+			}
+	  	})
+	})
+});
+
+//GET handler for logging out
+app.get('/logout', function (req, res) {
+	console.log('processing GET from /logout');
+	console.log('req.body:');
+	console.log(req.body);
+
+	//delete cookie
+	res.clearCookie('username');
+
+	//redirect back to home page
+	res.redirect('/');
+})
+
+
 
 app.listen(process.env.PORT || 3000);

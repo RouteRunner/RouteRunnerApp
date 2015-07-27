@@ -30,7 +30,7 @@ app.get('/', function (req, res) {
 	console.log('req.body:');
 	console.log(req.body);
 
- 	// //get username from cookie in request, if user is logged in
+ 	// //get username from cookie in req, if user is logged in
  	// var username = null;
  	// if (req.cookies.username != undefined) {
   //   	username = req.cookies.username;
@@ -378,7 +378,7 @@ app.delete('/waypointCollection/:id', function (req, res) {
 
 //GET handler for serving register page
 app.get('/register', function (req, res) {
-	// //get username from cookie in request, if user is logged in
+	// //get username from cookie in req, if user is logged in
  // 	var username = null;
  // 	if (req.cookies.username != undefined) {
  // 		username = req.cookies.username;
@@ -391,13 +391,13 @@ app.get('/register', function (req, res) {
 });
 
 //POST handler for registering new user
-app.post('/register', function(request, response) {
+app.post('/register', function(req, res) {
   
-  //get inputs from request
-  var username = request.body.username,
-      password = request.body.password,
-      password_confirm = request.body.password_confirm,
-      email = request.body.email;
+  //get inputs from req
+  var username = req.body.username,
+      password = req.body.password,
+      password_confirm = req.body.password_confirm,
+      email = req.body.email;
 
 
   if (password === password_confirm) {
@@ -445,25 +445,25 @@ app.post('/register', function(request, response) {
 			    if(error){
 			        console.log(error);
 			    }else{
-			        console.log('Message sent: ' + info.response);
+			        console.log('Message sent: ' + info.res);
 			    }
 			});
 
 			//render thankyou page after email is sent
-			response.render("thankyou.html");
+			res.render("thankyou.html");
 		});
 	});
 
   } else { //password and password verify did not match
   	console.log('passwords do not match')
-  	response.redirect("/");
+  	res.redirect("/");
   }
 });
 
 //GET handler for email verification
-app.get('/verify_email/:nonce', function(request, response) {
+app.get('/verify_email/:nonce', function(req, res) {
 	//database = app.get('database');
-	var returnedNonce = request.params.nonce;
+	var returnedNonce = req.params.nonce;
 	console.log("returnedNonce:");
 	console.log(returnedNonce);
 
@@ -480,8 +480,8 @@ app.get('/verify_email/:nonce', function(request, response) {
 			//delete nonce from userstoadd
 			knex('userstoadd').where({nonce:returnedNonce}).del().then(function(){
 				//log user in by setting cookie, and redirect to home page
-				response.cookie('username', user.username)
-				response.redirect('/');
+				res.cookie('username', user.username)
+				res.redirect('/');
 			})
 		})
 	})

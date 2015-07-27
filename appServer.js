@@ -30,11 +30,14 @@ app.get('/', function (req, res) {
 	console.log('req.body:');
 	console.log(req.body);
 
- 	//get username from cookie in request, if user is logged in
- 	var username = null;
- 	if (req.cookies.username != undefined) {
-    	username = req.cookies.username;
-    }
+ 	// //get username from cookie in request, if user is logged in
+ 	// var username = null;
+ 	// if (req.cookies.username != undefined) {
+  //   	username = req.cookies.username;
+  //   }
+
+  	//set user name from cookie if present
+ 	var username = getUsernameFromCookie();
 
     //render home.html, sending username to insert into template
     res.render('home.html', {username:username});
@@ -49,12 +52,17 @@ app.get('/origin', function (req, res) {
 	console.log('req.body:');
 	console.log(req.body);
 
-	var username = null;
- 	if (req.cookies.username != undefined) {
+	// var username = null;
+ // 	if (req.cookies.username != undefined) {
 
- 		//set username from cookie
-    	username = req.cookies.username;
+ // 		//set username from cookie
+ //    	username = req.cookies.username;
 
+ 	//set user name from cookie if present
+ 	var username = getUsernameFromCookie();
+
+ 	//search DB for user's origin if cookie present (user logged in)
+ 	if (username) {
 		//do knex query for username entry in users table
 		knex('users').where({'username': username}).then(function(returnedUserRecords) {
 			if (returnedUserRecords.length === 0) {
@@ -78,12 +86,18 @@ app.post('/origin', function (req, res) {
 	console.log("req.body:");
 	console.log(req.body);
 
-	//insert origin for user if logged in (cookie present)
-	var username = null;
- 	if (req.cookies.username != undefined) {
+	// //insert origin for user if logged in (cookie present)
+	// var username = null;
+ // 	if (req.cookies.username != undefined) {
 
-    	//get username from cookie
-    	username = req.cookies.username;
+ //    	//get username from cookie
+ //    	username = req.cookies.username;
+
+  	//set user name from cookie if present
+ 	var username = getUsernameFromCookie();
+
+ 	//update origin for user in DB if cookie present (user logged in)
+ 	if (username) {
 
     	//insert origin for user in DB
 		knex('users').where({username:username}).update({
@@ -109,12 +123,17 @@ app.get('/notesCollection', function (req, res) {
 
 	var waypoint = req.query.waypoint;
 
-	var username = null;
-	if (req.cookies.username != undefined) {
+	// var username = null;
+	// if (req.cookies.username != undefined) {
 
-		//set username from cookie
-		username = req.cookies.username;
+	// 	//set username from cookie
+	// 	username = req.cookies.username;
 
+	//set user name from cookie if present
+ 	var username = getUsernameFromCookie();
+
+ 	//serach DB for notes collection if cookie present (user logged in)
+ 	if (username) {
 		//do knex query for username entry in users table
 		knex('notes').where({'username': username, 'waypoint' : waypoint}).then(function(returnedUserRecords) {
 			if (returnedUserRecords.length === 0) {
@@ -133,7 +152,7 @@ app.get('/notesCollection', function (req, res) {
 	}
 })
 
-//GET handler for fetching notes
+//GET handler for fetching notes individually by id
 app.get('/notesCollection/:id', function (req, res) {
 	console.log("processing GET from '/notesCollection/:id'");
 	console.log('req.body:');
@@ -154,12 +173,17 @@ app.post('/notesCollection', function (req, res) {
 		username = null,
 		waypoint = req.body.waypoint;
 
-	//insert note if user logged in (cookie present)
- 	if (req.cookies.username != undefined) {
+	// //insert note if user logged in (cookie present)
+ // 	if (req.cookies.username != undefined) {
 
-    	//get username from cookie
-    	username = req.cookies.username;
+ //    	//get username from cookie
+ //    	username = req.cookies.username;
 
+   	//set user name from cookie if present
+ 	var username = getUsernameFromCookie();
+
+ 	//insert new note into DB if cookiet present (user logged in)
+ 	if (username) {
     	//insert new note into db
     	knex('notes').returning('id')
     		.insert({
@@ -188,11 +212,17 @@ app.put('/notesCollection/:id', function (req, res) {
 	var	id = req.params.id;
 	var status = req.body.status;
 
-	//insert note if user logged in (cookie present)
- 	if (req.cookies.username != undefined) {
+	// //insert note if user logged in (cookie present)
+ // 	if (req.cookies.username != undefined) {
 
-    	//get username from cookie
-    	username = req.cookies.username;
+ //    	//get username from cookie
+ //    	username = req.cookies.username;
+
+   	//set user name from cookie if present
+ 	var username = getUsernameFromCookie();
+
+ 	//update note entry in DB if cookie present (user logged in)
+ 	if (username) {
 
     	//update status of existing note, matched by id
     	knex('notes').where({id : id})
@@ -231,11 +261,17 @@ app.get('/waypointCollection/', function (req, res) {
 	console.log('req.body:');
 	console.log(req.body);
 
-	var username = null;
-	if (req.cookies.username != undefined) {
+	// var username = null;
+	// if (req.cookies.username != undefined) {
 
-		//set username from cookie
-		username = req.cookies.username;
+	// 	//set username from cookie
+	// 	username = req.cookies.username;
+
+	//set user name from cookie if present
+ 	var username = getUsernameFromCookie();
+
+ 	//search DB for waypoint collection for user if cookie present (user logged in)
+ 	if (username) {
 
 		//do knex query for username entry in users table
 		knex('waypoints').where({'username': username}).then(function(returnedWaypointRecords) {
@@ -266,7 +302,7 @@ app.get('/waypointCollection/', function (req, res) {
 	}
 })
 
-//GET handler for fetching waypoint
+//GET handler for fetching waypoint by id
 app.get('/waypointCollection/:id', function (req, res) {
 	console.log("processing GET from '/waypointCollection/:id'");
 	console.log('req.body:');
@@ -286,11 +322,17 @@ app.post('/waypointCollection', function (req, res) {
 	var location = req.body.location;
 	var place = req.body.place;
 
-	//insert waypoint if user logged in (cookie present)
- 	if (req.cookies.username != undefined) {
+	// //insert waypoint if user logged in (cookie present)
+ // 	if (req.cookies.username != undefined) {
 
-    	//get username from cookie
-    	username = req.cookies.username;
+ //    	//get username from cookie
+ //    	username = req.cookies.username;
+
+   	//set user name from cookie if present
+ 	var username = getUsernameFromCookie();
+
+ 	//insert waypoint into DB if cookie present (user logged in)
+ 	if (username) {
 
     	//check to see if entry already exits
     	knex('waypoints').where({username : username, location_name : location})
@@ -336,11 +378,15 @@ app.delete('/waypointCollection/:id', function (req, res) {
 
 //GET handler for serving register page
 app.get('/register', function (req, res) {
-	//get username from cookie in request, if user is logged in
- 	var username = null;
- 	if (req.cookies.username != undefined) {
- 		username = req.cookies.username;
-    }
+	// //get username from cookie in request, if user is logged in
+ // 	var username = null;
+ // 	if (req.cookies.username != undefined) {
+ // 		username = req.cookies.username;
+ //    }
+
+   	//set user name from cookie if present
+ 	var username = getUsernameFromCookie();
+
     res.render('register.html', {username:username});
 });
 
@@ -488,6 +534,18 @@ app.get('/logout', function (req, res) {
 	//redirect back to home page
 	res.redirect('/');
 })
+
+//helper function to set username to username from cookie, returns null if no cookie present
+var getUsernameFromCookie = function () {
+
+	var usernameFromCookie = null;
+
+ 	if (req.cookies.username != undefined) {
+    	usernameFromCookie = req.cookies.username;
+    }
+
+    return usernameFromCookie;
+}
 
 
 

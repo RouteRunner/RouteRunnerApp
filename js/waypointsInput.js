@@ -283,7 +283,7 @@ var WaypointCollection = Backbone.Collection.extend({
 //create backbone view to display collection of waypoints/stops
 var WaypointCollectionView = Backbone.View.extend({
 	render : function () {
-		var locationNameInput = '<input class="form-control" id=locationNameInput type="search" placeholder="Enter New Waypoint Here..." />';
+		var locationNameInput = '<input class="form-control" id=locationNameInput type="search" placeholder="Enter New Destination..." />';
 		var addBtn = '<span class="input-group-btn"><button type="button" class="btn btn-primary btn-round btn-outline" id="addBtn"><i class="glyphicon glyphicon-plus"></i></button></span>';
     	this.$el.html(addBtn + locationNameInput);
 	},
@@ -294,11 +294,13 @@ var WaypointCollectionView = Backbone.View.extend({
 		"click #addBtn"  : "updateOnClick",
 	},
 	updateOnClick : function (e) {
-
 		var str = this.$el.find("#locationNameInput").val();
 
+		if(str === ''){
+	    $('#waypointsAlert').modal('show');
+
 		//add a new item to collection, pass in inputted string
-		if (str !== ''){
+	}else{
 			this.addToCollection(str);
 			$("#locationNameInput").val("");
 		}

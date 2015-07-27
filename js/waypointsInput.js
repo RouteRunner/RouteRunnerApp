@@ -5,6 +5,57 @@ var map;
 var originForExport = "";
 var waypointsArray = [];
 
+
+/********************************************* ORIGIN ******************************************************/
+
+//create backbone model to store origin location
+var OriginPoint = Backbone.Model.extend({
+	urlRoot : "/origin",
+	defaults : {
+		originName : "Origin not set"
+	},
+	initialize : function () {
+		console.log("initializing Origin Point, fetching...")
+		//this.fetch();
+		this.fetch({success: function (collection, response) {
+				originForExport = response.originName;
+			}
+		});
+	},
+	setName : function (str) {
+		this.set("originName", str);
+		this.save();
+		originForExport = str;
+	},
+});
+
+//create backbone View for Origin model
+var OriginPointView = Backbone.View.extend({
+	render : function () {
+	$("#inputOrigin").html(this.model.get("originName"));
+	},
+	initialize : function() {
+		this.model.on("change", this.render, this);
+		var originName = '<p class="top-buffer well well-sm" id="inputOrigin"></p>';
+		var originNameInput = '<input class="form-control" id=originNameInput type="search" placeholder="Enter Origin Here..." />';
+		var submitBtn = '<div class="modal-footer"><button class="btn btn-default" data-dismiss="modal" id="originSubmit">Submit</button></div>';
+		$("#originRow").append(originName);
+		this.$el.html(originNameInput + submitBtn);
+		this.render();
+	},
+	events : {
+		"click #originSubmit"  : "setName"
+	},
+	setName : function () {
+		var str = this.$el.find("#originNameInput").val();
+		this.model.setName(str);
+		$("#originNameInput").val("");
+		this.render();
+	},
+});
+
+/********************************************* NOTES ******************************************************/
+
 //create Backbone model to store notes
 var NotesItem = Backbone.Model.extend({
 	defaults : {
@@ -131,51 +182,7 @@ var NotesCollectionView = Backbone.View.extend({
 
 });
 
-//create backbone model to store origin location
-var OriginPoint = Backbone.Model.extend({
-	urlRoot : "/origin",
-	defaults : {
-		originName : "Origin not set"
-	},
-	initialize : function () {
-		console.log("initializing Origin Point, fetching...")
-		//this.fetch();
-		this.fetch({success: function (collection, response) {
-				originForExport = response.originName;
-			}
-		});
-	},
-	setName : function (str) {
-		this.set("originName", str);
-		this.save();
-		originForExport = str;
-	},
-});
-
-//create backbone View for Origin model
-var OriginPointView = Backbone.View.extend({
-	render : function () {
-	$("#inputOrigin").html(this.model.get("originName"));
-	},
-	initialize : function() {
-		this.model.on("change", this.render, this);
-		var originName = '<p class="top-buffer well well-sm" id="inputOrigin"></p>';
-		var originNameInput = '<input class="form-control" id=originNameInput type="search" placeholder="Enter Origin Here..." />';
-		var submitBtn = '<div class="modal-footer"><button class="btn btn-default" data-dismiss="modal" id="originSubmit">Submit</button></div>';
-		$("#originRow").append(originName);
-		this.$el.html(originNameInput + submitBtn);
-		this.render();
-	},
-	events : {
-		"click #originSubmit"  : "setName"
-	},
-	setName : function () {
-		var str = this.$el.find("#originNameInput").val();
-		this.model.setName(str);
-		$("#originNameInput").val("");
-		this.render();
-	},
-});
+/********************************************* WAYPOINT ******************************************************/
 
 //create backbone model to store data about each waypoint/stop in route
 var Waypoint = Backbone.Model.extend({

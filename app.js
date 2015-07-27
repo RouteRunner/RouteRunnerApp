@@ -130,6 +130,8 @@ function calcRoute() {
   };
   if(!originForExport){
     $('#origin').modal('show');
+  }else if(markerArray.length === 0){
+    $('#waypointsAlert').modal('show');
   }else{
     for(var i = 0; i < markerArray.length; i++){
       markerArray[i].setVisible(false)

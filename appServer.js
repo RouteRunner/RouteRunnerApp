@@ -30,12 +30,6 @@ app.get('/', function (req, res) {
 	console.log('req.body:');
 	console.log(req.body);
 
- 	// //get username from cookie in req, if user is logged in
- 	// var username = null;
- 	// if (req.cookies.username != undefined) {
-  //   	username = req.cookies.username;
-  //   }
-
   	//set user name from cookie if present
  	var username = getUsernameFromCookie(req);
 
@@ -51,12 +45,6 @@ app.get('/origin', function (req, res) {
 	console.log("processing GET from '/origin'");
 	console.log('req.body:');
 	console.log(req.body);
-
-	// var username = null;
- // 	if (req.cookies.username != undefined) {
-
- // 		//set username from cookie
- //    	username = req.cookies.username;
 
  	//set user name from cookie if present
  	var username = getUsernameFromCookie(req);
@@ -86,19 +74,11 @@ app.post('/origin', function (req, res) {
 	console.log("req.body:");
 	console.log(req.body);
 
-	// //insert origin for user if logged in (cookie present)
-	// var username = null;
- // 	if (req.cookies.username != undefined) {
-
- //    	//get username from cookie
- //    	username = req.cookies.username;
-
   	//set user name from cookie if present
  	var username = getUsernameFromCookie(req);
 
  	//update origin for user in DB if cookie present (user logged in)
  	if (username) {
-
     	//insert origin for user in DB
 		knex('users').where({username:username}).update({
 			origin:req.body.originName,
@@ -121,13 +101,8 @@ app.get('/notesCollection', function (req, res) {
 	console.log('req.query:');
 	console.log(req.query);
 
+	//get specific waypoint from url query string
 	var waypoint = req.query.waypoint;
-
-	// var username = null;
-	// if (req.cookies.username != undefined) {
-
-	// 	//set username from cookie
-	// 	username = req.cookies.username;
 
 	//set user name from cookie if present
  	var username = getUsernameFromCookie(req);
@@ -147,7 +122,6 @@ app.get('/notesCollection', function (req, res) {
 		})
 	} else {
 		//user not logged in, end response
-		console.log("user not logged in, ending response")
 		res.end();
 	}
 })
@@ -168,19 +142,11 @@ app.post('/notesCollection', function (req, res) {
 	console.log("req.body");
 	console.log(req.body);
 
+	//build  variables from HTML request 
 	var listItem = req.body.listitem,
       	status = req.body.status,
-		username = null,
-		waypoint = req.body.waypoint;
-
-	// //insert note if user logged in (cookie present)
- // 	if (req.cookies.username != undefined) {
-
- //    	//get username from cookie
- //    	username = req.cookies.username;
-
-   	//set user name from cookie if present
- 	var username = getUsernameFromCookie(req);
+		waypoint = req.body.waypoint,
+ 		username = getUsernameFromCookie(req);
 
  	//insert new note into DB if cookiet present (user logged in)
  	if (username) {
@@ -209,17 +175,10 @@ app.put('/notesCollection/:id', function (req, res) {
 	console.log('req.params:');
 	console.log(req.params);
 
-	var	id = req.params.id;
-	var status = req.body.status;
-
-	// //insert note if user logged in (cookie present)
- // 	if (req.cookies.username != undefined) {
-
- //    	//get username from cookie
- //    	username = req.cookies.username;
-
-   	//set user name from cookie if present
- 	var username = getUsernameFromCookie(req);
+	//build  variables from HTML request
+	var	id = req.params.id,
+		status = req.body.status,
+ 		username = getUsernameFromCookie(req);
 
  	//update note entry in DB if cookie present (user logged in)
  	if (username) {
@@ -261,18 +220,11 @@ app.get('/waypointCollection/', function (req, res) {
 	console.log('req.body:');
 	console.log(req.body);
 
-	// var username = null;
-	// if (req.cookies.username != undefined) {
-
-	// 	//set username from cookie
-	// 	username = req.cookies.username;
-
 	//set user name from cookie if present
  	var username = getUsernameFromCookie(req);
 
  	//search DB for waypoint collection for user if cookie present (user logged in)
  	if (username) {
-
 		//do knex query for username entry in users table
 		knex('waypoints').where({'username': username}).then(function(returnedWaypointRecords) {
 			if (returnedWaypointRecords.length === 0) {
@@ -292,12 +244,10 @@ app.get('/waypointCollection/', function (req, res) {
 
 				//stringify and send renamedWaypointRecords array
 				res.send(JSON.stringify(renamedWaypointRecords));
-
 			}
 		})
 	} else {
 		//user not logged in, end response
-		console.log("user not logged in, ending response")
 		res.end();
 	}
 })
@@ -319,17 +269,10 @@ app.post('/waypointCollection', function (req, res) {
 	console.log("req.body");
 	console.log(req.body);
 
-	var location = req.body.location;
-	var place = req.body.place;
-
-	// //insert waypoint if user logged in (cookie present)
- // 	if (req.cookies.username != undefined) {
-
- //    	//get username from cookie
- //    	username = req.cookies.username;
-
-   	//set user name from cookie if present
- 	var username = getUsernameFromCookie(req);
+	//build variables from HTML request
+	var location = req.body.location,
+		place = req.body.place,
+ 		username = getUsernameFromCookie(req);
 
  	//insert waypoint into DB if cookie present (user logged in)
  	if (username) {
@@ -378,11 +321,6 @@ app.delete('/waypointCollection/:id', function (req, res) {
 
 //GET handler for serving register page
 app.get('/register', function (req, res) {
-	// //get username from cookie in req, if user is logged in
- // 	var username = null;
- // 	if (req.cookies.username != undefined) {
- // 		username = req.cookies.username;
- //    }
 
    	//set user name from cookie if present
  	var username = getUsernameFromCookie(req);
@@ -393,7 +331,7 @@ app.get('/register', function (req, res) {
 //POST handler for registering new user
 app.post('/register', function(req, res) {
   
-  //get inputs from req
+  //build variables from HTML request
   var username = req.body.username,
       password = req.body.password,
       password_confirm = req.body.password_confirm,
@@ -454,7 +392,8 @@ app.post('/register', function(req, res) {
 		});
 	});
 
-  } else { //password and password verify did not match
+  } else { 
+  	//password and password verify did not match
   	console.log('passwords do not match')
   	res.redirect("/");
   }
@@ -462,7 +401,7 @@ app.post('/register', function(req, res) {
 
 //GET handler for email verification
 app.get('/verify_email/:nonce', function(req, res) {
-	//database = app.get('database');
+
 	var returnedNonce = req.params.nonce;
 	console.log("returnedNonce:");
 	console.log(returnedNonce);

@@ -294,7 +294,6 @@ var WaypointCollectionView = Backbone.View.extend({
 	initialize : function () {
 		this.listenTo(this.collection, 'add', this.addOne)
 	},
-	subViews : [],
 	events : {
 		"click #addBtn"  : "updateOnClick",
 		"click #clrRoutes" : "clearRoutes"
@@ -307,17 +306,16 @@ var WaypointCollectionView = Backbone.View.extend({
 		for(var i = 0; i < markerArray.length; i++) {
 			markerArray[i].setMap(null);
 		};
-		for(var i = 0; i < centerArray.length; i++){
-			if(centerArray[i].label != 'origin'){
-				centerArray.splice(i,1);
-			}
-		};
 		modelsToDestroy.forEach(function(model){
 			model.destroy();
+			for(var i = 0; i < centerArray.length; i++){
+				if(!centerArray[i].label){
+					centerArray.splice(i,1);
+				}
+			};
 		});
 		waypointsArray = [];
 		markerArray = [];
-		self.subViews = [];
 	},
 	updateOnClick : function (e) {
 		var str = this.$el.find("#locationNameInput").val();
@@ -346,7 +344,6 @@ var WaypointCollectionView = Backbone.View.extend({
 	addOne : function (model) {
 		// create view for new model
         var view = new WaypointView({model : model, tagName : "li", className : "waypointStyle"});
-				//this.subViews.push(view);
         //render new view
         view.render();
 

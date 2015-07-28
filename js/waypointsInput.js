@@ -187,16 +187,6 @@ var Waypoint = Backbone.Model.extend({
 		location :  "",
 		place    : {},
 	},
-	del : function () {this.destroy({
-			success: function() {
-				console.log("model destroyed");
-			},
-		});
-	},
-	replaceName : function (str) {
-		this.set("location" , str);
-		this.save();
-	},
 });
 
 //create backbone View for Waypoint model
@@ -250,7 +240,7 @@ var WaypointView = Backbone.View.extend({
 		markerArray.splice(indexOfObjectToRemove,1);
 
 		//delete model and remove view
-    	this.model.del();
+    	this.model.destroy();
     	this.remove();
     },
 });

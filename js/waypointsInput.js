@@ -64,9 +64,6 @@ var NotesItem = Backbone.Model.extend({
 		status   : "notDone",
 		waypoint : ""
 	},
-	// initialize : function () {
-	// 	//this.fetch();
-	// },
 	toggleNote : function(){
 		if(this.get('status') === 'notDone'){
 			this.set({'status' : 'superDone'});
@@ -143,39 +140,14 @@ var NotesCollectionView = Backbone.View.extend({
 		//get unique name from notesCollectionView instance (passed into constructor when instance was created)
 		var uniqueName = this.uniqueName;
 
-		//add a new item to collection, pass in inputted string and unique name
+		//add a new note model to collection, set inputted string and unique name, triggers 'add' event in collection
 		if (str !== ''){
-			//this.addToCollection(str);
-			var model = this.collection.create({
+			this.collection.create({
 				listitem : str,
 				waypoint : uniqueName,
 			});	
-
-			// console.log("model after this.collection.create in updateOnClick for noteCollectionView");
-			// console.log(model);
-
-			// //create new view for note that was created with this.collection.create, render and append it
-			// var noteView = new NotesView({model : model, tagName : "li"});
-			// noteView.render();
-			// $('#notes-list' + uniqueName).append(noteView.$el);
-
-			// //replace text value in input box with blank string
-			// this.$("#notesInput").val("");
 		}
 	},
-	// addToCollection : function(str) {
-	// 	// this.collection.create({
-	// 	// 	listitem : str,
-	// 	// 	waypoint : this.uniqueName,
-	// 	// });
-
-	// 	var noteView = new NotesView({model : model, tagName : "li"});
-
-	// 	noteView.render();
-
-	// 	$('#notes-list' + this.uniqueName).append(noteView.$el);
-
-	// },
 	addOne : function(model) {
 		//create new view, render and append for a newly added note, either by fetching collection or user input
 		var noteView = new NotesView({model : model, tagName : "li"});
@@ -215,14 +187,10 @@ var Waypoint = Backbone.Model.extend({
 		location :  "",
 		place    : {},
 	},
-	// initialize : function () {
-	// 	//this.fetch();
-	// },
 	del : function () {this.destroy({
 			success: function() {
 				console.log("model destroyed");
 			},
-			//wait: true
 		});
 	},
 	replaceName : function (str) {
@@ -326,12 +294,10 @@ var WaypointCollectionView = Backbone.View.extend({
 		var str = this.$el.find("#locationNameInput").val();
 
 		if(str === ''){
-	    $('#waypointsAlert').modal('show');
-
+			//show alert modal if no string is inputted to add
+	    	$('#waypointsAlert').modal('show');
 		}else{
-			//add a new item to collection, pass in inputted string
-			//this.addToCollection(str);
-			// create new model, save to server and add to colleciton, triggers 'add' event in collection
+			//create new model, save to server and add to colleciton, triggers 'add' event in collection
 			//view created/appended in 'addOne' method, called in 'add' event listener
 			this.collection.create({
 				location : str,
@@ -346,18 +312,6 @@ var WaypointCollectionView = Backbone.View.extend({
 			$("#locationNameInput").val("");
 		}
 	},
-	// addToCollection : function (str) {
-	// 	// create new model, save to server and add to colleciton, triggers 'add' event in collection
-	// 	this.collection.create({
-	// 		location : str,
-	// 		place    : place,
-	// 		//view created/appended in 'addOne' method, called in 'add' event listener
-	// 	});
-
-	// 	//push location onto waypoints array for exporting
-	// 	var waypointObject = {location : str};
-	// 	waypointsArray.push(waypointObject);
-	// },
 	addOne : function (model) {
 		// create view for new model
         var view = new WaypointView({model : model, tagName : "li", className : "waypointStyle"});
@@ -367,7 +321,6 @@ var WaypointCollectionView = Backbone.View.extend({
 
         //append new view to list of waypoints (collection view's div)
         $("#waypoint-list").append(view.$el);
-
 	},
 });
 

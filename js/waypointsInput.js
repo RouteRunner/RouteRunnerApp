@@ -48,7 +48,7 @@ var OriginPointView = Backbone.View.extend({
 		this.model.save();
 		originForExport = str;
 
-		//replace old input with blank string to clear
+		//replace old input with blank string to clear field
 		$("#originNameInput").val("");
 		this.render();
 	},
@@ -64,14 +64,6 @@ var NotesItem = Backbone.Model.extend({
 		status   : "notDone",
 		waypoint : ""
 	},
-	// toggleNote : function(){
-	// 	if(this.get('status') === 'notDone'){
-	// 		this.set({'status' : 'superDone'});
-	// 	}else{
-	// 		this.set({'status' : 'notDone'});
-	// 	}
-	// 	this.save();
-	// },
 });
 
 var NotesView = Backbone.View.extend({
@@ -84,7 +76,6 @@ var NotesView = Backbone.View.extend({
 		"click #checkOff" : "toggleNote",
 	},
 	toggleNote : function(){
-		//this.model.toggleNote();
 		if(this.model.get('status') === 'notDone'){
 			this.model.set({'status' : 'superDone'});
 		}else{
@@ -107,7 +98,7 @@ var NotesCollection = Backbone.Collection.extend({
 		//enable uniqueName to be passed in from constructor and stored
 		_.extend(this, _.pick(options, "uniqueName"));
 
-		console.log("initializing notesCollection, fecthing");
+		//build collection on load, fetch data from database based on uniqueName for waypoint
 		this.fetch({data : {waypoint : this.uniqueName}});
 	}
 });

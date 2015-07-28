@@ -62,7 +62,7 @@ var NotesCollectionView = Backbone.View.extend({
 	render : function() {
 		var modalContainer = '<div class="modal fade" id="' + this.uniqueName + '" role="dialog"><div class="modal-dialog"><div class="modal-content" id="notesLightbox">';
 		var body = '<div class="modal-body">';
-		var label = '<label><h4>Notes' + this.uniqueName + '</h4></label>';
+		var label = '<label><h4>Notes:</h4></label>';
 		var notesDiv = '<div class="input-group">';
 		var tskBtn = '<span class="input-group-btn"><button type="button" class="btn btn-primary" id="tskBtn"> Add</button></span>';
 		var notesInput = '<input class="form-control" id=notesInput type="search" placeholder="Type Here..." /></div>';

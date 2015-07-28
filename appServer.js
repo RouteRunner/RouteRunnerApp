@@ -113,9 +113,11 @@ app.get('/notesCollection', function (req, res) {
 		knex('notes').where({'username': username, 'waypoint' : waypoint}).then(function(returnedUserRecords) {
 			if (returnedUserRecords.length === 0) {
 				//popup alert box? "No Such User"
-				// console.log('no note records found for username and waypoint query, ending response')
+				console.log('no note records found for username and waypoint query, ending response')
 				res.end();
 			} else {
+				console.log("returnedUserRecords:");
+				console.log(returnedUserRecords);
 				//stringify and send returnedUserRecords array
 				res.send(JSON.stringify(returnedUserRecords));
 			}

@@ -127,8 +127,8 @@ var NotesCollectionView = Backbone.View.extend({
 		//enable uniqueName to be passed in from constructor and stored in view
 		_.extend(this, _.pick(options, "uniqueName"));
 
-		//tie 'add' event to trigger addOne
-		this.listenTo(this.collection, 'add', this.addOne);
+		// //tie 'add' event to trigger addOne
+		// this.listenTo(this.collection, 'add', this.addOne);
 	},
 	events : {
 		"click #tskBtn" : "updateOnClick",
@@ -140,25 +140,49 @@ var NotesCollectionView = Backbone.View.extend({
 		//get string from input field
 		var str = this.$el.find("#notesInput").val();
 
-		//add a new item to collection, pass in inputted string
+		//get unique name from notesCollectionView instance (passed into constructor when instance was created)
+		var uniqueName = this.uniqueName;
+
+		//add a new item to collection, pass in inputted string and unique name
 		if (str !== ''){
-			this.addToCollection(str);
+			//this.addToCollection(str);
+			var model = this.collection.create({
+				listitem : str,
+				waypoint : uniqueName,
+			});	
+
+			console.log("model after this.collection.create in updateOnClick for noteCollectionView");
+			console.log(model);
+
+			//create new view for note that was created with this.collection.create, render and append it
+			var noteView = new NotesView({model : model, tagName : "li"});
+			noteView.render();
+			$('#notes-list' + uniqueName).append(noteView.$el);
+
+			//replace text value in input box with blank string
 			this.$("#notesInput").val("");
 		}
 	},
-	addToCollection : function(str) {
-		this.collection.create({
-			listitem : str,
-			waypoint : this.uniqueName,
-		});
-	},
-	addOne : function(model) {
-		var noteView = new NotesView({model : model, tagName : "li"});
+	// addToCollection : function(str) {
+	// 	// this.collection.create({
+	// 	// 	listitem : str,
+	// 	// 	waypoint : this.uniqueName,
+	// 	// });
 
-		noteView.render();
+	// 	var noteView = new NotesView({model : model, tagName : "li"});
 
-		$('#notes-list' + this.uniqueName).append(noteView.$el);
-	},
+	// 	noteView.render();
+
+	// 	$('#notes-list' + this.uniqueName).append(noteView.$el);
+
+	// },
+	// addOne : function(model) {
+	// 	var noteView = new NotesView({model : model, tagName : "li"});
+
+	// 	noteView.render();
+
+	// 	$('#notes-list' + this.uniqueName).append(noteView.$el);
+	// },
 	delete : function () {
 		var notesToDestroy = [];
 		this.collection.each(function(note){
@@ -167,13 +191,12 @@ var NotesCollectionView = Backbone.View.extend({
 			}
 		})
 		if(notesToDestroy.length === 0){
-      alert('Please select one or more "notes" to Clear');
+      		alert('Please select one or more "notes" to Clear');
 		}
 		notesToDestroy.forEach(function(note){
 			note.destroy();
 		})
     },
-
     enterKey: function (e){
         if(e.keyCode == 13) {
             this.updateOnClick();

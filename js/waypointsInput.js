@@ -107,7 +107,7 @@ var NotesCollectionView = Backbone.View.extend({
 	render : function() {
 		var modalContainer = '<div class="modal fade" id="' + this.uniqueName + '" role="dialog"><div class="modal-dialog"><div class="modal-content" id="notesLightbox">';
 		var body = '<div class="modal-body">';
-		var label = '<label><h4>Notes' + this.uniqueName + '</h4></label>';
+		var label = '<label><h4>Notes:</h4></label>';
 		var notesDiv = '<div class="input-group">';
 		var tskBtn = '<span class="input-group-btn"><button type="button" class="btn btn-primary" id="tskBtn"> Add</button></span>';
 		var notesInput = '<input class="form-control" id=notesInput type="search" placeholder="Type Here..." /></div>';
@@ -175,6 +175,7 @@ var NotesCollectionView = Backbone.View.extend({
 
 });
 
+
 /********************************************* WAYPOINT ******************************************************/
 
 //create backbone model to store data about each waypoint/stop in route
@@ -202,6 +203,7 @@ var WaypointView = Backbone.View.extend({
 	initialize : function () {
 		//event listener to render waypoint view on changes to model
 		this.model.on("change", this.render, this);
+		this.model.on("destroy", this.remove, this);
 
 		//get unique name for noteBtn id, then remove spaces and commas
 		var uniqueName = this.model.get("location");
@@ -235,6 +237,7 @@ var WaypointView = Backbone.View.extend({
 		// //removing flags
 		markerArray[indexOfObjectToRemove].setMap(null);
 		markerArray.splice(indexOfObjectToRemove,1);
+		centerArray.splice(indexOfObjectToRemove,1);
 
 		//delete model and remove view
     	this.model.destroy();
@@ -267,15 +270,37 @@ var WaypointCollection = Backbone.Collection.extend({
 //create backbone view to display collection of waypoints/stops
 var WaypointCollectionView = Backbone.View.extend({
 	render : function () {
-		var locationNameInput = '<input class="form-control" id=locationNameInput type="search" placeholder="Enter New Destination..." />';
-		var addBtn = '<span class="input-group-btn"><button type="button" class="btn btn-primary btn-round btn-outline" id="addBtn"><i class="glyphicon glyphicon-plus"></i></button></span>';
-    	this.$el.html(addBtn + locationNameInput);
+		var addBtn = '<div class="input-group" id="inputdiv"><span class="input-group-btn"><button type="button" class="btn btn-primary btn-round btn-outline" id="addBtn"><i class="glyphicon glyphicon-plus"></i></button></span>';
+		var locationNameInput = '<input class="form-control" id=locationNameInput type="search" placeholder="Enter New Destination..." /></div>';
+		var wayList = '<ol id="waypoint-list"></ol>';
+		var clrRoutes = '<button type="button" id="clrRoutes" class="btn btn-default btn-sm pull-right">Clear Routes</button>';
+    	this.$el.html(addBtn + locationNameInput + wayList + clrRoutes);
 	},
 	initialize : function () {
 		this.listenTo(this.collection, 'add', this.addOne)
 	},
 	events : {
 		"click #addBtn"  : "updateOnClick",
+		"click #clrRoutes" : "clearRoutes"
+	},
+	clearRoutes : function() {
+		var modelsToDestroy = [];
+		this.collection.each(function(model){
+			modelsToDestroy.push(model);
+		});
+		for(var i = 0; i < markerArray.length; i++) {
+			markerArray[i].setMap(null);
+		};
+		modelsToDestroy.forEach(function(model){
+			model.destroy();
+			for(var i = 0; i < centerArray.length; i++){
+				if(!centerArray[i].label){
+					centerArray.splice(i,1);
+				}
+			};
+		});
+		waypointsArray = [];
+		markerArray = [];
 	},
 	updateOnClick : function (e) {
 		var str = this.$el.find("#locationNameInput").val();
@@ -302,7 +327,6 @@ var WaypointCollectionView = Backbone.View.extend({
 	addOne : function (model) {
 		// create view for new model
         var view = new WaypointView({model : model, tagName : "li", className : "waypointStyle"});
-
         //render new view
         view.render();
 
@@ -320,7 +344,7 @@ var waypointCollection,
 $(document).ready( function () {
 	//assign collection and collection view to new backbone objects
 	waypointCollection = new WaypointCollection();
-	waypointCollectionView = new WaypointCollectionView({collection : waypointCollection, el : "#inputdiv"});
+	waypointCollectionView = new WaypointCollectionView({collection : waypointCollection, el : "#destinations"});
 	waypointCollectionView.render();
 
 	//assign origin point and origin point view to new backbone objects
@@ -330,6 +354,6 @@ $(document).ready( function () {
 
 	//append origin point view and collection view to appropriate divs in index.html
 	$("#origindiv").append(originPointView.$el);
-	$("#inputdiv").append(waypointCollectionView.$el);
+	$("#destinations").append(waypointCollectionView.$el);
 
 });

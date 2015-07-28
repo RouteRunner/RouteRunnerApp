@@ -24,7 +24,6 @@ function initialize() {
   var mapOptions = {
     center: {lat: 45.5200, lng: -122.6819},
     zoom: 12,
-    maxZoom: 12
   };
   map = new google.maps.Map(document.getElementById('map-canvas'),
     mapOptions);
@@ -47,6 +46,13 @@ function initialize() {
 
   google.maps.event.addDomListener(addBtn, 'click', function(){
     buildMarker();
+  });
+
+  google.maps.event.addDomListener(clrRoutes, 'click', function(){
+    directionsDisplay.setMap(null);
+    var bounds = new google.maps.LatLngBounds();
+      bounds.extend(centerArray[0].getPosition());
+      map.fitBounds(bounds);
   });
 
   google.maps.event.addDomListener(gpsBtn, 'click', geoLocate);

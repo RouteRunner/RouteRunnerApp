@@ -22,11 +22,6 @@ var OriginPoint = Backbone.Model.extend({
 			}
 		});
 	},
-	setName : function (str) {
-		this.set("originName", str);
-		this.save();
-		originForExport = str;
-	},
 });
 
 //create backbone View for Origin model
@@ -47,8 +42,15 @@ var OriginPointView = Backbone.View.extend({
 		"click #originSubmit"  : "setName"
 	},
 	setName : function () {
+		//get inputted string from user
 		var str = this.$el.find("#originNameInput").val();
-		this.model.setName(str);
+
+		//updagte model, save and update originForExport var
+		this.model.set("originName", str);
+		this.model.save();
+		originForExport = str;
+
+		//replace old input with blank string to clear
 		$("#originNameInput").val("");
 		this.render();
 	},

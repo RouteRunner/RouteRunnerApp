@@ -49,6 +49,13 @@ function initialize() {
     buildMarker();
   });
 
+  google.maps.event.addDomListener(clrRoutes, 'click', function(){
+    directionsDisplay.setMap(null);
+    var bounds = new google.maps.LatLngBounds();
+      bounds.extend(centerArray[0].getPosition());
+      map.fitBounds(bounds);
+  });
+
   google.maps.event.addDomListener(gpsBtn, 'click', geoLocate);
 
   google.maps.event.addDomListener(originBtn, 'click', function(){

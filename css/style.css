@@ -143,7 +143,31 @@ h5
 
 #gpsBtn {
   color: #e9862f;
+  border: 1px solid #e9862f;
 }
+
+#delBtn {
+  border: none;
+}
+
+#dirList {
+  border: 1px solid #0099cc;
+  color: #0099cc;
+}
+
+/*#locationNameInput {
+  border: 1px solid #0099cc;
+}*/
+
+/*#inputOrigin {
+  background: none;
+  border: 1px solid #e9862f;
+}*/
+
+/*#openNotes {
+  color: #e9862f;
+  border:1px solid #e9862f;
+}*/
 
 .menu_button {
     min-width: 150px !important;

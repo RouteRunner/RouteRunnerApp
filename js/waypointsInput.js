@@ -15,8 +15,6 @@ var OriginPoint = Backbone.Model.extend({
 		originName : "Origin not set"
 	},
 	initialize : function () {
-		console.log("initializing Origin Point, fetching...")
-		//this.fetch();
 		this.fetch({success: function (collection, response) {
 				originForExport = response.originName;
 			}
@@ -45,7 +43,7 @@ var OriginPointView = Backbone.View.extend({
 		//get inputted string from user
 		var str = this.$el.find("#originNameInput").val();
 
-		//updagte model, save and update originForExport var
+		//update and save model, and update originForExport var
 		this.model.set("originName", str);
 		this.model.save();
 		originForExport = str;
@@ -66,14 +64,14 @@ var NotesItem = Backbone.Model.extend({
 		status   : "notDone",
 		waypoint : ""
 	},
-	toggleNote : function(){
-		if(this.get('status') === 'notDone'){
-			this.set({'status' : 'superDone'});
-		}else{
-			this.set({'status' : 'notDone'});
-		}
-		this.save();
-	},
+	// toggleNote : function(){
+	// 	if(this.get('status') === 'notDone'){
+	// 		this.set({'status' : 'superDone'});
+	// 	}else{
+	// 		this.set({'status' : 'notDone'});
+	// 	}
+	// 	this.save();
+	// },
 });
 
 var NotesView = Backbone.View.extend({
@@ -86,7 +84,13 @@ var NotesView = Backbone.View.extend({
 		"click #checkOff" : "toggleNote",
 	},
 	toggleNote : function(){
-		this.model.toggleNote();
+		//this.model.toggleNote();
+		if(this.model.get('status') === 'notDone'){
+			this.model.set({'status' : 'superDone'});
+		}else{
+			this.model.set({'status' : 'notDone'});
+		}
+		this.model.save();
 	},
 	render : function() {
 		var attributes = this.model.toJSON();

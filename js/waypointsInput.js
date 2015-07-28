@@ -161,7 +161,7 @@ var OriginPointView = Backbone.View.extend({
 		this.model.on("change", this.render, this);
 		var originName = '<p class="top-buffer well well-sm" id="inputOrigin"></p>';
 		var originNameInput = '<input class="form-control" id=originNameInput type="search" placeholder="Enter Origin Here..." />';
-		var submitBtn = '<div class="modal-footer"><button class="btn btn-default" data-dismiss="modal" id="originSubmit">Submit</button></div>';
+		var submitBtn = '<div class="modal-footer"><button class=" btn btn-default btn-sm pull-left" data-dismiss="modal">X</button><button class="btn btn-default" data-dismiss="modal" id="originSubmit">Submit</button></div>';
 		$("#originRow").append(originName);
 		this.$el.html(originNameInput + submitBtn);
 		this.render();

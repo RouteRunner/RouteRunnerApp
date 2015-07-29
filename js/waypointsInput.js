@@ -282,7 +282,6 @@ var WaypointCollectionView = Backbone.View.extend({
 	events : {
 		"click #addBtn"  : "updateOnClick",
 		"click #clrRoutes" : "clearRoutes",
-		//"keypress #locationNameInput" : "checkEnterKey"
 	},
 	clearRoutes : function() {
 		var modelsToDestroy = [];
@@ -325,20 +324,10 @@ var WaypointCollectionView = Backbone.View.extend({
 			$("#locationNameInput").val("");
 		}
 	},
-	// checkEnterKey : function (e) {
-	// 	if(e.keyCode == 13) { 
-	// 		currentCollectionView = this;
-	// 		console.log('keyCode = 13, starting timeout');
-	// 		window.setTimeout(function() {
-	// 			console.log('timeout ended, calling buildMarker and updateOnClick')
-	// 			buildMarker();
- //            	currentCollectionView.updateOnClick();
- //            }, 2000)
- //        }
-	// },
 	addOne : function (model) {
 		// create view for new model
         var view = new WaypointView({model : model, tagName : "li", className : "waypointStyle"});
+       
         //render new view
         view.render();
 

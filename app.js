@@ -49,11 +49,8 @@ function initialize() {
     buildMarker();
   });
 
+  //build marker and add waypoint when user selects item from autocomplete drop down
   google.maps.event.addListener(autoInput, 'place_changed', function () {
-    console.log("place_changed listener");
-    place = autoInput.getPlace();
-    console.log("place:");
-    console.log(place);
     buildMarker();
     waypointCollectionView.updateOnClick();
   })

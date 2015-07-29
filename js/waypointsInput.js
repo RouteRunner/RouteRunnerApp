@@ -142,7 +142,7 @@ var NotesCollectionView = Backbone.View.extend({
 			this.collection.create({
 				listitem : str,
 				waypoint : uniqueName,
-			});	
+			});
 		}
 	},
 	addOne : function(model) {
@@ -176,7 +176,7 @@ var NotesCollectionView = Backbone.View.extend({
 });
 
 
-<<<<<<< HEAD
+
 //create backbone View for Origin model
 var OriginPointView = Backbone.View.extend({
 	render : function () {
@@ -207,9 +207,9 @@ var OriginPointView = Backbone.View.extend({
         }
     },
 });
-=======
+
 /********************************************* WAYPOINT ******************************************************/
->>>>>>> 9fdf8ef0783ada7277c16f07a92a744f608d44d6
+
 
 //create backbone model to store data about each waypoint/stop in route
 var Waypoint = Backbone.Model.extend({
@@ -228,7 +228,7 @@ var WaypointView = Backbone.View.extend({
 		uniqueName = uniqueName.replace(/[,\s]+/g, '');
 
 		var noteBtn = '<div class="pull-left"><a href="#' + uniqueName + '" data-toggle="modal"><button type="button" id="openNotes" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></button></a></div>';
-		var locationName = '<h4 class="waypointName">' + this.model.get("location") + '</h4>';
+		var locationName = '<h4 class="waypointName">' + this.model.get("location") + '</h4><hr>';
 		var delBtn = '<div class="pull-right"><button type="button" class="btn btn-default btn-sm" id="delBtn"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true"></span></button></div>';
 		this.$el.html(noteBtn + delBtn + locationName);
 
@@ -291,7 +291,7 @@ var WaypointCollection = Backbone.Collection.extend({
 			for (i = 0; i < response.length; i++) {
 				//strip id's from response objects and save as waypointsArray for use in calcRoute
 				waypointsArray.push({location : response[i].location});
-					
+
 				//rebuild marker for each waypoint returned
 				buildMarker(response[i].place);
 			}
@@ -306,7 +306,7 @@ var WaypointCollectionView = Backbone.View.extend({
 		var addBtn = '<div class="input-group" id="inputdiv"><span class="input-group-btn"><button type="button" class="btn btn-primary btn-round btn-outline" id="addBtn"><i class="glyphicon glyphicon-plus"></i></button></span>';
 		var locationNameInput = '<input class="form-control" id=locationNameInput type="search" placeholder="Enter New Destination..." /></div>';
 		var wayList = '<ol id="waypoint-list"></ol>';
-		var clrRoutes = '<button type="button" id="clrRoutes" class="btn btn-default btn-sm pull-right">Clear Routes</button>';
+		var clrRoutes = '<button type="button" id="clrRoutes" class="btn btn-default btn-xs pull-right">Clear Routes</button>';
     	this.$el.html(addBtn + locationNameInput + wayList + clrRoutes);
 	},
 	initialize : function () {
@@ -314,10 +314,9 @@ var WaypointCollectionView = Backbone.View.extend({
 	},
 	events : {
 		"click #addBtn"  : "updateOnClick",
-<<<<<<< HEAD
-		"keypress #locationNameInput": "enterKey"
-=======
+
 		"click #clrRoutes" : "clearRoutes"
+
 	},
 	clearRoutes : function() {
 		var modelsToDestroy = [];
@@ -337,12 +336,12 @@ var WaypointCollectionView = Backbone.View.extend({
 		});
 		waypointsArray = [];
 		markerArray = [];
->>>>>>> 9fdf8ef0783ada7277c16f07a92a744f608d44d6
+
 	},
 	updateOnClick : function (e) {
 		var str = this.$el.find("#locationNameInput").val();
 
-<<<<<<< HEAD
+
 		//add a new item to collection, pass in inputted string
 		if (str !== ''){
 			this.addToCollection(str);
@@ -366,7 +365,7 @@ var WaypointCollectionView = Backbone.View.extend({
 	addOne : function (model) {
 		// create view for new model
         var view = new WaypointView({model : model, tagName : "li"});
-=======
+
 		if(str === ''){
 			//show alert modal if no string is inputted to add
 	    	$('#waypointsAlert').modal('show');
@@ -381,7 +380,7 @@ var WaypointCollectionView = Backbone.View.extend({
 			//push location onto waypoints array for exporting
 			var waypointObject = {location : str};
 			waypointsArray.push(waypointObject);
-			
+
 			//reset input value to blank string to clear old entry
 			$("#locationNameInput").val("");
 		}
@@ -389,7 +388,7 @@ var WaypointCollectionView = Backbone.View.extend({
 	addOne : function (model) {
 		// create view for new model
         var view = new WaypointView({model : model, tagName : "li", className : "waypointStyle"});
->>>>>>> 9fdf8ef0783ada7277c16f07a92a744f608d44d6
+
         //render new view
         view.render();
 
@@ -410,25 +409,86 @@ var WaypointCollectionView = Backbone.View.extend({
     // },
 });
 
+var DirectionsView = Backbone.View.extend({
+	render : function () {
+		var dirPanel = '<div class="top-buffer emptyDiv" id="directionsPanel"><h4>Please route an origin with at least one destination to view your directions.</h4></div>';
+		this.$el.html(dirPanel);
+	},
+});
+
+var RoutesView = Backbone.View.extend({
+	initialize : function() {
+		var routeBtn = '<div class="btn-group top-buffer"><button type="button" id="routeBtn" class="slctBtn menu_button">List View</button>';
+		var dirBtn = '<button type="button" id="dirBtn" class="deslctBlue  menu_button">Directions View</button></div>';
+		var routeIt = '<div class="row top-buffer"><button type="button" class="btn btn-success menu_button" id="routeIt">ROUTE IT</button></div>';
+		this.$el.prepend(routeBtn + dirBtn);
+		$("#routeView").append(routeIt);
+	},
+	events : {
+		"click #routeIt" : "directionChange",
+		"click #routeBtn"  : "toggleRoutes",
+		"click #dirBtn" : "toggleDirections"
+	},
+	directionChange : function(){
+		if(markerArray.length === 0 && !originForExport){
+			return;
+		}else{
+			console.log("directionsChange for real");
+			$("#directionsPanel").empty();
+		}
+	},
+	toggleRoutes : function() {
+		if(div1.style.display === 'none'){
+			$("#routeBtn").toggleClass('slctBtn');
+			$("#routeBtn").toggleClass('deslctBlue');
+			$("#destinations").toggle();
+			$("#directionsDiv").toggle();
+			$("#dirBtn").toggleClass('deslctBlue');
+			$("#dirBtn").toggleClass('slctBtn');
+		}
+	},
+	toggleDirections : function() {
+		if(div2.style.display === 'none'){
+			$("#dirBtn").toggleClass('deslctBlue');
+			$("#dirBtn").toggleClass('slctBtn');
+			$("#destinations").toggle();
+			$("#directionsDiv").toggle();
+			$("#routeBtn").toggleClass('slctBtn');
+			$("#routeBtn").toggleClass('deslctBlue');
+		}
+	}
+});
+
 //create variables for collection, collection view, origin point and origin point view
 var waypointCollection,
 	waypointCollectionView,
 	originPointModel,
-	originPointView;
+	originPointView,
+	directionsView,
+	div1,
+	div2;
 
 $(document).ready( function () {
 	//assign collection and collection view to new backbone objects
 	waypointCollection = new WaypointCollection();
 	waypointCollectionView = new WaypointCollectionView({collection : waypointCollection, el : "#destinations"});
+	directionsView = new DirectionsView({el : "#directionsDiv"});
 	waypointCollectionView.render();
+	directionsView.render();
 
 	//assign origin point and origin point view to new backbone objects
 	originPointModel = new OriginPoint();
-	var originPointView = new OriginPointView({model : originPointModel});
+	originPointView = new OriginPointView({model : originPointModel});
 	originPointView.render();
 
+	var routesView = new RoutesView({el : "#routeView"});
+	routesView.render();
+
 	//append origin point view and collection view to appropriate divs in index.html
+	$("#routeView").append(routesView.$el);
 	$("#origindiv").append(originPointView.$el);
 	$("#destinations").append(waypointCollectionView.$el);
+	div1 = document.getElementById("destinations");
+	div2 = document.getElementById("directionsDiv");
 
 });

@@ -61,20 +61,15 @@
       <div class="container">
          <div class="col-md-6 top-buffer">
            <div class="btn-group">
-             <button href="#origin" data-toggle="modal" type="button" id="setOrigin" class="btn btn-warning menu_button">Set Origin</button>
-             <button type="button" class="btn btn-default menu_button" id="gpsBtn">Use GPS Location</button>
+             <button href="#origin" data-toggle="modal" type="button" id="setOrigin" class="slctYlw menu_button">Set Origin</button><button type="button" class="deslctYlw menu_button" id="gpsBtn">Use GPS Location</button>
            </div>
            <div id="originRow">
            </div>
           <div class="col-md-4" id="map-canvas"></div>
         </div>
-        <div class="col-md-6">
-          <div class="btn-group top-buffer">
-            <button type="button" id="routeIt" class="btn btn-primary menu_button">Route It</button>
-            <button type="button" id="dirList" class="btn btn-default menu_button"><a href="#directions" data-toggle="modal">Directions</a></button>
-          </div>
-          <div class="top-buffer" id="destinations">
-          </div>
+        <div class="col-md-6" id="routeView">
+          <div class="top-buffer" id="destinations" style="display: block"></div>
+          <div class="top-buffer" id="directionsDiv" style="display: none"></div>
         </div>
       </div>
 
@@ -113,7 +108,7 @@
             <div class="modal-body" id="logindiv">
 
               <h4>Login</h4>
-              <form method= "post" action="/login" class="form-horizontal">
+              <form method= "post" action="/login" class="form-horizontal" id="loginForm">
                 <div class="form-group">
                   <label for="inputUser" class="control-label col-xs-4">Username:</label>
                   <div class="col-xs-6">
@@ -130,6 +125,14 @@
                   <button class=" btn btn-default btn-sm pull-left" data-dismiss="modal">X</button>
                   <input class="btn btn-default btn-primary pull-right" type= "submit" value= "Login">
                 </div>
+                <script type="text/javascript">
+                $("#loginForm").keypress(function(e) {
+                  if ((e.keyCode == 13) && (e.target.type != "textarea")) {
+                    e.preventDefault();
+                    $(this).submit();
+                  }
+                });
+                </script>
               </form>
               </div>
             </div>

@@ -11,7 +11,11 @@ var map,
   add,
   origin,
   browserSupportFlag =  new Boolean(),
-  place;
+
+  place,
+  routeIt,
+  placeLatLng;
+
 
 var rendererOptions = {
   draggable: true
@@ -35,6 +39,7 @@ function initialize() {
   originBtn = (document.getElementById('originSubmit'));
   addBtn = (document.getElementById('addBtn'));
   gpsBtn = (document.getElementById('gpsBtn'));
+  routeIt = (document.getElementById('routeIt'));
   origin = (document.getElementById('originNameInput'));
   input = (document.getElementById('locationNameInput'));
   searchBox = new google.maps.places.SearchBox(input);
@@ -48,6 +53,25 @@ function initialize() {
   google.maps.event.addDomListener(addBtn, 'click', function(){
     buildMarker();
   });
+
+
+  //build marker and add waypoint when user selects item from autocomplete drop down
+  google.maps.event.addListener(autoInput, 'place_changed', function () {
+    buildMarker();
+    waypointCollectionView.updateOnClick();
+  })
+
+  google.maps.event.addDomListener(routeIt, 'click', function(){
+    calcRoute();
+  });
+
+  google.maps.event.addDomListener(clrRoutes, 'click', function(){
+    directionsDisplay.setMap(null);
+    var bounds = new google.maps.LatLngBounds();
+      bounds.extend(centerArray[0].getPosition());
+      map.fitBounds(bounds);
+  });
+
 
   google.maps.event.addDomListener(gpsBtn, 'click', geoLocate);
 
@@ -117,9 +141,31 @@ function buildMarker(placeInput){
 
 };
 
+// $(function(){
+//   $('#routeIt').on('click', function (e) {
+//     calcRoute();
+//   });
+// });
+
 $(function(){
-  $('#routeIt').on('click', function (e) {
-    calcRoute();
+  $('#setOrigin').on('click', function () {
+    if($("#setOrigin").hasClass('deslctYlw')){
+      $("#setOrigin").toggleClass('slctYlw');
+      $("#setOrigin").toggleClass('deslctYlw');
+      $("#gpsBtn").toggleClass('deslctYlw');
+      $("#gpsBtn").toggleClass('slctYlw');
+    }
+  });
+});
+
+$(function(){
+  $('#gpsBtn').on('click', function () {
+    if($("#gpsBtn").hasClass('deslctYlw')){
+      $("#gpsBtn").toggleClass('deslctYlw');
+      $("#gpsBtn").toggleClass('slctYlw');
+      $("#setOrigin").toggleClass('slctYlw');
+      $("#setOrigin").toggleClass('deslctYlw');
+    }
   });
 });
 
@@ -169,7 +215,9 @@ function geoLocate(){
        });
 
       locationID = results[0].formatted_address;
-      originPointModel.setName(locationID);
+      originPointModel.set('originName',locationID);
+      originPointModel.save();
+      originForExport = locationID;
 
       for(i = 0; i < centerArray.length; i++) {
         //console.log(centerArray[i]);

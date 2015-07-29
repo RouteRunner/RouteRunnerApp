@@ -73,6 +73,10 @@ h5
     font-size: 1.4em;
 }
 
+#hrBot {
+  margin-bottom: 0;
+}
+
 #logo {
   height: 33px;
   margin-top: -0.4em;
@@ -101,14 +105,13 @@ h5
 }
 
 #waypoint-list{
-  margin: 10px 5px 10px 25px;
+  margin: 0;
   padding: 0;
   list-style-type: none;
 }
 
 .waypointStyle {
-  margin-bottom: 15px;
-  margin-left: 22px;
+  /*margin-left: 22px;*/
   text-align: left;
 }
 
@@ -133,12 +136,12 @@ h5
   list-style-type: none;
 }
 
-#addBtn {
+/*#addBtn {
     border-radius: 4px 0px 0px 4px;
     background: none;
     border: 2px solid #0099cc;
     color: #0099cc;
-}
+}*/
 
 #gpsBtn {
   border-radius: 0px 4px 4px 0px;

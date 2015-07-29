@@ -92,11 +92,14 @@ function buildMarker(placeInput){
     place = JSON.parse(placeInput);
   }
 
+  // var swordImg = './img/sword3.png'
+  // var logo = './img/logo3.png'
   //create new marker, using location info from global place object
   marker = new google.maps.Marker({
     animation : google.maps.Animation.DROP,
     map       : map,
-    position  : {lat : place.geometry.location.A, lng : place.geometry.location.F},
+    // icon      : swordImg,
+    position  : {lat : place.geometry.location.G, lng : place.geometry.location.K},
   });
 
   //push new marker onto markerArray
@@ -162,7 +165,7 @@ function geoLocate(){
          animation : google.maps.Animation.DROP,
          map       : map,
          position  : pos,
-         label: 'origin'
+         label: 'origin',
        });
 
       locationID = results[0].formatted_address;

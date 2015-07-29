@@ -167,7 +167,8 @@ var OriginPointView = Backbone.View.extend({
 		this.render();
 	},
 	events : {
-		"click #originSubmit"  : "setName"
+		"click #originSubmit"  : "setName",
+		"keypress #originNameInput" : "enterKey"
 	},
 	setName : function () {
 		var str = this.$el.find("#originNameInput").val();
@@ -175,6 +176,11 @@ var OriginPointView = Backbone.View.extend({
 		$("#originNameInput").val("");
 		this.render();
 	},
+	enterKey: function (e){
+        if(e.keyCode == 13) {
+            this.setName();
+        }
+    },
 });
 
 //create backbone model to store data about each waypoint/stop in route
@@ -292,6 +298,7 @@ var WaypointCollectionView = Backbone.View.extend({
 	},
 	events : {
 		"click #addBtn"  : "updateOnClick",
+		"keypress #locationNameInput": "enterKey"
 	},
 	updateOnClick : function (e) {
 
@@ -300,7 +307,8 @@ var WaypointCollectionView = Backbone.View.extend({
 		//add a new item to collection, pass in inputted string
 		if (str !== ''){
 			this.addToCollection(str);
-			$("#locationNameInput").val("");
+			// $("#locationNameInput").val("");
+
 		}
 	},
 	addToCollection : function (str) {
@@ -314,18 +322,29 @@ var WaypointCollectionView = Backbone.View.extend({
 		//push location onto waypoints array for exporting
 		var waypointObject = {location : str};
 		waypointsArray.push(waypointObject);
+
 	},
 	addOne : function (model) {
 		// create view for new model
         var view = new WaypointView({model : model, tagName : "li"});
-
         //render new view
         view.render();
 
         //append new view to list of waypoints (collection view's div)
         $("#waypoint-list").append(view.$el);
-
 	},
+	// enterKey: function (e){
+ //        if(e.keyCode == 13) {
+ //        	//if there is content in the field:
+ //        	if($('#locationNameInput').val() !== ''){
+ //        		console.log('working?!?!')
+	// 			buildMarker();
+ //            	this.updateOnClick();
+	// 			}
+            //otherwise, don't do anything
+            
+    //     }
+    // },
 });
 
 //create variables for collection, collection view, origin point and origin point view

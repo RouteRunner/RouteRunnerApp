@@ -126,6 +126,28 @@ $(function(){
   });
 });
 
+$(function(){
+  $('#setOrigin').on('click', function () {
+    if($("#setOrigin").hasClass('deslctYlw')){
+      $("#setOrigin").toggleClass('slctYlw');
+      $("#setOrigin").toggleClass('deslctYlw');
+      $("#gpsBtn").toggleClass('deslctYlw');
+      $("#gpsBtn").toggleClass('slctYlw');
+    }
+  });
+});
+
+$(function(){
+  $('#gpsBtn').on('click', function () {
+    if($("#gpsBtn").hasClass('deslctYlw')){
+      $("#gpsBtn").toggleClass('deslctYlw');
+      $("#gpsBtn").toggleClass('slctYlw');
+      $("#setOrigin").toggleClass('slctYlw');
+      $("#setOrigin").toggleClass('deslctYlw');
+    }
+  });
+});
+
 function calcRoute() {
   var request = {
     origin: originForExport,

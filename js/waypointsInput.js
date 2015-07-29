@@ -355,7 +355,7 @@ var WaypointCollectionView = Backbone.View.extend({
 
 var DirectionsView = Backbone.View.extend({
 	render : function () {
-		var dirPanel = '<div class="top-buffer" id="directionsPanel"></div>';
+		var dirPanel = '<div class="top-buffer emptyDiv" id="directionsPanel"><h4>Please route an origin and at least one destination to view your directions.</h4></div>';
 		this.$el.html(dirPanel);
 	},
 });
@@ -366,14 +366,24 @@ var RoutesView = Backbone.View.extend({
 		var dirBtn = '<button type="button" id="dirBtn" class="deslctBlue  menu_button">Directions View</button></div>';
 		this.$el.prepend(routeBtn + dirBtn);
 
-		waypointCollection = new WaypointCollection();
-		waypointCollectionView = new WaypointCollectionView({collection : waypointCollection, el : "#destinations"});
+		// waypointCollection = new WaypointCollection();
+		// waypointCollectionView = new WaypointCollectionView({collection : waypointCollection, el : "#destinations"});
 
-		directionsView = new DirectionsView({el : "#directionsDiv"});
-		waypointCollectionView.render();
-		directionsView.render();
+		// directionsView = new DirectionsView({el : "#directionsDiv"});
+		// waypointCollectionView.render();
+		// directionsView.render();
+		//this.listenTo(directionsView, 'change', this.changeView)
 
 	},
+	// changeView : function() {
+	// 	console.log("changeView fired...")
+	//
+	// 	directionsView.remove();
+	//
+	// 	var directions = new DirectionsView({el : "#directionsDiv", tagName : 'directionsPanel', className : 'top-buffer'});
+	//
+	// 	$("directionsDiv").append(directions.$el);
+	// },
 	events : {
 		"click #routeBtn"  : "toggleRoutes",
 		"click #dirBtn" : "toggleDirections"
@@ -411,22 +421,24 @@ var waypointCollection,
 
 $(document).ready( function () {
 	//assign collection and collection view to new backbone objects
-	//waypointCollection = new WaypointCollection();
-	// waypointCollectionView = new WaypointCollectionView({collection : waypointCollection, el : "#destinations"});
-	// waypointCollectionView.render();
+	waypointCollection = new WaypointCollection();
+	waypointCollectionView = new WaypointCollectionView({collection : waypointCollection, el : "#destinations"});
+	directionsView = new DirectionsView({el : "#directionsDiv"});
+	waypointCollectionView.render();
+	directionsView.render();
 
 	//assign origin point and origin point view to new backbone objects
 	originPointModel = new OriginPoint();
 	var originPointView = new OriginPointView({model : originPointModel});
-	//originPointView.render();
+	originPointView.render();
 
 	var routesView = new RoutesView({el : "#routeView"});
 	routesView.render();
 
 	//append origin point view and collection view to appropriate divs in index.html
-	$("#origindiv").append(originPointView.$el);
 	$("#routeView").append(routesView.$el);
-	//$("#destinations").append(waypointCollectionView.$el);
+	$("#origindiv").append(originPointView.$el);
+	$("#destinations").append(waypointCollectionView.$el);
 	div1 = document.getElementById("destinations");
 	div2 = document.getElementById("directionsDiv");
 

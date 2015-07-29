@@ -313,7 +313,7 @@ var WaypointCollectionView = Backbone.View.extend({
 			//view created/appended in 'addOne' method, called in 'add' event listener
 			this.collection.create({
 				location : str,
-				place    : place,
+				place   : placeLatLng,
 			});
 
 			//push location onto waypoints array for exporting

@@ -208,7 +208,9 @@ function geoLocate(){
        });
 
       locationID = results[0].formatted_address;
-      originPointModel.setName(locationID);
+      originPointModel.set('originName',locationID);
+      originPointModel.save();
+      originForExport = locationID;
 
       for(i = 0; i < centerArray.length; i++) {
         //console.log(centerArray[i]);

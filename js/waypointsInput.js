@@ -142,7 +142,7 @@ var NotesCollectionView = Backbone.View.extend({
 			this.collection.create({
 				listitem : str,
 				waypoint : uniqueName,
-			});	
+			});
 		}
 	},
 	addOne : function(model) {
@@ -258,7 +258,7 @@ var WaypointCollection = Backbone.Collection.extend({
 			for (i = 0; i < response.length; i++) {
 				//strip id's from response objects and save as waypointsArray for use in calcRoute
 				waypointsArray.push({location : response[i].location});
-					
+
 				//rebuild marker for each waypoint returned
 				buildMarker(response[i].place);
 			}
@@ -319,7 +319,7 @@ var WaypointCollectionView = Backbone.View.extend({
 			//push location onto waypoints array for exporting
 			var waypointObject = {location : str};
 			waypointsArray.push(waypointObject);
-			
+
 			//reset input value to blank string to clear old entry
 			$("#locationNameInput").val("");
 		}
@@ -404,7 +404,7 @@ $(document).ready( function () {
 
 	//assign origin point and origin point view to new backbone objects
 	originPointModel = new OriginPoint();
-	var originPointView = new OriginPointView({model : originPointModel});
+	originPointView = new OriginPointView({model : originPointModel});
 	originPointView.render();
 
 	var routesView = new RoutesView({el : "#routeView"});

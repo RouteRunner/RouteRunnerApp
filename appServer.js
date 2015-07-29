@@ -281,12 +281,14 @@ app.post('/waypointCollection', function (req, res) {
     		.then(function(returnedNotes){
 	    		if (returnedNotes.length === 0) {
 	    			//no matching locations for user, insert new location in DB
-					knex('waypoints').insert({
+					knex('waypoints').returning('id')
+					.insert({
 						username      : username,
 						location_name : location,
 						place         : place,
-					}).then(function() {
-						res.end();
+					}).then(function(id) {
+						//send back id to waypoint's backbone model
+						res.send(JSON.stringify({id : id}));
 						})
     			} else {
     				//matching location aready in DB

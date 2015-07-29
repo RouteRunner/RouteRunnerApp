@@ -355,18 +355,12 @@ var WaypointCollectionView = Backbone.View.extend({
 
 var DirectionsView = Backbone.View.extend({
 	render : function () {
-		var dirPanel = '<div class="top-buffer" id="directionsPanel">Directions Div!</div>';
+		var dirPanel = '<div class="top-buffer" id="directionsPanel"></div>';
 		this.$el.html(dirPanel);
 	},
 });
 
 var RoutesView = Backbone.View.extend({
-	render : function () {
-
-		//var destDiv = '<div class="top-buffer" id="destinations"></div>';
-
-		//$("#routeView").append(routeBtn + dirBtn + destDiv);
-	},
 	initialize : function() {
 		var routeBtn = '<div class="btn-group top-buffer"><button type="button" id="routeBtn" class="slctBtn menu_button">List View</button>';
 		var dirBtn = '<button type="button" id="dirBtn" class="deslctBlue  menu_button">Directions View</button></div>';

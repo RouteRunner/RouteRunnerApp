@@ -57,7 +57,7 @@ function initialize() {
     marker = new google.maps.Marker({
       animation : google.maps.Animation.DROP,
       map       : map,
-      position  : {lat : place.geometry.location.A, lng : place.geometry.location.F},
+      position  : {lat : place.geometry.location.lat(), lng : place.geometry.location.lng()},
       label: 'origin'
     });
 

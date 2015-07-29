@@ -98,11 +98,14 @@ function buildMarker(placeInput){
     place = JSON.parse(placeInput);
   }
 
+  //var placeLatLng = place.geometry.location;
+
   //create new marker, using location info from global place object
   marker = new google.maps.Marker({
     animation : google.maps.Animation.DROP,
     map       : map,
-    position  : {lat : place.geometry.location.A, lng : place.geometry.location.F},
+    //position  : placeLatLng,
+    position  : {lat : place.geometry.location.lat(), lng : place.geometry.location.lng()},
   });
 
   //push new marker onto markerArray

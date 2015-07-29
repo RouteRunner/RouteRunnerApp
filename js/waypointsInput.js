@@ -210,7 +210,7 @@ var WaypointView = Backbone.View.extend({
 		uniqueName = uniqueName.replace(/[,\s]+/g, '');
 
 		var noteBtn = '<div class="pull-left"><a href="#' + uniqueName + '" data-toggle="modal"><button type="button" id="openNotes" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></button></a></div>';
-		var locationName = '<h4 class="waypointName">' + this.model.get("location") + '</h4>';
+		var locationName = '<h4 class="waypointName">' + this.model.get("location") + '</h4><hr>';
 		var delBtn = '<div class="pull-right"><button type="button" class="btn btn-default btn-sm" id="delBtn"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true"></span></button></div>';
 		this.$el.html(noteBtn + delBtn + locationName);
 
@@ -355,7 +355,7 @@ var WaypointCollectionView = Backbone.View.extend({
 
 var DirectionsView = Backbone.View.extend({
 	render : function () {
-		var dirPanel = '<div class="top-buffer emptyDiv" id="directionsPanel"><h4>Please route an origin and at least one destination to view your directions.</h4></div>';
+		var dirPanel = '<div class="top-buffer emptyDiv" id="directionsPanel"><h4>Please route an origin with at least one destination to view your directions.</h4></div>';
 		this.$el.html(dirPanel);
 	},
 });
@@ -364,29 +364,22 @@ var RoutesView = Backbone.View.extend({
 	initialize : function() {
 		var routeBtn = '<div class="btn-group top-buffer"><button type="button" id="routeBtn" class="slctBtn menu_button">List View</button>';
 		var dirBtn = '<button type="button" id="dirBtn" class="deslctBlue  menu_button">Directions View</button></div>';
+		var routeIt = '<div class="row top-buffer"><button type="button" class="btn btn-success menu_button" id="routeIt">ROUTE IT</button></div>';
 		this.$el.prepend(routeBtn + dirBtn);
-
-		// waypointCollection = new WaypointCollection();
-		// waypointCollectionView = new WaypointCollectionView({collection : waypointCollection, el : "#destinations"});
-
-		// directionsView = new DirectionsView({el : "#directionsDiv"});
-		// waypointCollectionView.render();
-		// directionsView.render();
-		//this.listenTo(directionsView, 'change', this.changeView)
-
+		$("#routeView").append(routeIt);
 	},
-	// changeView : function() {
-	// 	console.log("changeView fired...")
-	//
-	// 	directionsView.remove();
-	//
-	// 	var directions = new DirectionsView({el : "#directionsDiv", tagName : 'directionsPanel', className : 'top-buffer'});
-	//
-	// 	$("directionsDiv").append(directions.$el);
-	// },
 	events : {
+		"click #routeIt" : "directionChange",
 		"click #routeBtn"  : "toggleRoutes",
 		"click #dirBtn" : "toggleDirections"
+	},
+	directionChange : function(){
+		if(markerArray.length === 0 && !originForExport){
+			return;
+		}else{
+			console.log("directionsChange for real");
+			$("#directionsPanel").empty();
+		}
 	},
 	toggleRoutes : function() {
 		if(div1.style.display === 'none'){

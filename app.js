@@ -11,7 +11,8 @@ var map,
   add,
   origin,
   browserSupportFlag =  new Boolean(),
-  place;
+  place,
+  routeIt;
 
 var rendererOptions = {
   draggable: true
@@ -34,6 +35,7 @@ function initialize() {
   originBtn = (document.getElementById('originSubmit'));
   addBtn = (document.getElementById('addBtn'));
   gpsBtn = (document.getElementById('gpsBtn'));
+  routeIt = (document.getElementById('routeIt'));
   origin = (document.getElementById('originNameInput'));
   input = (document.getElementById('locationNameInput'));
   searchBox = new google.maps.places.SearchBox(input);
@@ -46,6 +48,10 @@ function initialize() {
 
   google.maps.event.addDomListener(addBtn, 'click', function(){
     buildMarker();
+  });
+
+  google.maps.event.addDomListener(routeIt, 'click', function(){
+    calcRoute();
   });
 
   google.maps.event.addDomListener(clrRoutes, 'click', function(){
@@ -63,7 +69,7 @@ function initialize() {
     marker = new google.maps.Marker({
       animation : google.maps.Animation.DROP,
       map       : map,
-      position  : {lat : place.geometry.location.A, lng : place.geometry.location.F},
+      position  : {lat : place.geometry.location.G, lng : place.geometry.location.K},
       label: 'origin'
     });
 
@@ -102,7 +108,7 @@ function buildMarker(placeInput){
   marker = new google.maps.Marker({
     animation : google.maps.Animation.DROP,
     map       : map,
-    position  : {lat : place.geometry.location.A, lng : place.geometry.location.F},
+    position  : {lat : place.geometry.location.G, lng : place.geometry.location.K},
   });
 
   //push new marker onto markerArray
@@ -120,11 +126,11 @@ function buildMarker(placeInput){
 
 };
 
-$(function(){
-  $('#routeIt').on('click', function (e) {
-    calcRoute();
-  });
-});
+// $(function(){
+//   $('#routeIt').on('click', function (e) {
+//     calcRoute();
+//   });
+// });
 
 $(function(){
   $('#setOrigin').on('click', function () {

@@ -49,13 +49,14 @@ function initialize() {
     buildMarker();
   });
 
-  // google.maps.event.addListener(autoInput, 'place_changed', function () {
-  //   console.log("place_changed listener");
-  //   place = autoInput.getPlace();
-  //   console.log("place:");
-  //   console.log(place);
-  //   buildMarker();
-  // })
+  google.maps.event.addListener(autoInput, 'place_changed', function () {
+    console.log("place_changed listener");
+    place = autoInput.getPlace();
+    console.log("place:");
+    console.log(place);
+    buildMarker();
+    waypointCollectionView.updateOnClick();
+  })
 
   google.maps.event.addDomListener(clrRoutes, 'click', function(){
     directionsDisplay.setMap(null);

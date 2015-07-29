@@ -134,40 +134,133 @@ h5
 }
 
 #addBtn {
-    border-radius: 25%;
+    border-radius: 4px 0px 0px 4px;
     background: none;
-    margin-right: 5px;
     border: 2px solid #0099cc;
     color: #0099cc;
 }
 
 #gpsBtn {
-  color: #e9862f;
-  border: 1px solid #e9862f;
+  border-radius: 0px 4px 4px 0px;
+}
+
+#setOrigin {
+  border-radius: 4px 0px 0px 4px;
 }
 
 #delBtn {
   border: none;
 }
 
-#dirList {
-  border: 1px solid #0099cc;
-  color: #0099cc;
+#dirBtn {
+  border-radius: 0px 4px 4px 0px;
 }
 
-/*#locationNameInput {
-  border: 1px solid #0099cc;
-}*/
+#routeBtn{
+  border-radius: 4px 0px 0px 4px;
+}
 
-/*#inputOrigin {
-  background: none;
+.slctYlw {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+      touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  color: #fff;
+  background-color: #e9862f;
+  border-color: #e9862f;
+  outline: none !important;
+}
+
+.deslctYlw {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+      touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  border-radius: 4px;
   border: 1px solid #e9862f;
-}*/
-
-/*#openNotes {
   color: #e9862f;
-  border:1px solid #e9862f;
-}*/
+  background-color: #fff;
+  outline: none !important;
+}
+
+.slctBtn {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+      touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  background-image: none;
+  border: 1px solid transparent;
+  color: #fff;
+  background-color: #0099cc;
+  border-color: #0099cc;
+  outline: none !important;
+}
+
+.deslctBlue {
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 14px;
+  font-weight: normal;
+  line-height: 1.42857143;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  -ms-touch-action: manipulation;
+      touch-action: manipulation;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+  border-radius: 4px;
+  border: 1px solid #0099cc;
+  color: #0099cc;
+  background-color: #fff;
+  outline: none !important;
+}
+
+#destinations {
+  margin-bottom: 50px;
+}
 
 .menu_button {
     min-width: 150px !important;

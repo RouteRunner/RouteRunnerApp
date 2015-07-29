@@ -12,6 +12,7 @@ var map,
   origin,
   browserSupportFlag =  new Boolean(),
   place,
+  routeIt,
   placeLatLng;
 
 var rendererOptions = {
@@ -35,6 +36,7 @@ function initialize() {
   originBtn = (document.getElementById('originSubmit'));
   addBtn = (document.getElementById('addBtn'));
   gpsBtn = (document.getElementById('gpsBtn'));
+  routeIt = (document.getElementById('routeIt'));
   origin = (document.getElementById('originNameInput'));
   input = (document.getElementById('locationNameInput'));
   searchBox = new google.maps.places.SearchBox(input);
@@ -54,6 +56,10 @@ function initialize() {
     buildMarker();
     waypointCollectionView.updateOnClick();
   })
+
+  google.maps.event.addDomListener(routeIt, 'click', function(){
+    calcRoute();
+  });
 
   google.maps.event.addDomListener(clrRoutes, 'click', function(){
     directionsDisplay.setMap(null);
@@ -92,7 +98,7 @@ function initialize() {
 }
 
 /*helper funciton to build new marker, if no place is passed in, marker is created
-  by grabbing entry from autocomplete bar, if placeInput is passed in marker is created using 
+  by grabbing entry from autocomplete bar, if placeInput is passed in marker is created using
   lat,lng from that place object (JSON string)*/
 function buildMarker(placeInput){
 
@@ -132,9 +138,31 @@ function buildMarker(placeInput){
 
 };
 
+// $(function(){
+//   $('#routeIt').on('click', function (e) {
+//     calcRoute();
+//   });
+// });
+
 $(function(){
-  $('#routeIt').on('click', function (e) {
-    calcRoute();
+  $('#setOrigin').on('click', function () {
+    if($("#setOrigin").hasClass('deslctYlw')){
+      $("#setOrigin").toggleClass('slctYlw');
+      $("#setOrigin").toggleClass('deslctYlw');
+      $("#gpsBtn").toggleClass('deslctYlw');
+      $("#gpsBtn").toggleClass('slctYlw');
+    }
+  });
+});
+
+$(function(){
+  $('#gpsBtn').on('click', function () {
+    if($("#gpsBtn").hasClass('deslctYlw')){
+      $("#gpsBtn").toggleClass('deslctYlw');
+      $("#gpsBtn").toggleClass('slctYlw');
+      $("#setOrigin").toggleClass('slctYlw');
+      $("#setOrigin").toggleClass('deslctYlw');
+    }
   });
 });
 

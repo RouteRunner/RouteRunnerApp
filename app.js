@@ -8,8 +8,6 @@ var map,
   searchbox,
   autocomplete,
   tempAuto,
-  add,
-  origin,
   browserSupportFlag =  new Boolean(),
   place,
   routeIt,
@@ -34,7 +32,6 @@ function initialize() {
   directionsDisplay.setPanel(document.getElementById('directionsPanel'));
 
   originBtn = (document.getElementById('originSubmit'));
-  addBtn = (document.getElementById('addBtn'));
   gpsBtn = (document.getElementById('gpsBtn'));
   routeIt = (document.getElementById('routeIt'));
   origin = (document.getElementById('originNameInput'));
@@ -47,10 +44,6 @@ function initialize() {
   autoInput = new google.maps.places.Autocomplete(input);
   autoInput.bindTo('bounds', map);
 
-  google.maps.event.addDomListener(addBtn, 'click', function(){
-    buildMarker();
-  });
-
   //build marker and add waypoint when user selects item from autocomplete drop down
   google.maps.event.addListener(autoInput, 'place_changed', function () {
     buildMarker();
@@ -58,14 +51,23 @@ function initialize() {
   })
 
   google.maps.event.addDomListener(routeIt, 'click', function(){
+    directionsDisplay.setMap(map);
     calcRoute();
   });
 
   google.maps.event.addDomListener(clrRoutes, 'click', function(){
-    directionsDisplay.setMap(null);
-    var bounds = new google.maps.LatLngBounds();
+      var bounds = new google.maps.LatLngBounds();
+      directionsDisplay.setMap(null);
       bounds.extend(centerArray[0].getPosition());
+      centerArray[0].setVisible(true);
+      if (bounds.getNorthEast().equals(bounds.getSouthWest())) {
+       var extendPoint1 = new google.maps.LatLng(bounds.getNorthEast().lat() + 0.01, bounds.getNorthEast().lng() + 0.01);
+       var extendPoint2 = new google.maps.LatLng(bounds.getNorthEast().lat() - 0.01, bounds.getNorthEast().lng() - 0.01);
+       bounds.extend(extendPoint1);
+       bounds.extend(extendPoint2);
+    }
       map.fitBounds(bounds);
+
   });
 
   google.maps.event.addDomListener(gpsBtn, 'click', geoLocate);
@@ -90,6 +92,12 @@ function initialize() {
     var bounds = new google.maps.LatLngBounds();
     for(i = 0; i < centerArray.length; i++) {
       bounds.extend(centerArray[i].getPosition());
+    }
+    if (bounds.getNorthEast().equals(bounds.getSouthWest())) {
+       var extendPoint1 = new google.maps.LatLng(bounds.getNorthEast().lat() + 0.01, bounds.getNorthEast().lng() + 0.01);
+       var extendPoint2 = new google.maps.LatLng(bounds.getNorthEast().lat() - 0.01, bounds.getNorthEast().lng() - 0.01);
+       bounds.extend(extendPoint1);
+       bounds.extend(extendPoint2);
     }
     map.fitBounds(bounds);
 
@@ -133,6 +141,12 @@ function buildMarker(placeInput){
   for(j = 0; j < centerArray.length; j++) {
     bounds.extend(centerArray[j].getPosition());
   }
+  if (bounds.getNorthEast().equals(bounds.getSouthWest())) {
+       var extendPoint1 = new google.maps.LatLng(bounds.getNorthEast().lat() + 0.01, bounds.getNorthEast().lng() + 0.01);
+       var extendPoint2 = new google.maps.LatLng(bounds.getNorthEast().lat() - 0.01, bounds.getNorthEast().lng() - 0.01);
+       bounds.extend(extendPoint1);
+       bounds.extend(extendPoint2);
+    }
   //apply new bounds to map
   map.fitBounds(bounds);
 
@@ -230,6 +244,12 @@ function geoLocate(){
       for(i = 0; i < centerArray.length; i++) {
         bounds.extend(centerArray[i].getPosition());
       }
+      if (bounds.getNorthEast().equals(bounds.getSouthWest())) {
+       var extendPoint1 = new google.maps.LatLng(bounds.getNorthEast().lat() + 0.01, bounds.getNorthEast().lng() + 0.01);
+       var extendPoint2 = new google.maps.LatLng(bounds.getNorthEast().lat() - 0.01, bounds.getNorthEast().lng() - 0.01);
+       bounds.extend(extendPoint1);
+       bounds.extend(extendPoint2);
+    }
       map.fitBounds(bounds);
      });
    }), function() {

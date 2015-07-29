@@ -51,6 +51,12 @@ function initialize() {
     buildMarker();
   });
 
+  //build marker and add waypoint when user selects item from autocomplete drop down
+  google.maps.event.addListener(autoInput, 'place_changed', function () {
+    buildMarker();
+    waypointCollectionView.updateOnClick();
+  })
+
   google.maps.event.addDomListener(routeIt, 'click', function(){
     calcRoute();
   });

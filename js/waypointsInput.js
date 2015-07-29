@@ -281,7 +281,7 @@ var WaypointCollectionView = Backbone.View.extend({
 	},
 	events : {
 		"click #addBtn"  : "updateOnClick",
-		"click #clrRoutes" : "clearRoutes"
+		"click #clrRoutes" : "clearRoutes",
 	},
 	clearRoutes : function() {
 		var modelsToDestroy = [];
@@ -327,6 +327,7 @@ var WaypointCollectionView = Backbone.View.extend({
 	addOne : function (model) {
 		// create view for new model
         var view = new WaypointView({model : model, tagName : "li", className : "waypointStyle"});
+       
         //render new view
         view.render();
 

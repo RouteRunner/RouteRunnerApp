@@ -282,7 +282,7 @@ var WaypointCollectionView = Backbone.View.extend({
 	events : {
 		"click #addBtn"  : "updateOnClick",
 		"click #clrRoutes" : "clearRoutes",
-		//"keypress #locationNameInput" : "checkEnterKey"
+		"keypress #locationNameInput" : "checkEnterKey"
 	},
 	clearRoutes : function() {
 		var modelsToDestroy = [];
@@ -331,7 +331,7 @@ var WaypointCollectionView = Backbone.View.extend({
 			console.log('keyCode = 13, starting timeout');
 			window.setTimeout(function() {
 				console.log('timeout ended, calling buildMarker and updateOnClick')
-				//buildMarker();
+				buildMarker();
             	currentCollectionView.updateOnClick();
             }, 2000)
         }

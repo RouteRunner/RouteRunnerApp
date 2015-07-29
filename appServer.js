@@ -34,7 +34,7 @@ app.get('/', function (req, res) {
  	var username = getUsernameFromCookie(req);
 
     //render home.html, sending username to insert into template
-    res.render('home.html', {username:username});
+    res.render('home.html', {username:username, error:null});
 });
 
 
@@ -396,7 +396,11 @@ app.post('/register', function(req, res) {
   } else { 
   	//password and password verify did not match
   	console.log('passwords do not match')
-  	res.redirect("/");
+  	//res.send({error : "Error: passwords do not match"});
+  	//res.redirect("/");
+
+  	//render home.html, sending error to alert
+    //res.render('home.html/', {username:null, error : "Error: passwords do not match"});
   }
 });
 

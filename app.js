@@ -256,3 +256,15 @@ function handleNoGeolocation(errorFlag) {
 };
 
 google.maps.event.addDomListener(window, 'load', initialize);
+
+var validateRegisterForm = function () {
+
+  var registerUserName = document.forms["registerForm"]["username"].value;
+  var registerPassword = document.forms["registerForm"]["password"].value;
+  var registerPasswordVerification = document.forms["registerForm"]["password_confirm"].value;
+
+  if(registerPassword !== registerPasswordVerification) {
+    alert("Passwords Do Not Match");
+    return false;
+  }
+}

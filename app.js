@@ -11,7 +11,8 @@ var map,
   add,
   origin,
   browserSupportFlag =  new Boolean(),
-  place;
+  place,
+  placeLatLng;
 
 var rendererOptions = {
   draggable: true
@@ -93,19 +94,19 @@ function buildMarker(placeInput){
   if(!placeInput){
     //no input, get place info from autocomplete.getPlace() and assign to global place var
     place = autoInput.getPlace();
+    placeLatLng = {lat : place.geometry.location.lat(), lng : place.geometry.location.lng()}
   }else{
     //input provided, assign passed in place object to global place var
-    place = JSON.parse(placeInput);
+    placeLatLng = JSON.parse(placeInput);
+    //place = JSON.parse(placeInput);
   }
-
-  //var placeLatLng = place.geometry.location;
 
   //create new marker, using location info from global place object
   marker = new google.maps.Marker({
     animation : google.maps.Animation.DROP,
     map       : map,
-    //position  : placeLatLng,
-    position  : {lat : place.geometry.location.lat(), lng : place.geometry.location.lng()},
+    position  : placeLatLng,
+    //position  : {lat : place.geometry.location.lat(), lng : place.geometry.location.lng()},
   });
 
   //push new marker onto markerArray

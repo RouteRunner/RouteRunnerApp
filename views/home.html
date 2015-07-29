@@ -74,8 +74,6 @@
             <button type="button" id="dirList" class="btn btn-default menu_button"><a href="#directions" data-toggle="modal">Directions</a></button>
           </div>
           <div class="top-buffer" id="destinations">
-            <div class="input-group" id="inputdiv"></div>
-            <ol id="waypoint-list"></ol>
           </div>
         </div>
       </div>
@@ -113,7 +111,7 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-body" id="logindiv">
-              <button class=" btn btn-default btn-sm pull-left" data-dismiss="modal">X</button>
+
               <h4>Login</h4>
               <form method= "post" action="/login" class="form-horizontal">
                 <div class="form-group">
@@ -128,8 +126,9 @@
                     <input class="form-control" type="password" name= "password" placeholder="Enter Your Password" id="inputPass">
                 </div>
                 </div>
-                <div class="center-block">
-                  <input class="btn btn-default btn-primary center-block" type= "submit" value= "Login">
+                <div class="modal-footer">
+                  <button class=" btn btn-default btn-sm pull-left" data-dismiss="modal">X</button>
+                  <input class="btn btn-default btn-primary pull-right" type= "submit" value= "Login">
                 </div>
               </form>
               </div>
@@ -141,7 +140,7 @@
         <div class="modal-dialog">
           <div class="modal-content">
             <div class="modal-body" id="registerdiv">
-              <button class=" btn btn-default btn-sm pull-left" data-dismiss="modal">X</button>
+
               <h4>Register</h4>
               <form method= "post" action="/register" class="form-horizontal">
                 <div class="form-group">
@@ -153,7 +152,7 @@
                 <div class="form-group">
                   <label for="inputEmail" class="control-label col-xs-4">Email:</label>
                   <div class="col-xs-6">
-                    <input class="form-control" type="text" name="username" placeholder="Enter Your Email" id="inputEmail">
+                    <input class="form-control" type="text" name="email" placeholder="Enter Your Email" id="inputEmail">
                   </div>
                 </div>
                 <div class="form-group">
@@ -168,10 +167,24 @@
                     <input class="form-control" type="password" name="password_confirm" placeholder="Confirm Password" id="confirmPass">
                   </div>
                 </div>
-                <div class="center-block">
-                  <input class="btn btn-default btn-primary center-block" type= "submit" value= "Register">
+                <div class="modal-footer">
+                  <button class=" btn btn-default btn-sm pull-left" data-dismiss="modal">X</button>
+                  <input class="btn btn-default btn-primary pull-right" type= "submit" value= "Register">
                 </div>
               </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="waypointsAlert" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-body">
+                <h4>Please enter a destination</h4>
+            </div>
+            <div class="modal-footer">
+              <button class=" btn btn-primary pull-right" data-dismiss="modal">OK</button>
             </div>
           </div>
         </div>

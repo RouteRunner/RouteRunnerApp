@@ -21,34 +21,24 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(__dirname));
 app.engine('html', require('ejs').renderFile);
 
+
+/***************************** HOME PAGE ***************************************/
+
 // GET handler for serving home page
 app.get('/', function (req, res) {
 	console.log("processing GET from '/'");
 	console.log('req.body:');
 	console.log(req.body);
 
- 	//get username from cookie in request, if user is logged in
- 	var username = null;
- 	if (req.cookies.username != undefined) {
-    	username = req.cookies.username;
-    }
+  	//set user name from cookie if present
+ 	var username = getUsernameFromCookie(req);
 
     //render home.html, sending username to insert into template
     res.render('home.html', {username:username});
 });
 
-//GET handler for logging out
-app.get('/logout', function (req, res) {
-	console.log('processing GET from /logout');
-	console.log('req.body:');
-	console.log(req.body);
 
-	//delete cookie
-	res.clearCookie('username');
-
-	//redirect back to home page
-	res.redirect('/');
-})
+/***************************** ORIGIN ROUTES ***************************************/
 
 //GET handler for fetching Origin backbone model when it initializes
 app.get('/origin', function (req, res) {
@@ -56,12 +46,11 @@ app.get('/origin', function (req, res) {
 	console.log('req.body:');
 	console.log(req.body);
 
-	var username = null;
- 	if (req.cookies.username != undefined) {
+ 	//set user name from cookie if present
+ 	var username = getUsernameFromCookie(req);
 
- 		//set username from cookie
-    	username = req.cookies.username;
-
+ 	//search DB for user's origin if cookie present (user logged in)
+ 	if (username) {
 		//do knex query for username entry in users table
 		knex('users').where({'username': username}).then(function(returnedUserRecords) {
 			if (returnedUserRecords.length === 0) {
@@ -85,13 +74,11 @@ app.post('/origin', function (req, res) {
 	console.log("req.body:");
 	console.log(req.body);
 
-	//insert origin for user if logged in (cookie present)
-	var username = null;
- 	if (req.cookies.username != undefined) {
+  	//set user name from cookie if present
+ 	var username = getUsernameFromCookie(req);
 
-    	//get username from cookie
-    	username = req.cookies.username;
-
+ 	//update origin for user in DB if cookie present (user logged in)
+ 	if (username) {
     	//insert origin for user in DB
 		knex('users').where({username:username}).update({
 			origin:req.body.originName,
@@ -104,25 +91,28 @@ app.post('/origin', function (req, res) {
 	}
 })
 
+
+
+/***************************** NOTES COLLECTION ROUTES ***************************************/
+
 //GET handler for fetching notes collection, uses unique waypoint from url query string
 app.get('/notesCollection', function (req, res) {
 	console.log("processing GET from '/notesCollection'");
 	console.log('req.query:');
 	console.log(req.query);
 
+	//get specific waypoint from url query string
 	var waypoint = req.query.waypoint;
 
-	var username = null;
-	if (req.cookies.username != undefined) {
+	//set user name from cookie if present
+ 	var username = getUsernameFromCookie(req);
 
-		//set username from cookie
-		username = req.cookies.username;
-
+ 	//serach DB for notes collection if cookie present (user logged in)
+ 	if (username) {
 		//do knex query for username entry in users table
 		knex('notes').where({'username': username, 'waypoint' : waypoint}).then(function(returnedUserRecords) {
 			if (returnedUserRecords.length === 0) {
-				//popup alert box? "No Such User"
-				// console.log('no note records found for username and waypoint query, ending response')
+				//console.log('no note records found for username and waypoint query, ending response')
 				res.end();
 			} else {
 				//stringify and send returnedUserRecords array
@@ -131,12 +121,11 @@ app.get('/notesCollection', function (req, res) {
 		})
 	} else {
 		//user not logged in, end response
-		console.log("user not logged in, ending response")
 		res.end();
 	}
 })
 
-//GET handler for fetching notes
+//GET handler for fetching notes individually by id
 app.get('/notesCollection/:id', function (req, res) {
 	console.log("processing GET from '/notesCollection/:id'");
 	console.log('req.body:');
@@ -152,17 +141,14 @@ app.post('/notesCollection', function (req, res) {
 	console.log("req.body");
 	console.log(req.body);
 
+	//build  variables from HTML request 
 	var listItem = req.body.listitem,
       	status = req.body.status,
-		username = null,
-		waypoint = req.body.waypoint;
+		waypoint = req.body.waypoint,
+ 		username = getUsernameFromCookie(req);
 
-	//insert note if user logged in (cookie present)
- 	if (req.cookies.username != undefined) {
-
-    	//get username from cookie
-    	username = req.cookies.username;
-
+ 	//insert new note into DB if cookiet present (user logged in)
+ 	if (username) {
     	//insert new note into db
     	knex('notes').returning('id')
     		.insert({
@@ -188,14 +174,13 @@ app.put('/notesCollection/:id', function (req, res) {
 	console.log('req.params:');
 	console.log(req.params);
 
-	var	id = req.params.id;
-	var status = req.body.status;
+	//build  variables from HTML request
+	var	id = req.params.id,
+		status = req.body.status,
+ 		username = getUsernameFromCookie(req);
 
-	//insert note if user logged in (cookie present)
- 	if (req.cookies.username != undefined) {
-
-    	//get username from cookie
-    	username = req.cookies.username;
+ 	//update note entry in DB if cookie present (user logged in)
+ 	if (username) {
 
     	//update status of existing note, matched by id
     	knex('notes').where({id : id})
@@ -225,18 +210,20 @@ app.delete('/notesCollection/:id', function (req, res) {
 	})
 })
 
+
+/***************************** WAYPOINT COLLECTION ROUTES ***************************************/
+
 //GET handler for fetching waypoint collection
 app.get('/waypointCollection/', function (req, res) {
 	console.log("processing GET from '/waypointCollection'");
 	console.log('req.body:');
 	console.log(req.body);
 
-	var username = null;
-	if (req.cookies.username != undefined) {
+	//set user name from cookie if present
+ 	var username = getUsernameFromCookie(req);
 
-		//set username from cookie
-		username = req.cookies.username;
-
+ 	//search DB for waypoint collection for user if cookie present (user logged in)
+ 	if (username) {
 		//do knex query for username entry in users table
 		knex('waypoints').where({'username': username}).then(function(returnedWaypointRecords) {
 			if (returnedWaypointRecords.length === 0) {
@@ -256,17 +243,15 @@ app.get('/waypointCollection/', function (req, res) {
 
 				//stringify and send renamedWaypointRecords array
 				res.send(JSON.stringify(renamedWaypointRecords));
-
 			}
 		})
 	} else {
 		//user not logged in, end response
-		console.log("user not logged in, ending response")
 		res.end();
 	}
 })
 
-//GET handler for fetching waypoint
+//GET handler for fetching waypoint by id
 app.get('/waypointCollection/:id', function (req, res) {
 	console.log("processing GET from '/waypointCollection/:id'");
 	console.log('req.body:');
@@ -283,26 +268,27 @@ app.post('/waypointCollection', function (req, res) {
 	console.log("req.body");
 	console.log(req.body);
 
-	var location = req.body.location;
-	var place = req.body.place;
+	//build variables from HTML request
+	var location = req.body.location,
+		place = req.body.place,
+ 		username = getUsernameFromCookie(req);
 
-	//insert waypoint if user logged in (cookie present)
- 	if (req.cookies.username != undefined) {
-
-    	//get username from cookie
-    	username = req.cookies.username;
+ 	//insert waypoint into DB if cookie present (user logged in)
+ 	if (username) {
 
     	//check to see if entry already exits
     	knex('waypoints').where({username : username, location_name : location})
     		.then(function(returnedNotes){
 	    		if (returnedNotes.length === 0) {
 	    			//no matching locations for user, insert new location in DB
-					knex('waypoints').insert({
+					knex('waypoints').returning('id')
+					.insert({
 						username      : username,
 						location_name : location,
 						place         : place,
-					}).then(function() {
-						res.end();
+					}).then(function(id) {
+						//send back id to waypoint's backbone model
+						res.send(JSON.stringify({id : id}));
 						})
     			} else {
     				//matching location aready in DB
@@ -332,59 +318,25 @@ app.delete('/waypointCollection/:id', function (req, res) {
 })
 
 
+/***************************** LOGIN/REGISTER/VERIFICATION ROUTES ***************************************/
+
 //GET handler for serving register page
 app.get('/register', function (req, res) {
-	 //get username from cookie in request, if user is logged in
- 	var username = null;
- 	if (req.cookies.username != undefined) {
- 		username = req.cookies.username;
-    }
+
+   	//set user name from cookie if present
+ 	var username = getUsernameFromCookie(req);
+
     res.render('register.html', {username:username});
 });
 
-//POST handler for logging in from form on home page
-app.post('/login', function(req, res) {
-	console.log("processing POST from '/login'");
-	console.log("req.body");
-	console.log(req.body);
-
-	var username = req.body.username,
-	  	password = req.body.password;
-
-	var pass = require('pwd');
-	pass.hash(password, function(err, salt, hash) {
-		knex('users').where({'username': username}).then(function(returnedUserRecords) {
-			if (returnedUserRecords.length === 0) {
-				//popup alert box? "No Such User"
-			} else {
-				//user was found in DB, pull out first one from array
-			    var user = returnedUserRecords[0];
-
-			    //create hash for entered password
-	      		var pass = require('pwd');
-	      		pass.hash(password, user.salt, function(err, hash) {
-	      			//check new password hash against password from DB
-	      			if(user.passwordhash === hash) {
-	      				//password hashes match, log user in (set cookie)
-	          			res.cookie('username', username);
-	          			res.redirect('/');
-	        		} else {
-	        			//popup alert box? "Incorrect Password"
-					}
-				})
-			}
-	  	})
-	})
-});
-
-
 //POST handler for registering new user
-app.post('/register', function(request, response) {
-  //get inputs from request
-  var username = request.body.username,
-      password = request.body.password,
-      password_confirm = request.body.password_confirm,
-      email = request.body.email;
+app.post('/register', function(req, res) {
+  
+  //build variables from HTML request
+  var username = req.body.username,
+      password = req.body.password,
+      password_confirm = req.body.password_confirm,
+      email = req.body.email;
 
 
   if (password === password_confirm) {
@@ -432,29 +384,26 @@ app.post('/register', function(request, response) {
 			    if(error){
 			        console.log(error);
 			    }else{
-			        console.log('Message sent: ' + info.response);
+			        console.log('Message sent: ' + info.res);
 			    }
 			});
 
 			//render thankyou page after email is sent
-			response.render("thankyou.html");
+			res.render("thankyou.html");
 		});
 	});
 
-	//render thankyou page after email sent
-	response.render("thankyou.html");
-
-  } else { //password and password verify did not match
+  } else { 
+  	//password and password verify did not match
   	console.log('passwords do not match')
-  	response.redirect("/");
+  	res.redirect("/");
   }
 });
 
-
 //GET handler for email verification
-app.get('/verify_email/:nonce', function(request, response) {
-	//database = app.get('database');
-	var returnedNonce = request.params.nonce;
+app.get('/verify_email/:nonce', function(req, res) {
+
+	var returnedNonce = req.params.nonce;
 	console.log("returnedNonce:");
 	console.log(returnedNonce);
 
@@ -471,11 +420,73 @@ app.get('/verify_email/:nonce', function(request, response) {
 			//delete nonce from userstoadd
 			knex('userstoadd').where({nonce:returnedNonce}).del().then(function(){
 				//log user in by setting cookie, and redirect to home page
-				response.cookie('username', user.username)
-				response.redirect('/');
+				res.cookie('username', user.username)
+				res.redirect('/');
 			})
 		})
 	})
 });
+
+//POST handler for logging in from form on home page
+app.post('/login', function(req, res) {
+	console.log("processing POST from '/login'");
+	console.log("req.body");
+	console.log(req.body);
+
+	var username = req.body.username,
+	  	password = req.body.password;
+
+	var pass = require('pwd');
+	pass.hash(password, function(err, salt, hash) {
+		knex('users').where({'username': username}).then(function(returnedUserRecords) {
+			if (returnedUserRecords.length === 0) {
+				//popup alert box? "No Such User"
+			} else {
+				//user was found in DB, pull out first one from array
+			    var user = returnedUserRecords[0];
+
+			    //create hash for entered password
+	      		var pass = require('pwd');
+	      		pass.hash(password, user.salt, function(err, hash) {
+	      			//check new password hash against password from DB
+	      			if(user.passwordhash === hash) {
+	      				//password hashes match, log user in (set cookie)
+	          			res.cookie('username', username);
+	          			res.redirect('/');
+	        		} else {
+	        			//popup alert box? "Incorrect Password"
+					}
+				})
+			}
+	  	})
+	})
+});
+
+//GET handler for logging out
+app.get('/logout', function (req, res) {
+	console.log('processing GET from /logout');
+	console.log('req.body:');
+	console.log(req.body);
+
+	//delete cookie
+	res.clearCookie('username');
+
+	//redirect back to home page
+	res.redirect('/');
+})
+
+//helper function to set username to username from cookie, returns null if no cookie present
+var getUsernameFromCookie = function (req) {
+
+	var usernameFromCookie = null;
+
+ 	if (req.cookies.username != undefined) {
+    	usernameFromCookie = req.cookies.username;
+    }
+
+    return usernameFromCookie;
+}
+
+
 
 app.listen(process.env.PORT || 3000);

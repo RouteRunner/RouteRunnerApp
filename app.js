@@ -57,7 +57,7 @@ function initialize() {
     marker = new google.maps.Marker({
       animation : google.maps.Animation.DROP,
       map       : map,
-      position  : {lat : place.geometry.location.lat(), lng : place.geometry.location.lng()},
+      position  : {lat : place.geometry.location.A, lng : place.geometry.location.F},
       label: 'origin'
     });
 
@@ -99,7 +99,7 @@ function buildMarker(placeInput){
     animation : google.maps.Animation.DROP,
     map       : map,
     // icon      : swordImg,
-    position  : {lat : place.geometry.location.G, lng : place.geometry.location.K},
+    position  : {lat : place.geometry.location.A, lng : place.geometry.location.F},
   });
 
   //push new marker onto markerArray

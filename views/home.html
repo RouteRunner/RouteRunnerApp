@@ -68,12 +68,11 @@
            </div>
           <div class="col-md-4" id="map-canvas"></div>
         </div>
-        <div class="col-md-6">
-          <div class="btn-group top-buffer">
-            <button type="button" id="routeIt" class="btn btn-primary menu_button">Route It</button>
-            <button type="button" id="dirList" class="btn btn-default menu_button"><a href="#directions" data-toggle="modal">Directions</a></button>
-          </div>
-          <div class="top-buffer" id="destinations">
+        <div class="col-md-6" id="routeView">
+          <div class="top-buffer" id="destinations" style="display: block"></div>
+          <div class="top-buffer" id="directionsDiv" style="display: none"></div>
+          <div class="row top-buffer">
+            <button type="button" class="btn btn-success menu_button" id="routeIt">ROUTE IT</button>
           </div>
         </div>
       </div>

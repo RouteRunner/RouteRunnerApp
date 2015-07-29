@@ -288,7 +288,7 @@ var WaypointCollectionView = Backbone.View.extend({
 		var addBtn = '<div class="input-group" id="inputdiv"><span class="input-group-btn"><button type="button" class="btn btn-primary btn-round btn-outline" id="addBtn"><i class="glyphicon glyphicon-plus"></i></button></span>';
 		var locationNameInput = '<input class="form-control" id=locationNameInput type="search" placeholder="Enter New Destination..." /></div>';
 		var wayList = '<ol id="waypoint-list"></ol>';
-		var clrRoutes = '<button type="button" id="clrRoutes" class="btn btn-default btn-sm pull-right">Clear Routes</button>';
+		var clrRoutes = '<button type="button" id="clrRoutes" class="btn btn-default btn-xs pull-right">Clear Routes</button>';
     	this.$el.html(addBtn + locationNameInput + wayList + clrRoutes);
 	},
 	initialize : function () {
@@ -353,25 +353,87 @@ var WaypointCollectionView = Backbone.View.extend({
 	},
 });
 
+var DirectionsView = Backbone.View.extend({
+	render : function () {
+		var dirPanel = '<div class="top-buffer" id="directionsPanel">Directions Div!</div>';
+		this.$el.html(dirPanel);
+	},
+});
+
+var RoutesView = Backbone.View.extend({
+	render : function () {
+
+		//var destDiv = '<div class="top-buffer" id="destinations"></div>';
+
+		//$("#routeView").append(routeBtn + dirBtn + destDiv);
+	},
+	initialize : function() {
+		var routeBtn = '<div class="btn-group top-buffer"><button type="button" id="routeBtn" class="slctBtn menu_button">List View</button>';
+		var dirBtn = '<button type="button" id="dirBtn" class="deslctBlue  menu_button">Directions View</button></div>';
+		this.$el.prepend(routeBtn + dirBtn);
+
+		waypointCollection = new WaypointCollection();
+		waypointCollectionView = new WaypointCollectionView({collection : waypointCollection, el : "#destinations"});
+
+		directionsView = new DirectionsView({el : "#directionsDiv"});
+		waypointCollectionView.render();
+		directionsView.render();
+
+	},
+	events : {
+		"click #routeBtn"  : "toggleRoutes",
+		"click #dirBtn" : "toggleDirections"
+	},
+	toggleRoutes : function() {
+		if(div1.style.display === 'none'){
+			$("#routeBtn").toggleClass('slctBtn');
+			$("#routeBtn").toggleClass('deslctBlue');
+			$("#destinations").toggle();
+			$("#directionsDiv").toggle();
+			$("#dirBtn").toggleClass('deslctBlue');
+			$("#dirBtn").toggleClass('slctBtn');
+		}
+	},
+	toggleDirections : function() {
+		if(div2.style.display === 'none'){
+			$("#dirBtn").toggleClass('deslctBlue');
+			$("#dirBtn").toggleClass('slctBtn');
+			$("#destinations").toggle();
+			$("#directionsDiv").toggle();
+			$("#routeBtn").toggleClass('slctBtn');
+			$("#routeBtn").toggleClass('deslctBlue');
+		}
+	}
+});
+
 //create variables for collection, collection view, origin point and origin point view
 var waypointCollection,
 	waypointCollectionView,
 	originPointModel,
-	originPointView;
+	originPointView,
+	directionsView,
+	div1,
+	div2;
 
 $(document).ready( function () {
 	//assign collection and collection view to new backbone objects
-	waypointCollection = new WaypointCollection();
-	waypointCollectionView = new WaypointCollectionView({collection : waypointCollection, el : "#destinations"});
-	waypointCollectionView.render();
+	//waypointCollection = new WaypointCollection();
+	// waypointCollectionView = new WaypointCollectionView({collection : waypointCollection, el : "#destinations"});
+	// waypointCollectionView.render();
 
 	//assign origin point and origin point view to new backbone objects
 	originPointModel = new OriginPoint();
 	var originPointView = new OriginPointView({model : originPointModel});
-	originPointView.render();
+	//originPointView.render();
+
+	var routesView = new RoutesView({el : "#routeView"});
+	routesView.render();
 
 	//append origin point view and collection view to appropriate divs in index.html
 	$("#origindiv").append(originPointView.$el);
-	$("#destinations").append(waypointCollectionView.$el);
+	$("#routeView").append(routesView.$el);
+	//$("#destinations").append(waypointCollectionView.$el);
+	div1 = document.getElementById("destinations");
+	div2 = document.getElementById("directionsDiv");
 
 });

@@ -12,7 +12,8 @@ var map,
   origin,
   browserSupportFlag =  new Boolean(),
   place,
-  routeIt;
+  routeIt,
+  placeLatLng;
 
 var rendererOptions = {
   draggable: true
@@ -64,12 +65,12 @@ function initialize() {
   google.maps.event.addDomListener(gpsBtn, 'click', geoLocate);
 
   google.maps.event.addDomListener(originBtn, 'click', function(){
-    var place = autoOrigin.getPlace();
+    var originPlace = autoOrigin.getPlace();
 
     marker = new google.maps.Marker({
       animation : google.maps.Animation.DROP,
       map       : map,
-      position  : {lat : place.geometry.location.G, lng : place.geometry.location.K},
+      position  : {lat : originPlace.geometry.location.lat(), lng : originPlace.geometry.location.lng()},
       label: 'origin'
     });
 
@@ -99,16 +100,21 @@ function buildMarker(placeInput){
   if(!placeInput){
     //no input, get place info from autocomplete.getPlace() and assign to global place var
     place = autoInput.getPlace();
+
+    //extract latLng object info from place object
+    placeLatLng = {lat : place.geometry.location.lat(), lng : place.geometry.location.lng()}
+
   }else{
-    //input provided, assign passed in place object to global place var
-    place = JSON.parse(placeInput);
+    //input provided, assign passed in place object to global placeLatLng var
+    placeLatLng = JSON.parse(placeInput);
+
   }
 
   //create new marker, using location info from global place object
   marker = new google.maps.Marker({
     animation : google.maps.Animation.DROP,
     map       : map,
-    position  : {lat : place.geometry.location.G, lng : place.geometry.location.K},
+    position  : placeLatLng,
   });
 
   //push new marker onto markerArray

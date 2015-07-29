@@ -112,8 +112,7 @@ app.get('/notesCollection', function (req, res) {
 		//do knex query for username entry in users table
 		knex('notes').where({'username': username, 'waypoint' : waypoint}).then(function(returnedUserRecords) {
 			if (returnedUserRecords.length === 0) {
-				//popup alert box? "No Such User"
-				// console.log('no note records found for username and waypoint query, ending response')
+				//console.log('no note records found for username and waypoint query, ending response')
 				res.end();
 			} else {
 				//stringify and send returnedUserRecords array
@@ -282,12 +281,14 @@ app.post('/waypointCollection', function (req, res) {
     		.then(function(returnedNotes){
 	    		if (returnedNotes.length === 0) {
 	    			//no matching locations for user, insert new location in DB
-					knex('waypoints').insert({
+					knex('waypoints').returning('id')
+					.insert({
 						username      : username,
 						location_name : location,
 						place         : place,
-					}).then(function() {
-						res.end();
+					}).then(function(id) {
+						//send back id to waypoint's backbone model
+						res.send(JSON.stringify({id : id}));
 						})
     			} else {
     				//matching location aready in DB

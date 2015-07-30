@@ -266,29 +266,27 @@ $(function(){
   var registerForm = document.getElementById('registerForm');
 
   registerForm.addEventListener("submit", function (event) {
-    console.log("event in listener:")
-    console.log(event)
 
     //prevent form from being submitted until data is verified
     event.preventDefault();
 
     //get inputs from form
     var registerUserName = registerForm["username"].value;
-    //var registerEmail = registerForm["email"].value;
     var registerPassword = registerForm["password"].value;
     var registerPasswordVerification = registerForm["password_confirm"].value;
+    //var registerEmail = registerForm["email"].value;
+    
+    // //check that email is valid format
+    // if (!registerEmail.validity.valid) {
+    //   alert("Please enter a valid email address");
+    //   return false;
+    // }
 
     //check that password and password verification match
     if(registerPassword !== registerPasswordVerification) {
       alert("Passwords Do Not Match");
       return false;
     }
-
-    // //check that email is valid format
-    // if (!registerEmail.validity.valid) {
-    //   alert("Please enter a valid email address");
-    //   return false;
-    // }
 
     //send AJAX query to database to check if username already exists
     $.post("/checkUserName", {userName : registerUserName})
@@ -308,7 +306,7 @@ $(function(){
     })
 })
 
-//event listener on submit button in login form to validate input data
+//event listener on login button in login form to validate input data
 $(function(){
 
   var loginForm = document.getElementById('loginForm');
@@ -323,18 +321,6 @@ $(function(){
     //get inputs from form
     var loginUserName = loginForm["username"].value;
     var loginPassword = loginForm["password"].value;
-
-    // //check that password and password verification match
-    // if(registerPassword !== registerPasswordVerification) {
-    //   alert("Passwords Do Not Match");
-    //   return false;
-    // }
-
-    // //check that email is valid format
-    // if (!registerEmail.validity.valid) {
-    //   alert("Please enter a valid email address");
-    //   return false;
-    // }
 
     //send AJAX query to database to check if username already exists
     $.post("/checkUserName", {userName : loginUserName})

@@ -320,15 +320,6 @@ app.delete('/waypointCollection/:id', function (req, res) {
 
 /***************************** LOGIN/REGISTER/VERIFICATION ROUTES ***************************************/
 
-// //GET handler for serving register page
-// app.get('/register', function (req, res) {
-
-//    	//set user name from cookie if present
-//  	var username = getUsernameFromCookie(req);
-
-//     res.render('register.html', {username:username});
-// });
-
 //POST handler for checking if username exists
 app.post('/checkUserName', function (req, res) {
 	console.log("processing POST from '/checkUserName'");
@@ -336,14 +327,10 @@ app.post('/checkUserName', function (req, res) {
 	console.log(req.body);
 
 	var userName = req.body.userName;
-	console.log("userName:");
-	console.log(userName);
 
 	//query db and check to see if username already exists
   	knex('users').where({username:userName})
   		.then(function(usersWithSameName){
-			console.log("usersWithSameName:")
-  			console.log(usersWithSameName)
   			if (usersWithSameName.length === 0) {
   				//ok to insert
   				res.send("noNameMatch")
@@ -460,26 +447,22 @@ app.post('/login', function(req, res) {
 	var pass = require('pwd');
 	pass.hash(password, function(err, salt, hash) {
 		knex('users').where({'username': username}).then(function(returnedUserRecords) {
-			if (returnedUserRecords.length === 0) {
-				//popup alert box? "No Such User"
-			} else {
-				//user was found in DB, pull out first one from array
-			    var user = returnedUserRecords[0];
+			//user was found in DB, pull out first one from array
+		    var user = returnedUserRecords[0];
 
-			    //create hash for entered password
-	      		var pass = require('pwd');
-	      		pass.hash(password, user.salt, function(err, hash) {
-	      			//check new password hash against password from DB
-	      			if(user.passwordhash === hash) {
-	      				//password hashes match, log user in (set cookie)
-	          			res.cookie('username', username);
-	          			res.redirect('/');
-	        		} else {
-	        			//bad password
-	        			res.send("badPassword")
-					}
-				})
-			}
+		    //create hash for entered password
+      		var pass = require('pwd');
+      		pass.hash(password, user.salt, function(err, hash) {
+      			//check new password hash against password from DB
+      			if(user.passwordhash === hash) {
+      				//password hashes match, log user in (set cookie)
+          			res.cookie('username', username);
+          			res.redirect('/');
+        		} else {
+        			//bad password
+        			res.send("badPassword")
+				}
+			})
 	  	})
 	})
 });

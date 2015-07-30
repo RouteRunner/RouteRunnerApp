@@ -56,10 +56,11 @@ function initialize() {
   });
 
   google.maps.event.addDomListener(clrRoutes, 'click', function(){
-      var bounds = new google.maps.LatLngBounds();
       directionsDisplay.setMap(null);
-      bounds.extend(centerArray[0].getPosition());
       centerArray[0].setVisible(true);
+
+      var bounds = new google.maps.LatLngBounds();
+      bounds.extend(centerArray[0].getPosition());
       if (bounds.getNorthEast().equals(bounds.getSouthWest())) {
        var extendPoint1 = new google.maps.LatLng(bounds.getNorthEast().lat() + 0.01, bounds.getNorthEast().lng() + 0.01);
        var extendPoint2 = new google.maps.LatLng(bounds.getNorthEast().lat() - 0.01, bounds.getNorthEast().lng() - 0.01);
@@ -89,6 +90,7 @@ function initialize() {
       }
     }
     centerArray.push(marker);
+
     var bounds = new google.maps.LatLngBounds();
     for(i = 0; i < centerArray.length; i++) {
       bounds.extend(centerArray[i].getPosition());
@@ -152,12 +154,6 @@ function buildMarker(placeInput){
 
 };
 
-// $(function(){
-//   $('#routeIt').on('click', function (e) {
-//     calcRoute();
-//   });
-// });
-
 $(function(){
   $('#setOrigin').on('click', function () {
     if($("#setOrigin").hasClass('deslctYlw')){
@@ -191,7 +187,7 @@ function calcRoute() {
   if(!originForExport){
     $('#origin').modal('show');
   }else if(markerArray.length === 0){
-    $('#waypointsAlert').modal('show');
+    $('#locationNameInput').focus();
   }else{
     for(var i = 0; i < markerArray.length; i++){
       markerArray[i].setVisible(false)

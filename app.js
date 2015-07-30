@@ -12,6 +12,7 @@ var map,
   place,
   routeIt,
   placeLatLng;
+  
 
 var rendererOptions = {
   draggable: true
@@ -36,6 +37,7 @@ function initialize() {
   routeIt = (document.getElementById('routeIt'));
   origin = (document.getElementById('originNameInput'));
   input = (document.getElementById('locationNameInput'));
+  
   searchBox = new google.maps.places.SearchBox(input);
 
   autoOrigin = new google.maps.places.Autocomplete(origin);
@@ -272,3 +274,116 @@ function handleNoGeolocation(errorFlag) {
 };
 
 google.maps.event.addDomListener(window, 'load', initialize);
+
+
+//event listener on submit button in register form to validate input data
+$(function(){
+
+  var registerForm = document.getElementById('registerForm');
+
+  registerForm.addEventListener("submit", function (event) {
+
+    //prevent form from being submitted until data is verified
+    event.preventDefault();
+
+    //get inputs from form
+    var registerUserName = registerForm["username"].value;
+    var registerPassword = registerForm["password"].value;
+    var registerPasswordVerification = registerForm["password_confirm"].value;
+    //var registerEmail = registerForm["email"].value;
+    
+    // //check that email is valid format
+    // if (!registerEmail.validity.valid) {
+    //   alert("Please enter a valid email address");
+    //   return false;
+    // }
+
+    //check that password and password verification match
+    if(registerPassword !== registerPasswordVerification) {
+      alert("Passwords Do Not Match");
+      return false;
+    }
+
+    //send AJAX query to database to check if username already exists
+    $.post("/checkUserName", {userName : registerUserName})
+      .done(function (nameMatchCheck) {
+        console.log('in .done from $.post');
+
+        if (nameMatchCheck === "noNameMatch") {
+          //submit form with jQuery
+          $("#registerForm").submit();
+        }
+
+        if (nameMatchCheck === "nameExists") {
+          // keep default event prevented, alert user of bad input
+          alert("Username already in use, please select another");
+        }
+      })
+    })
+})
+
+//event listener on login button in login form to validate input data
+$(function(){
+
+  var loginForm = document.getElementById('loginForm');
+
+  loginForm.addEventListener("submit", function (event) {
+    console.log("event in listener:")
+    console.log(event)
+
+    //prevent form from being submitted until data is verified
+    event.preventDefault();
+
+    //get inputs from form
+    var loginUserName = loginForm["username"].value;
+    var loginPassword = loginForm["password"].value;
+
+    //send AJAX query to database to check if username already exists
+    $.post("/checkUserName", {userName : loginUserName})
+      .done(function (nameMatchCheck) {
+        console.log('in .done from $.post');
+
+        //name found in users db
+        if (nameMatchCheck === "nameExists") {
+          //check password
+          $.post("/login", {username : loginUserName, password : loginPassword})
+            .done(function (passMatchCheck) {
+              if(passMatchCheck === "badPassword"){
+                alert("incorrect password");
+              } else {
+                //submit form with jQuery
+                $("#loginForm").submit();
+              
+              }
+            })
+        }    
+
+        //name not found
+        if (nameMatchCheck === "noNameMatch") {
+          // keep default event prevented, alert user of bad input
+          alert("Username not found");
+        }
+
+      })
+    })
+})
+
+//prevent default behavior of enter key on login form modal from hiding the modal
+$(function() {
+  $("#loginForm").keypress(function(e) {
+    if ((e.keyCode == 13) && (e.target.type != "textarea")) {
+      e.preventDefault();
+    }
+  });
+})
+
+//prevent default behavior of enter key on register form modal from hiding the modal
+$(function() {
+  $("#registerForm").keypress(function(e) {
+    if ((e.keyCode == 13) && (e.target.type != "textarea")) {
+      e.preventDefault();
+    }
+  });
+})
+
+

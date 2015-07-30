@@ -34,7 +34,7 @@ app.get('/', function (req, res) {
  	var username = getUsernameFromCookie(req);
 
     //render home.html, sending username to insert into template
-    res.render('home.html', {username:username});
+    res.render('home.html', {username:username, error:null});
 });
 
 
@@ -320,17 +320,33 @@ app.delete('/waypointCollection/:id', function (req, res) {
 
 /***************************** LOGIN/REGISTER/VERIFICATION ROUTES ***************************************/
 
-//GET handler for serving register page
-app.get('/register', function (req, res) {
+//POST handler for checking if username exists
+app.post('/checkUserName', function (req, res) {
+	console.log("processing POST from '/checkUserName'");
+	console.log("req.body");
+	console.log(req.body);
 
-   	//set user name from cookie if present
- 	var username = getUsernameFromCookie(req);
+	var userName = req.body.userName;
 
-    res.render('register.html', {username:username});
-});
+	//query db and check to see if username already exists
+  	knex('users').where({username:userName})
+  		.then(function(usersWithSameName){
+  			if (usersWithSameName.length === 0) {
+  				//ok to insert
+  				res.send("noNameMatch")
+  			} else {
+  				//not ok to insert
+  				res.send("nameExists")
+  			}
+  		})
+
+})
 
 //POST handler for registering new user
-app.post('/register', function(req, res) {
+app.post('/register', function (req, res) {
+	console.log("processing POST from '/register'");
+	console.log("req.body");
+	console.log(req.body);
   
   //build variables from HTML request
   var username = req.body.username,
@@ -338,66 +354,58 @@ app.post('/register', function(req, res) {
       password_confirm = req.body.password_confirm,
       email = req.body.email;
 
-
-  if (password === password_confirm) {
-	//stash username, password and nonce in 'userstoadd' to be able to add to 'users' later after verification
-	var newNonce = uuid.v4();
-  	var pass = require('pwd');
- 	pass.hash(password, function(err, salt, hash) {
-		knex('userstoadd').insert({
-			nonce        : newNonce,
-    		username     : username,
-    		passwordhash : hash,
-    		email        : email,
-    		salt         : salt
-		}).then(function() {
-			//send verification email
-			var transporter = nodemailer.createTransport({
-				service: 'Gmail',
-				auth: {
-					user: process.env.emailUser || configs.emailUser,
-					pass: process.env.emailPassword || configs.emailPassword
-				}
-			});
-
-			//create email verification url for routing to from verification email
-			var verificationUrl;
-
-			if (!process.env.heroku) {
-				//not running on heroku, use localhost
-				verificationUrl = 'http://localhost:3000/verify_email/' + newNonce;
-			} else {
-				//running on heroku, user heroku url
-				verificationUrl = 'https://routerunnerapp.herokuapp.com/verify_email/' + newNonce;
+//stash username, password and nonce in 'userstoadd' to be able to add to 'users' later after verification
+var newNonce = uuid.v4();
+	var pass = require('pwd');
+	pass.hash(password, function(err, salt, hash) {
+	knex('userstoadd').insert({
+		nonce        : newNonce,
+		username     : username,
+		passwordhash : hash,
+		email        : email,
+		salt         : salt
+	}).then(function() {
+		//send verification email
+		var transporter = nodemailer.createTransport({
+			service: 'Gmail',
+			auth: {
+				user: process.env.emailUser || configs.emailUser,
+				pass: process.env.emailPassword || configs.emailPassword
 			}
-
-			// setup e-mail data with unicode symbols
-			var mailOptions = {
-			    from: 'Route Runner ✔ <routerunner@gmail.com>', // sender address
-			    to: email,  // list of receivers
-			    subject: 'Route Runner Registration Verification ✔', // Subject line
-			    html: '<p>Thank you for registering with Route Runner! Please click the link below to verify your email address.</p><a href=' + verificationUrl +'>Click here to verify.</a>' // html body
-			};
-
-			// send mail with defined transport object
-			transporter.sendMail(mailOptions, function(error, info){
-			    if(error){
-			        console.log(error);
-			    }else{
-			        console.log('Message sent: ' + info.res);
-			    }
-			});
-
-			//render thankyou page after email is sent
-			res.render("thankyou.html");
 		});
-	});
 
-  } else { 
-  	//password and password verify did not match
-  	console.log('passwords do not match')
-  	res.redirect("/");
-  }
+		//create email verification url for routing to from verification email
+		var verificationUrl;
+
+		if (!process.env.heroku) {
+			//not running on heroku, use localhost
+			verificationUrl = 'http://localhost:3000/verify_email/' + newNonce;
+		} else {
+			//running on heroku, user heroku url
+			verificationUrl = 'https://routerunnerapp.herokuapp.com/verify_email/' + newNonce;
+		}
+
+		// setup e-mail data with unicode symbols
+		var mailOptions = {
+		    from: 'Route Runner ✔ <routerunner@gmail.com>', // sender address
+		    to: email,  // list of receivers
+		    subject: 'Route Runner Registration Verification ✔', // Subject line
+		    html: '<p>Thank you for registering with Route Runner! Please click the link below to verify your email address.</p><a href=' + verificationUrl +'>Click here to verify.</a>' // html body
+		};
+
+		// send mail with defined transport object
+		transporter.sendMail(mailOptions, function(error, info){
+		    if(error){
+		        console.log(error);
+		    }else{
+		        console.log('Message sent: ' + info.res);
+		    }
+		});
+
+		//render thankyou page after email is sent
+		res.render("thankyou.html");
+	  });
+	});
 });
 
 //GET handler for email verification
@@ -439,25 +447,22 @@ app.post('/login', function(req, res) {
 	var pass = require('pwd');
 	pass.hash(password, function(err, salt, hash) {
 		knex('users').where({'username': username}).then(function(returnedUserRecords) {
-			if (returnedUserRecords.length === 0) {
-				//popup alert box? "No Such User"
-			} else {
-				//user was found in DB, pull out first one from array
-			    var user = returnedUserRecords[0];
+			//user was found in DB, pull out first one from array
+		    var user = returnedUserRecords[0];
 
-			    //create hash for entered password
-	      		var pass = require('pwd');
-	      		pass.hash(password, user.salt, function(err, hash) {
-	      			//check new password hash against password from DB
-	      			if(user.passwordhash === hash) {
-	      				//password hashes match, log user in (set cookie)
-	          			res.cookie('username', username);
-	          			res.redirect('/');
-	        		} else {
-	        			//popup alert box? "Incorrect Password"
-					}
-				})
-			}
+		    //create hash for entered password
+      		var pass = require('pwd');
+      		pass.hash(password, user.salt, function(err, hash) {
+      			//check new password hash against password from DB
+      			if(user.passwordhash === hash) {
+      				//password hashes match, log user in (set cookie)
+          			res.cookie('username', username);
+          			res.redirect('/');
+        		} else {
+        			//bad password
+        			res.send("badPassword")
+				}
+			})
 	  	})
 	})
 });

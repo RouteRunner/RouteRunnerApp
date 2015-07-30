@@ -329,8 +329,38 @@ app.get('/register', function (req, res) {
     res.render('register.html', {username:username});
 });
 
+//POST handler for checking if username exists
+app.post('/checkUserName', function (req, res) {
+	console.log("processing POST from '/checkUserName'");
+	console.log("req.body");
+	console.log(req.body);
+
+	var registerUserName = req.body.registerUserName;
+	console.log("registerUsername:");
+	console.log(registerUserName);
+
+	//query db and check to see if username already exists
+  	knex('users').where({username:registerUserName})
+  		.then(function(usersWithSameName){
+			console.log("usersWithSameName:")
+  			console.log(usersWithSameName)
+  			if (usersWithSameName.length === 0) {
+  				//ok to insert
+  				res.send("okay")
+  			} else {
+  				//not ok to insert
+  				res.send("bad")
+  				//res.render('home.html', {error:"Username already exists"});
+  			}
+  		})
+
+})
+
 //POST handler for registering new user
-app.post('/register', function(req, res) {
+app.post('/register', function (req, res) {
+	console.log("processing POST from '/register'");
+	console.log("req.body");
+	console.log(req.body);
   
   //build variables from HTML request
   var username = req.body.username,
@@ -339,59 +369,71 @@ app.post('/register', function(req, res) {
       email = req.body.email;
 
 
+  // //query db and check to see if username already exists
+  // knex('users').where({username:username})
+  // 	.then(function(usersWithSameName){
+  // 		if (usersWithSameName.length === 0) {
+  // 			//insert into userstoadd
+  // 		} else {
+  // 			//alert
+  // 			res.render('home.html', {error:"Username already exists"});
+  // 		}
+  // })
+
+
   if (password === password_confirm) {
-	//stash username, password and nonce in 'userstoadd' to be able to add to 'users' later after verification
-	var newNonce = uuid.v4();
-  	var pass = require('pwd');
- 	pass.hash(password, function(err, salt, hash) {
-		knex('userstoadd').insert({
-			nonce        : newNonce,
-    		username     : username,
-    		passwordhash : hash,
-    		email        : email,
-    		salt         : salt
-		}).then(function() {
-			//send verification email
-			var transporter = nodemailer.createTransport({
-				service: 'Gmail',
-				auth: {
-					user: process.env.emailUser || configs.emailUser,
-					pass: process.env.emailPassword || configs.emailPassword
-				}
-			});
+	// //stash username, password and nonce in 'userstoadd' to be able to add to 'users' later after verification
+	// var newNonce = uuid.v4();
+ //  	var pass = require('pwd');
+ // 	pass.hash(password, function(err, salt, hash) {
+	// 	knex('userstoadd').insert({
+	// 		nonce        : newNonce,
+ //    		username     : username,
+ //    		passwordhash : hash,
+ //    		email        : email,
+ //    		salt         : salt
+	// 	}).then(function() {
+	// 		//send verification email
+	// 		var transporter = nodemailer.createTransport({
+	// 			service: 'Gmail',
+	// 			auth: {
+	// 				user: process.env.emailUser || configs.emailUser,
+	// 				pass: process.env.emailPassword || configs.emailPassword
+	// 			}
+	// 		});
 
-			//create email verification url for routing to from verification email
-			var verificationUrl;
+	// 		//create email verification url for routing to from verification email
+	// 		var verificationUrl;
 
-			if (!process.env.heroku) {
-				//not running on heroku, use localhost
-				verificationUrl = 'http://localhost:3000/verify_email/' + newNonce;
-			} else {
-				//running on heroku, user heroku url
-				verificationUrl = 'https://routerunnerapp.herokuapp.com/verify_email/' + newNonce;
-			}
+	// 		if (!process.env.heroku) {
+	// 			//not running on heroku, use localhost
+	// 			verificationUrl = 'http://localhost:3000/verify_email/' + newNonce;
+	// 		} else {
+	// 			//running on heroku, user heroku url
+	// 			verificationUrl = 'https://routerunnerapp.herokuapp.com/verify_email/' + newNonce;
+	// 		}
 
-			// setup e-mail data with unicode symbols
-			var mailOptions = {
-			    from: 'Route Runner ✔ <routerunner@gmail.com>', // sender address
-			    to: email,  // list of receivers
-			    subject: 'Route Runner Registration Verification ✔', // Subject line
-			    html: '<p>Thank you for registering with Route Runner! Please click the link below to verify your email address.</p><a href=' + verificationUrl +'>Click here to verify.</a>' // html body
-			};
+	// 		// setup e-mail data with unicode symbols
+	// 		var mailOptions = {
+	// 		    from: 'Route Runner ✔ <routerunner@gmail.com>', // sender address
+	// 		    to: email,  // list of receivers
+	// 		    subject: 'Route Runner Registration Verification ✔', // Subject line
+	// 		    html: '<p>Thank you for registering with Route Runner! Please click the link below to verify your email address.</p><a href=' + verificationUrl +'>Click here to verify.</a>' // html body
+	// 		};
 
-			// send mail with defined transport object
-			transporter.sendMail(mailOptions, function(error, info){
-			    if(error){
-			        console.log(error);
-			    }else{
-			        console.log('Message sent: ' + info.res);
-			    }
-			});
+	// 		// send mail with defined transport object
+	// 		transporter.sendMail(mailOptions, function(error, info){
+	// 		    if(error){
+	// 		        console.log(error);
+	// 		    }else{
+	// 		        console.log('Message sent: ' + info.res);
+	// 		    }
+	// 		});
 
-			//render thankyou page after email is sent
-			res.render("thankyou.html");
-		});
-	});
+	// 		//render thankyou page after email is sent
+	// 		res.render("thankyou.html");
+	// 	});
+	// });
 
   } else { 
   	//password and password verify did not match

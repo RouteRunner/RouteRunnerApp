@@ -13,7 +13,8 @@ var map,
   browserSupportFlag =  new Boolean(),
   place,
   routeIt,
-  placeLatLng;
+  placeLatLng,
+  error;
 
 var rendererOptions = {
   draggable: true
@@ -263,8 +264,27 @@ var validateRegisterForm = function () {
   var registerPassword = document.forms["registerForm"]["password"].value;
   var registerPasswordVerification = document.forms["registerForm"]["password_confirm"].value;
 
-  if(registerPassword !== registerPasswordVerification) {
-    alert("Passwords Do Not Match");
-    return false;
-  }
+  // if(registerPassword !== registerPasswordVerification) {
+  //   alert("Passwords Do Not Match");
+  //   return false;
+  // }
+
+  $.post("/checkUserName", {registerUserName : registerUserName}).done(function (data) {
+    console.log('in .done from $.post');
+    alert("data returned from $.post : " + data);
+    if (data === "okay") {
+      console.log('returning true from $.post')
+      return true;
+    }
+    if (data === "bad") {
+      console.log('returning false from $.post')
+      return false;
+    }
+  })
+
 }
+
+
+// if (error) {
+//   alert("error");
+// }

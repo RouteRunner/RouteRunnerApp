@@ -351,3 +351,23 @@ $(function(){
       })
     })
 })
+
+//prevent default behavior of enter key on login form modal from hiding the modal
+$(function() {
+  $("#loginForm").keypress(function(e) {
+    if ((e.keyCode == 13) && (e.target.type != "textarea")) {
+      e.preventDefault();
+    }
+  });
+})
+
+//prevent default behavior of enter key on register form modal from hiding the modal
+$(function() {
+  $("#registerForm").keypress(function(e) {
+    if ((e.keyCode == 13) && (e.target.type != "textarea")) {
+      e.preventDefault();
+    }
+  });
+})
+
+

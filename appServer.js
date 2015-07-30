@@ -320,14 +320,14 @@ app.delete('/waypointCollection/:id', function (req, res) {
 
 /***************************** LOGIN/REGISTER/VERIFICATION ROUTES ***************************************/
 
-//GET handler for serving register page
-app.get('/register', function (req, res) {
+// //GET handler for serving register page
+// app.get('/register', function (req, res) {
 
-   	//set user name from cookie if present
- 	var username = getUsernameFromCookie(req);
+//    	//set user name from cookie if present
+//  	var username = getUsernameFromCookie(req);
 
-    res.render('register.html', {username:username});
-});
+//     res.render('register.html', {username:username});
+// });
 
 //POST handler for checking if username exists
 app.post('/checkUserName', function (req, res) {
@@ -335,21 +335,21 @@ app.post('/checkUserName', function (req, res) {
 	console.log("req.body");
 	console.log(req.body);
 
-	var registerUserName = req.body.registerUserName;
-	console.log("registerUsername:");
-	console.log(registerUserName);
+	var userName = req.body.userName;
+	console.log("userName:");
+	console.log(userName);
 
 	//query db and check to see if username already exists
-  	knex('users').where({username:registerUserName})
+  	knex('users').where({username:userName})
   		.then(function(usersWithSameName){
 			console.log("usersWithSameName:")
   			console.log(usersWithSameName)
   			if (usersWithSameName.length === 0) {
   				//ok to insert
-  				res.send("okay")
+  				res.send("noNameMatch")
   			} else {
   				//not ok to insert
-  				res.send("bad")
+  				res.send("nameExists")
   			}
   		})
 
@@ -475,7 +475,8 @@ app.post('/login', function(req, res) {
 	          			res.cookie('username', username);
 	          			res.redirect('/');
 	        		} else {
-	        			//popup alert box? "Incorrect Password"
+	        			//bad password
+	        			res.send("badPassword")
 					}
 				})
 			}

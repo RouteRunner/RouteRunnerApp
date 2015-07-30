@@ -291,19 +291,77 @@ $(function(){
     // }
 
     //send AJAX query to database to check if username already exists
-    $.post("/checkUserName", {registerUserName : registerUserName})
+    $.post("/checkUserName", {userName : registerUserName})
       .done(function (nameMatchCheck) {
         console.log('in .done from $.post');
 
-        if (nameMatchCheck === "okay") {
+        if (nameMatchCheck === "noNameMatch") {
           //submit form with jQuery
           $("#registerForm").submit();
         }
 
-        if (nameMatchCheck === "bad") {
+        if (nameMatchCheck === "nameExists") {
           // keep default event prevented, alert user of bad input
           alert("Username already in use, please select another");
         }
+      })
+    })
+})
+
+//event listener on submit button in login form to validate input data
+$(function(){
+
+  var loginForm = document.getElementById('loginForm');
+
+  loginForm.addEventListener("submit", function (event) {
+    console.log("event in listener:")
+    console.log(event)
+
+    //prevent form from being submitted until data is verified
+    event.preventDefault();
+
+    //get inputs from form
+    var loginUserName = loginForm["username"].value;
+    var loginPassword = loginForm["password"].value;
+
+    // //check that password and password verification match
+    // if(registerPassword !== registerPasswordVerification) {
+    //   alert("Passwords Do Not Match");
+    //   return false;
+    // }
+
+    // //check that email is valid format
+    // if (!registerEmail.validity.valid) {
+    //   alert("Please enter a valid email address");
+    //   return false;
+    // }
+
+    //send AJAX query to database to check if username already exists
+    $.post("/checkUserName", {userName : loginUserName})
+      .done(function (nameMatchCheck) {
+        console.log('in .done from $.post');
+
+        //name found in users db
+        if (nameMatchCheck === "nameExists") {
+          //check password
+          $.post("/login", {username : loginUserName, password : loginPassword})
+            .done(function (passMatchCheck) {
+              if(passMatchCheck === "badPassword"){
+                alert("incorrect password");
+              } else {
+                //submit form with jQuery
+                $("#loginForm").submit();
+              
+              }
+            })
+        }    
+
+        //name not found
+        if (nameMatchCheck === "noNameMatch") {
+          // keep default event prevented, alert user of bad input
+          alert("Username not found");
+        }
+
       })
     })
 })

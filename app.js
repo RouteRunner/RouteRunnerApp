@@ -13,10 +13,8 @@ var map,
   browserSupportFlag =  new Boolean(),
   place,
   routeIt,
-  placeLatLng,
-  error;
-
-
+  placeLatLng;
+  
 
 var rendererOptions = {
   draggable: true
@@ -43,10 +41,6 @@ function initialize() {
   origin = (document.getElementById('originNameInput'));
   input = (document.getElementById('locationNameInput'));
   
-
-
-
-
   searchBox = new google.maps.places.SearchBox(input);
 
   autoOrigin = new google.maps.places.Autocomplete(origin);
@@ -270,10 +264,6 @@ google.maps.event.addDomListener(window, 'load', initialize);
 $(function(){
 
   var registerForm = document.getElementById('registerForm');
- // var registerSubmitBtn = document.getElementById('registerSubmitBtn');
-  //var registerEmail = document.getElementById('inputEmail');
-
-
 
   registerForm.addEventListener("submit", function (event) {
     console.log("event in listener:")
@@ -284,7 +274,7 @@ $(function(){
 
     //get inputs from form
     var registerUserName = registerForm["username"].value;
-    var registerEmail = registerForm["email"].value;
+    //var registerEmail = registerForm["email"].value;
     var registerPassword = registerForm["password"].value;
     var registerPasswordVerification = registerForm["password_confirm"].value;
 
@@ -317,35 +307,3 @@ $(function(){
       })
     })
 })
-
-
-// var validateRegisterForm = function () {
-
-//   var registerUserName = document.forms["registerForm"]["username"].value;
-//   var registerPassword = document.forms["registerForm"]["password"].value;
-//   var registerPasswordVerification = document.forms["registerForm"]["password_confirm"].value;
-
-//   // if(registerPassword !== registerPasswordVerification) {
-//   //   alert("Passwords Do Not Match");
-//   //   return false;
-//   // }
-
-//   $.post("/checkUserName", {registerUserName : registerUserName}).done(function (data) {
-//     console.log('in .done from $.post');
-//     alert("data returned from $.post : " + data);
-//     if (data === "okay") {
-//       console.log('returning true from $.post')
-//       return true;
-//     }
-//     if (data === "bad") {
-//       console.log('returning false from $.post')
-//       return false;
-//     }
-//   })
-
-// }
-
-
-// if (error) {
-//   alert("error");
-// }

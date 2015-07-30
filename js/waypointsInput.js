@@ -105,12 +105,13 @@ var NotesCollection = Backbone.Collection.extend({
 
 var NotesCollectionView = Backbone.View.extend({
 	render : function() {
+		var tag = 'keypress #notesInput' + this.uniqueName;
 		var modalContainer = '<div class="modal fade" id="' + this.uniqueName + '" role="dialog"><div class="modal-dialog"><div class="modal-content" id="notesLightbox">';
 		var body = '<div class="modal-body">';
 		var label = '<label><h4>Notes:</h4></label>';
 		var notesDiv = '<div class="input-group">';
 		var tskBtn = '<span class="input-group-btn"><button type="button" class="btn btn-primary" id="tskBtn"> Add</button></span>';
-		var notesInput = '<input class="form-control" id=notesInput type="text" placeholder="Type Here..." /></div>';
+		var notesInput = '<input class="form-control" id="notesInput' + this.uniqueName + '" type="text" placeholder="Type Here..." /></div>';
 		var notesList = '<ol id="notes-list' + this.uniqueName + '" class="top-buffer"></ol></div>';
 		var clrBtn = '<div class="modal-footer" id="notesFooter"><button class=" btn btn-default btn-sm pull-left" data-dismiss="modal">X</button><button class="btn btn-default" id="clrBtn" type= "submit">Clear √</button></div>';
 		var closingStuff = '</div></div></div>'
@@ -127,12 +128,12 @@ var NotesCollectionView = Backbone.View.extend({
 	events : {
 		"click #tskBtn" : "updateOnClick",
 		"click #clrBtn" : "delete",
-		"keypress #notesInput": "enterKey"
+		"keypress .form-control" : "enterKey"
 	},
 	updateOnClick : function (e) {
 
 		//get string from input field
-		var str = this.$el.find("#notesInput").val();
+		var str = this.$el.find("#notesInput" + this.uniqueName).val();
 
 		//get unique name from notesCollectionView instance (passed into constructor when instance was created)
 		var uniqueName = this.uniqueName;
@@ -143,9 +144,9 @@ var NotesCollectionView = Backbone.View.extend({
 				listitem : str,
 				waypoint : uniqueName,
 			});
-			$("#notesInput").val("");
+			$("#notesInput" + this.uniqueName).val("");
 		}else{
-			$("#notesInput").focus();
+			$("#notesInput" + this.uniqueName).focus();
 		}
 	},
 	addOne : function(model) {

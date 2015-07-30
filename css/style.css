@@ -136,13 +136,6 @@ h5
   list-style-type: none;
 }
 
-/*#addBtn {
-    border-radius: 4px 0px 0px 4px;
-    background: none;
-    border: 2px solid #0099cc;
-    color: #0099cc;
-}*/
-
 #gpsBtn {
   border-radius: 0px 4px 4px 0px;
 }
@@ -263,6 +256,15 @@ h5
 
 #destinations {
   margin-bottom: 50px;
+}
+
+#panel {
+  position: absolute;
+  top: 91%;
+  left: 50%;
+  margin-left: -45%;
+  z-index: 5;
+  padding: 5px;
 }
 
 .menu_button {

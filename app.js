@@ -14,24 +14,28 @@ var map,
   placeLatLng;
   
 
-var rendererOptions = {
-  draggable: true
-};
-var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);;
+//Sets the directions render options, dragging markers enabled
+var rendererOptions = {draggable: true};
+//Calculate directions
 var directionsService = new google.maps.DirectionsService();
+//Renders the polyline between indicated waypoints
+var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 
 //function used to initialize new map object
 function initialize() {
+  //Center map on Portland, set the zoom to 12
   var mapOptions = {
     center: {lat: 45.5200, lng: -122.6819},
     zoom: 12,
   };
+  //Pass in mapOption and append map to the Dom
   map = new google.maps.Map(document.getElementById('map-canvas'),
     mapOptions);
-
+  //Set the directions display to the current map
   directionsDisplay.setMap(map);
+  //Append the directions to the Dom
   directionsDisplay.setPanel(document.getElementById('directionsPanel'));
-
+  //Get elements from the Dom for listeners and submission of input
   originBtn = (document.getElementById('originSubmit'));
   gpsBtn = (document.getElementById('gpsBtn'));
   routeIt = (document.getElementById('routeIt'));
@@ -39,10 +43,10 @@ function initialize() {
   input = (document.getElementById('locationNameInput'));
   
   searchBox = new google.maps.places.SearchBox(input);
-
+  //Autocomplete for Origin field
   autoOrigin = new google.maps.places.Autocomplete(origin);
   autoOrigin.bindTo('bounds', map);
-
+  //Autocomplete for Input field
   autoInput = new google.maps.places.Autocomplete(input);
   autoInput.bindTo('bounds', map);
 
@@ -51,16 +55,17 @@ function initialize() {
     buildMarker();
     waypointCollectionView.updateOnClick();
   })
-
+  //Reset the map from null, then run calc for new Route
   google.maps.event.addDomListener(routeIt, 'click', function(){
     directionsDisplay.setMap(map);
     calcRoute();
   });
 
   google.maps.event.addDomListener(clrRoutes, 'click', function(){
+    //Clear markers from previous route, set visibility of origin marker to true,
       directionsDisplay.setMap(null);
       centerArray[0].setVisible(true);
-
+      //then center array on origin
       var bounds = new google.maps.LatLngBounds();
       bounds.extend(centerArray[0].getPosition());
       if (bounds.getNorthEast().equals(bounds.getSouthWest())) {
@@ -72,19 +77,19 @@ function initialize() {
       map.fitBounds(bounds);
 
   });
-
+  //Even listener for gpsBtn, runs Geolocate
   google.maps.event.addDomListener(gpsBtn, 'click', geoLocate);
 
   google.maps.event.addDomListener(originBtn, 'click', function(){
     var originPlace = autoOrigin.getPlace();
-
+    //Create new marker for Origin, set label to differentiate from waypoints
     marker = new google.maps.Marker({
       animation : google.maps.Animation.DROP,
       map       : map,
       position  : {lat : originPlace.geometry.location.lat(), lng : originPlace.geometry.location.lng()},
       label: 'origin'
     });
-
+    //Check to see if there is already an origin set, if so then remove it from the array and add the new origin
     for(i = 0; i < centerArray.length; i++) {
       if(centerArray[i].label === 'origin'){
         centerArray[i].setMap(null);
@@ -92,7 +97,7 @@ function initialize() {
       }
     }
     centerArray.push(marker);
-
+    //Center the map on the new origin
     var bounds = new google.maps.LatLngBounds();
     for(i = 0; i < centerArray.length; i++) {
       bounds.extend(centerArray[i].getPosition());
@@ -155,7 +160,7 @@ function buildMarker(placeInput){
   map.fitBounds(bounds);
 
 };
-
+//toggle CSS to change color of button upon selection
 $(function(){
   $('#setOrigin').on('click', function () {
     if($("#setOrigin").hasClass('deslctYlw')){
@@ -179,21 +184,28 @@ $(function(){
 });
 
 function calcRoute() {
+  //Get currently selected trave mode
+  var selectedMode = document.getElementById('mode').value;
+  //DirectionsRequest object, initiates a request to the Directions Service
   var request = {
     origin: originForExport,
     destination: originForExport,
     waypoints: waypointsArray,
     optimizeWaypoints: true,
-    travelMode: google.maps.TravelMode.DRIVING
+    travelMode: google.maps.TravelMode[selectedMode]
   };
+  //If origin is not set, display modal for entering in an origin
   if(!originForExport){
     $('#origin').modal('show');
   }else if(markerArray.length === 0){
+    //if there are no waypoints set, give focus to the input field
     $('#locationNameInput').focus();
   }else{
+    //Upon routing, set the current markers visibility to false
     for(var i = 0; i < markerArray.length; i++){
       markerArray[i].setVisible(false)
     }
+    //Directions request is asynchronous, callback method to execute upon receipt of response
     directionsService.route(request, function(response, status) {
       if (status === google.maps.DirectionsStatus.OK) {
         directionsDisplay.setDirections(response);
@@ -201,7 +213,7 @@ function calcRoute() {
     })
   }
 };
-
+//for each of the stored routes, we are only hanging on to 1, calculate the total distance
 function computeTotalDistance(result) {
   var total = 0;
   var myroute = result.routes[0];
@@ -209,35 +221,40 @@ function computeTotalDistance(result) {
     total += myroute.legs[i].distance.value;
   }
   total = total / 1000.0;
+  //Write distance to the Dom
   document.getElementById('total').innerHTML = total + ' km';
 }
 
 function geoLocate(){
+  //Check to see if the browser supports geoLocation
   if(navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
+      //If so, create a new LatLng on those coordinates
       var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+      //Geocoder generates a string address from the LatLng object
       var geocoder = new google.maps.Geocoder();
       geocoder.geocode({'location': pos}, function(results, status) {
+        //Sets a new marker give the position generated from the LatLng
        marker = new google.maps.Marker({
          animation : google.maps.Animation.DROP,
          map       : map,
          position  : pos,
          label: 'origin'
        });
-
+      //Captures the string address name for the origin then writes to the Dom
       locationID = results[0].formatted_address;
       originPointModel.set('originName',locationID);
       originPointModel.save();
       originForExport = locationID;
-
+      //check to see if there is already an origin marker, if so then replace it
       for(i = 0; i < centerArray.length; i++) {
-        //console.log(centerArray[i]);
         if(centerArray[i].label === 'origin'){
           centerArray[i].setMap(null);
           centerArray.splice(i, 1);
         }
       }
       centerArray.push(marker);
+      //Center the map on the new origin
       var bounds = new google.maps.LatLngBounds();
       for(i = 0; i < centerArray.length; i++) {
         bounds.extend(centerArray[i].getPosition());
@@ -251,6 +268,7 @@ function geoLocate(){
       map.fitBounds(bounds);
      });
    }), function() {
+     //No error is flagged
       handleNoGeolocation(true);
     };
   } else {
@@ -259,20 +277,21 @@ function geoLocate(){
   }
 }
 
+//Error reporting if the browser does not support geolocation
 function handleNoGeolocation(errorFlag) {
   if (errorFlag) {
     var content = 'Error: The Geolocation service failed.';
   } else {
     var content = 'Error: Your browser doesn\'t support geolocation.';
   }
-
+  //reset the map and center on Portland
   var options = {
     map: map,
     position: new google.maps.LatLng(45.5200, -122.6819),
     content: content
   };
 };
-
+//event listener for loading the page
 google.maps.event.addDomListener(window, 'load', initialize);
 
 

@@ -65,7 +65,16 @@
            </div>
            <div id="originRow">
            </div>
-          <div class="col-md-4" id="map-canvas"></div>
+          <div class="col-xl-4">
+            <div class="form-group" id="panel">
+              <select class="form-control" id="mode" onchange="calcRoute();">
+                <option value="DRIVING">Driving</option>
+                <option value="WALKING">Walking</option>
+                <option value="BICYCLING">Bicycling</option>
+              </select>
+            </div>
+            <div id="map-canvas"></div>
+          </div>
         </div>
         <div class="col-md-6" id="routeView">
           <div class="top-buffer" id="destinations" style="display: block"></div>

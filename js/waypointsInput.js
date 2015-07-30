@@ -284,6 +284,7 @@ var WaypointCollectionView = Backbone.View.extend({
 	},
 	clearRoutes : function() {
 		var modelsToDestroy = [];
+		$("#directionsPanel").html("Set A Route");
 		this.collection.each(function(model){
 			modelsToDestroy.push(model);
 		});
@@ -337,7 +338,7 @@ var WaypointCollectionView = Backbone.View.extend({
 
 var DirectionsView = Backbone.View.extend({
 	render : function () {
-		var dirPanel = '<div class="top-buffer emptyDiv" id="directionsPanel"><h4>Please route an origin with at least one destination to view your directions.</h4></div>';
+		var dirPanel = '<div class="top-buffer emptyDiv" id="directionsPanel"><p>Please route an origin with at least one destination to view your directions.</p></div>';
 		this.$el.html(dirPanel);
 	},
 });

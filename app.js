@@ -16,6 +16,8 @@ var map,
   placeLatLng,
   error;
 
+
+
 var rendererOptions = {
   draggable: true
 };
@@ -40,6 +42,11 @@ function initialize() {
   routeIt = (document.getElementById('routeIt'));
   origin = (document.getElementById('originNameInput'));
   input = (document.getElementById('locationNameInput'));
+  
+
+
+
+
   searchBox = new google.maps.places.SearchBox(input);
 
   autoOrigin = new google.maps.places.Autocomplete(origin);
@@ -258,31 +265,85 @@ function handleNoGeolocation(errorFlag) {
 
 google.maps.event.addDomListener(window, 'load', initialize);
 
-var validateRegisterForm = function () {
 
-  var registerUserName = document.forms["registerForm"]["username"].value;
-  var registerPassword = document.forms["registerForm"]["password"].value;
-  var registerPasswordVerification = document.forms["registerForm"]["password_confirm"].value;
+//event listener on submit button in register form to validate input data
+$(function(){
 
-  // if(registerPassword !== registerPasswordVerification) {
-  //   alert("Passwords Do Not Match");
-  //   return false;
-  // }
+  var registerForm = document.getElementById('registerForm');
+ // var registerSubmitBtn = document.getElementById('registerSubmitBtn');
+  //var registerEmail = document.getElementById('inputEmail');
 
-  $.post("/checkUserName", {registerUserName : registerUserName}).done(function (data) {
-    console.log('in .done from $.post');
-    alert("data returned from $.post : " + data);
-    if (data === "okay") {
-      console.log('returning true from $.post')
-      return true;
-    }
-    if (data === "bad") {
-      console.log('returning false from $.post')
+
+
+  registerForm.addEventListener("submit", function (event) {
+    console.log("event in listener:")
+    console.log(event)
+
+    //prevent form from being submitted until data is verified
+    event.preventDefault();
+
+    //get inputs from form
+    var registerUserName = registerForm["username"].value;
+    var registerEmail = registerForm["email"].value;
+    var registerPassword = registerForm["password"].value;
+    var registerPasswordVerification = registerForm["password_confirm"].value;
+
+    //check that password and password verification match
+    if(registerPassword !== registerPasswordVerification) {
+      alert("Passwords Do Not Match");
       return false;
     }
-  })
 
-}
+    // //check that email is valid format
+    // if (!registerEmail.validity.valid) {
+    //   alert("Please enter a valid email address");
+    //   return false;
+    // }
+
+    //send AJAX query to database to check if username already exists
+    $.post("/checkUserName", {registerUserName : registerUserName})
+      .done(function (nameMatchCheck) {
+        console.log('in .done from $.post');
+
+        if (nameMatchCheck === "okay") {
+          //submit form with jQuery
+          $("#registerForm").submit();
+        }
+
+        if (nameMatchCheck === "bad") {
+          // keep default event prevented, alert user of bad input
+          alert("Username already in use, please select another");
+        }
+      })
+    })
+})
+
+
+// var validateRegisterForm = function () {
+
+//   var registerUserName = document.forms["registerForm"]["username"].value;
+//   var registerPassword = document.forms["registerForm"]["password"].value;
+//   var registerPasswordVerification = document.forms["registerForm"]["password_confirm"].value;
+
+//   // if(registerPassword !== registerPasswordVerification) {
+//   //   alert("Passwords Do Not Match");
+//   //   return false;
+//   // }
+
+//   $.post("/checkUserName", {registerUserName : registerUserName}).done(function (data) {
+//     console.log('in .done from $.post');
+//     alert("data returned from $.post : " + data);
+//     if (data === "okay") {
+//       console.log('returning true from $.post')
+//       return true;
+//     }
+//     if (data === "bad") {
+//       console.log('returning false from $.post')
+//       return false;
+//     }
+//   })
+
+// }
 
 
 // if (error) {

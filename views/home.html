@@ -145,7 +145,7 @@
             <div class="modal-body" id="registerdiv">
 
               <h4>Register</h4>
-              <form method= "post" action="/register" class="form-horizontal" onsubmit="return validateRegisterForm()" name= "registerForm">
+              <form novalidate method= "post" action="/register" class="form-horizontal" id= "registerForm">
                 <div class="form-group">
                   <label for="inputUser" class="control-label col-xs-4">Username:</label>
                   <div class="col-xs-6">
@@ -155,7 +155,7 @@
                 <div class="form-group">
                   <label for="inputEmail" class="control-label col-xs-4">Email:</label>
                   <div class="col-xs-6">
-                    <input class="form-control" type="text" name="email" placeholder="Enter Your Email" id="inputEmail" required>
+                    <input class="form-control" type="email" name="email" placeholder="Enter Your Email" id="inputEmail" required>
                   </div>
                 </div>
                 <div class="form-group">
@@ -172,7 +172,7 @@
                 </div>
                 <div class="modal-footer">
                   <button class=" btn btn-default btn-sm pull-left" data-dismiss="modal">X</button>
-                  <input class="btn btn-default btn-primary pull-right" type= "submit" value= "Register">
+                  <button class="btn btn-default btn-primary pull-right" id= "registerSubmitBtn">Register</button>
                 </div>
               </form>
             </div>

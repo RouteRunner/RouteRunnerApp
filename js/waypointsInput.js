@@ -31,7 +31,7 @@ var OriginPointView = Backbone.View.extend({
 		this.model.on("change", this.render, this);
 		var originName = '<p class="top-buffer well well-sm" id="inputOrigin"></p>';
 		var originNameInput = '<input class="form-control" id=originNameInput type="search" placeholder="Enter Origin Here..." />';
-		var submitBtn = '<div class="modal-footer"><button class="btn btn-default" data-dismiss="modal" id="originSubmit">Submit</button></div>';
+		var submitBtn = '<div class="modal-footer"><button class="btn btn-warning" data-dismiss="modal" id="originSubmit">Submit</button></div>';
 		$("#originRow").append(originName);
 		this.$el.html(originNameInput + submitBtn);
 		this.render();
@@ -110,7 +110,7 @@ var NotesCollectionView = Backbone.View.extend({
 		var label = '<label><h4>Notes:</h4></label>';
 		var notesDiv = '<div class="input-group">';
 		var tskBtn = '<span class="input-group-btn"><button type="button" class="btn btn-primary" id="tskBtn"> Add</button></span>';
-		var notesInput = '<input class="form-control" id=notesInput type="search" placeholder="Type Here..." /></div>';
+		var notesInput = '<input class="form-control" id=notesInput type="text" placeholder="Type Here..." /></div>';
 		var notesList = '<ol id="notes-list' + this.uniqueName + '" class="top-buffer"></ol></div>';
 		var clrBtn = '<div class="modal-footer" id="notesFooter"><button class=" btn btn-default btn-sm pull-left" data-dismiss="modal">X</button><button class="btn btn-default" id="clrBtn" type= "submit">Clear √</button></div>';
 		var closingStuff = '</div></div></div>'
@@ -143,6 +143,9 @@ var NotesCollectionView = Backbone.View.extend({
 				listitem : str,
 				waypoint : uniqueName,
 			});
+			$("#notesInput").val("");
+		}else{
+			$("#notesInput").focus();
 		}
 	},
 	addOne : function(model) {
@@ -195,7 +198,7 @@ var WaypointView = Backbone.View.extend({
 		uniqueName = uniqueName.replace(/[,\s]+/g, '');
 
 		var noteBtn = '<div class="pull-left"><a href="#' + uniqueName + '" data-toggle="modal"><button type="button" id="openNotes" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-list-alt" aria-hidden="true"></span></button></a></div>';
-		var locationName = '<h4 class="waypointName">' + this.model.get("location") + '</h4><hr>';
+		var locationName = '<h4 class="waypointName">' + this.model.get("location") + '</h4><hr id="hrBot">';
 		var delBtn = '<div class="pull-right"><button type="button" class="btn btn-default btn-sm" id="delBtn"><span class="glyphicon glyphicon glyphicon-remove" aria-hidden="true"></span></button></div>';
 		this.$el.html(noteBtn + delBtn + locationName);
 
@@ -270,21 +273,21 @@ var WaypointCollection = Backbone.Collection.extend({
 //create backbone view to display collection of waypoints/stops
 var WaypointCollectionView = Backbone.View.extend({
 	render : function () {
-		var addBtn = '<div class="input-group" id="inputdiv"><span class="input-group-btn"><button type="button" class="btn btn-primary btn-round btn-outline" id="addBtn"><i class="glyphicon glyphicon-plus"></i></button></span>';
+		var inputField = '<div id="inputdiv">';
 		var locationNameInput = '<input class="form-control" id=locationNameInput type="search" placeholder="Enter New Destination..." /></div>';
 		var wayList = '<ol id="waypoint-list"></ol>';
 		var clrRoutes = '<button type="button" id="clrRoutes" class="btn btn-default btn-xs pull-right">Clear Routes</button>';
-    	this.$el.html(addBtn + locationNameInput + wayList + clrRoutes);
+    	this.$el.html(inputField + locationNameInput + wayList + clrRoutes);
 	},
 	initialize : function () {
 		this.listenTo(this.collection, 'add', this.addOne)
 	},
 	events : {
-		"click #addBtn"  : "updateOnClick",
 		"click #clrRoutes" : "clearRoutes",
 	},
 	clearRoutes : function() {
 		var modelsToDestroy = [];
+		$("#directionsPanel").html("Set A Route");
 		this.collection.each(function(model){
 			modelsToDestroy.push(model);
 		});
@@ -327,7 +330,7 @@ var WaypointCollectionView = Backbone.View.extend({
 	addOne : function (model) {
 		// create view for new model
         var view = new WaypointView({model : model, tagName : "li", className : "waypointStyle"});
-       
+
         //render new view
         view.render();
 
@@ -338,7 +341,7 @@ var WaypointCollectionView = Backbone.View.extend({
 
 var DirectionsView = Backbone.View.extend({
 	render : function () {
-		var dirPanel = '<div class="top-buffer emptyDiv" id="directionsPanel"><h4>Please route an origin with at least one destination to view your directions.</h4></div>';
+		var dirPanel = '<div class="top-buffer emptyDiv" id="directionsPanel"><p>Please route an origin with at least one destination to view your directions.</p></div>';
 		this.$el.html(dirPanel);
 	},
 });
@@ -360,7 +363,6 @@ var RoutesView = Backbone.View.extend({
 		if(markerArray.length === 0 && !originForExport){
 			return;
 		}else{
-			console.log("directionsChange for real");
 			$("#directionsPanel").empty();
 		}
 	},

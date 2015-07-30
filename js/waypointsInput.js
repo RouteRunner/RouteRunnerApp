@@ -128,7 +128,7 @@ var NotesCollectionView = Backbone.View.extend({
 	events : {
 		"click #tskBtn" : "updateOnClick",
 		"click #clrBtn" : "delete",
-		'keypress "#notesInput" + this.uniqueName' : "enterKey"
+		"keypress .form-control" : "enterKey"
 	},
 	updateOnClick : function (e) {
 
